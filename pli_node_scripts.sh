@@ -245,7 +245,7 @@ FUNC_NODE_DEPLOY(){
     #sudo -i -u postgres psql
 
 
-    sudo -u postgres psql -c "CREATE DATABASE $DB_NAME;"
+    sudo - postgres psql -c "CREATE DATABASE $DB_NAME;"
     if [ $? -eq 0 ]; then
     	echo -e "${GREEN}## POSTGRES : plugin_db creation SUCCESSFUL ##${NC}"
         sleep 2s
@@ -255,7 +255,7 @@ FUNC_NODE_DEPLOY(){
         FUNC_EXIT_ERROR
     fi
 
-    sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$DB_PWD_NEW';"
+    sudo - postgres psql -c "ALTER USER postgres WITH PASSWORD '$DB_PWD_NEW';"
     if [ $? -eq 0 ]; then
     	echo -e "${GREEN}## POSTGRES : plugin_db password update SUCCESSFUL ##${NC}"
         sleep 2s
