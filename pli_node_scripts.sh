@@ -858,7 +858,7 @@ FUNC_EXIT_ERROR(){
 #clear
 case "$1" in
         fullnode)
-                _OPTION="fullnode"
+                _OPTION="full"
                 FUNC_NODE_DEPLOY
                 #FUNC_VALUE_CHECK
                 ;;
@@ -889,7 +889,7 @@ case "$1" in
                 echo 
                 echo "where {function} is one of the following;"
                 echo 
-                echo "      fullnode      ==  deploys the full node incl. external initiator & exports the node keys"
+                echo "      full          ==  deploys the full node incl. external initiator & exports the node keys"
                 #echo 
                 #echo "      initiator     ==  creates / rebuilds the external initiator only"
                 echo
