@@ -628,6 +628,7 @@ EOF
 
 
 FUNC_NODE_ADDR(){
+    source ~/"plinode_$(hostname -f)".vars
     cd ~/$PLI_DEPLOY_DIR
     plugin admin login -f $FILE_API
     node_keys_arr=()
@@ -641,7 +642,7 @@ FUNC_NODE_ADDR(){
 
 
 FUNC_NODE_GUI_IPADDR(){
-    GUI_IP=$(curl ipinfo.io/ip)
+    GUI_IP=$(curl -s ipinfo.io/ip)
     echo
     echo -e "${GREEN}Your Plugin node GUI IP address is as follows:${NC}"
     echo
