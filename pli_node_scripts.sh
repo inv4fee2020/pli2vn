@@ -303,8 +303,14 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}#########################################################################"
     echo -e "${GREEN}## Install: Clone GoPlugin V2 repo...${NC}"
      
-    git clone https://github.com/GoPlugin/pluginV2.git && cd pluginV2
-    rm -f {apicredentials.txt,password.txt}
+    git clone https://github.com/GoPlugin/pluginV2.git
+
+    echo -e "${GREEN}## Install: switch to GoPlugin V2 folder...${NC}"
+    cd $PLI_DEPLOY_PATH
+
+
+    echo -e "${GREEN}## Install: remove default API credentials file...${NC}"
+    rm -f apicredentials.txt
     sleep 2s
 
 
@@ -316,12 +322,17 @@ FUNC_NODE_DEPLOY(){
     #source ~/.bashrc
     #cd $PLI_DEPLOY_PATH
     #export NVM_DIR=$HOME/.nvm
-    bash ~/.nvm/nvm.sh
+
+    echo -e "${GREEN}## Source NVM environmentals shell script...${NC}"
+    source ~/.nvm/nvm.sh
+    sleep 2s
 
     # Install Node Manager Package version & enable
-    source nvm install 16.14.0
-    source nvm use 16.14.0
-    source node --version
+
+    echo -e "${GREEN}## NVM install & use...${NC}"
+    nvm install 16.14.0
+    nvm use 16.14.0
+    node --version
     
 
 
