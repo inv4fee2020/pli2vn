@@ -301,8 +301,8 @@ FUNC_NODE_DEPLOY(){
     #source ~/.bashrc
     cd $PLI_DEPLOY_PATH
     #export NVM_DIR=$HOME/.nvm
-    #source $NVM_DIR/nvm.sh
-    
+    bash ~/.nvm/nvm.sh
+
     # Install Node Manager Package version & enable
     source nvm install 16.14.0
     source nvm use 16.14.0
