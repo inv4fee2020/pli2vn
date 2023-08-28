@@ -857,8 +857,8 @@ FUNC_EXIT_ERROR(){
 
 #clear
 case "$1" in
-        fullnode)
-                _OPTION="full"
+        full)
+                #_OPTION="fullnode"
                 FUNC_NODE_DEPLOY
                 #FUNC_VALUE_CHECK
                 ;;
@@ -884,7 +884,7 @@ case "$1" in
                 echo 
                 echo "Usage: $0 {function}"
                 echo 
-                echo "    example: " $0 fullnode""
+                echo "    example: " $0 full""
                 echo 
                 echo 
                 echo "where {function} is one of the following;"
@@ -897,7 +897,7 @@ case "$1" in
                 echo
                 echo "      logrotate     ==  implements the logrotate conf file "
                 echo
-                echo "      address       ==  displays the local nodes address (after fullnode deploy) - required for the 'Fulfillment Request' remix step"
+                echo "      address       ==  displays the local nodes address (after full node deploy) - required for the 'Fulfillment Request' remix step"
                 echo
                 echo "      node-gui      ==  displays the local nodes full GUI URL to copy and paste to browser"
                 echo
