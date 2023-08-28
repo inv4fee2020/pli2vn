@@ -192,14 +192,15 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}#########################################################################${NC}"
     
     # Set working directory to user home folder
-    cd ~/
+    #cd ~/
 
 
     # loads variables 
     FUNC_VARS;
 
     # call base_sys_setup script to perform basic system updates etc.
-    source ~/pli2vn/base_sys_setup.sh -D
+    #source ~/pli2vn/base_sys_setup.sh -D
+    bash base_sys_setup.sh -D
 
     echo
     echo -e "${GREEN}#########################################################################"
