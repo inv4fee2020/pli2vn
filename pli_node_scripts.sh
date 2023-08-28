@@ -400,7 +400,7 @@ FUNC_NODE_DEPLOY(){
 
     sudo apt install -y postgresql postgresql-client
     sudo systemctl start postgresql.service
-    sudo -i -u postgres psql
+    #sudo -i -u postgres psql
 
 
     sudo -u postgres psql -c "CREATE DATABASE $DB_NAME"
@@ -600,7 +600,7 @@ echo -e   "${RED}######    IMPORTANT FILE - NODE ADDRESS EXPORT FOR WALLET ACCES
 echo -e   "${RED}######    IMPORTANT FILE - PLEASE SECURE APPROPRIATELY               #####${NC}"
 echo 
 echo -e "${GREEN}   export node keys - exporting keys to file: ~/"plinode_$(hostname -f)_keys_${FDATE}".json${NC}"
-echo $(sudo -u postgres -i psql -d plugin_mainnet_db -t -c"select json from keys where id=1;")  > ~/"plinode_$(hostname -f)_keys_${FDATE}".json
+echo $(sudo -u postgres -i psql -d $DB_NAME -t -c"select json from keys where id=1;")  > ~/"plinode_$(hostname -f)_keys_${FDATE}".json
  
 echo -e "${GREEN}   export node keys - securing file permissions${NC}"
 
