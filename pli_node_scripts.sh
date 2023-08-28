@@ -228,6 +228,51 @@ FUNC_NODE_DEPLOY(){
 
 
 
+
+
+    # SQL Install
+
+    echo
+    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}## Install: POSTGRES DB ${NC}"
+
+    cd ~/
+    sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+    wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
+
+    sudo apt install -y postgresql postgresql-client
+    sudo systemctl start postgresql.service
+    #sudo -i -u postgres psql
+
+
+    sudo -u postgres psql -c "CREATE DATABASE $DB_NAME"
+    if [ $? -eq 0 ]; then
+    	echo -e "${GREEN}## POSTGRES : plugin_db creation SUCCESSFUL ##${NC}"
+        sleep 2s
+    else
+    	echo -e "${RED}## POSTGRES : plugin_db creation FAILED ##${NC}"
+        sleep 2s
+        FUNC_EXIT_ERROR
+    fi
+
+    sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$DB_PWD_NEW'"
+    if [ $? -eq 0 ]; then
+    	echo -e "${GREEN}## POSTGRES : plugin_db password update SUCCESSFUL ##${NC}"
+        sleep 2s
+    else
+    	echo -e "${RED}## POSTGRES : plugin_db password update FAILED ##${NC}"
+        sleep 2s
+        FUNC_EXIT_ERROR
+    fi
+
+
+
+
+
+
+
+
+
     # Install GO package
     wget https://dl.google.com/go/go1.20.6.linux-amd64.tar.gz
     if [ $? != 0 ]; then
@@ -388,45 +433,6 @@ FUNC_NODE_DEPLOY(){
 
 
 
-    # SQL Install
-
-    echo
-    echo -e "${GREEN}#########################################################################"
-    echo -e "${GREEN}## Install: POSTGRES DB ${NC}"
-
-    cd ~/
-    sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-    wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
-
-    sudo apt install -y postgresql postgresql-client
-    sudo systemctl start postgresql.service
-    #sudo -i -u postgres psql
-
-
-    sudo -u postgres psql -c "CREATE DATABASE $DB_NAME"
-    if [ $? -eq 0 ]; then
-    	echo -e "${GREEN}## POSTGRES : plugin_db creation SUCCESSFUL ##${NC}"
-        sleep 2s
-    else
-    	echo -e "${RED}## POSTGRES : plugin_db creation FAILED ##${NC}"
-        sleep 2s
-        FUNC_EXIT_ERROR
-    fi
-
-    sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$DB_PWD_NEW'"
-    if [ $? -eq 0 ]; then
-    	echo -e "${GREEN}## POSTGRES : plugin_db password update SUCCESSFUL ##${NC}"
-        sleep 2s
-    else
-    	echo -e "${RED}## POSTGRES : plugin_db password update FAILED ##${NC}"
-        sleep 2s
-        FUNC_EXIT_ERROR
-    fi
-
-
-
-
-
 
 
     
@@ -465,7 +471,7 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}## Install: Update file $BASH_FILE3 with TLS values...${NC}"
 
     sed -i.bak "s/HTTPSPort = 0/HTTPSPort = $PLI_HTTPS_PORT/g" $BASH_FILE3
-    sed -i "/^HTTPSPort*/a CertPath = '$TLS_CERT_PATH/server.crt'\nKeyPath = '$TLS_CERT_PATH/server.key'" $BASH_FILE3
+    sed -i "/^HTTPSPort*/a\CertPath = '$TLS_CERT_PATH/server.crt'\nKeyPath = '$TLS_CERT_PATH/server.key'" $BASH_FILE3
     #sed "s/^ForceRedirect*/ForceRedirect = true/g" $BASH_FILE3
 
     #sleep 1s
