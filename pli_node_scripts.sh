@@ -297,15 +297,16 @@ FUNC_NODE_DEPLOY(){
     else
       echo -e "${GREEN}INFO :: Successfully downloaded & executed NVM install script${NC}"
       sleep 2s
-      source ~/.bashrc
-      cd ~/
-      #export NVM_DIR=$HOME/.nvm;
-      # Install Node Manager Package version & enable
-      source nvm install 16.14.0
-      source nvm use 16.14.0
-      source node --version
-
     fi
+
+
+    source ~/.bashrc
+    #cd ~/
+    #export NVM_DIR=$HOME/.nvm;
+    # Install Node Manager Package version & enable
+    source nvm install 16.14.0
+    source nvm use 16.14.0
+    source node --version
     
 
 
@@ -315,7 +316,7 @@ FUNC_NODE_DEPLOY(){
      
     git clone https://github.com/GoPlugin/pluginV2.git && cd pluginV2
     rm -f {apicredentials.txt,password.txt}
-
+    sleep 2s
 
     echo
     echo -e "${GREEN}#########################################################################"
