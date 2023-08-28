@@ -299,10 +299,11 @@ FUNC_NODE_DEPLOY(){
       sleep 2s
       source ~/.bashrc
       cd ~/
+      #export NVM_DIR=$HOME/.nvm;
       # Install Node Manager Package version & enable
-      nvm install 16.14.0
-      nvm use 16.14.0
-      node --version
+      source nvm install 16.14.0
+      source nvm use 16.14.0
+      source node --version
 
     fi
     
