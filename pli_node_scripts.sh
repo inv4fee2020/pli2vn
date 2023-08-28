@@ -388,6 +388,43 @@ FUNC_NODE_DEPLOY(){
 
 
 
+    # SQL Install
+
+    echo
+    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}## Install: POSTGRES DB ${NC}"
+
+    cd ~/
+    sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+    wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
+
+    sudo apt install -y postgresql postgresql-client
+    sudo systemctl start postgresql.service
+    sudo -i -u postgres psql
+
+
+    sudo -u postgres psql -c "CREATE DATABASE $DB_NAME"
+    if [ $? -eq 0 ]; then
+    	echo -e "${GREEN}## POSTGRES : plugin_db creation SUCCESSFUL ##${NC}"
+        sleep 2s
+    else
+    	echo -e "${RED}## POSTGRES : plugin_db creation FAILED ##${NC}"
+        sleep 2s
+        FUNC_EXIT_ERROR
+    fi
+
+    sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$DB_PWD_NEW'"
+    if [ $? -eq 0 ]; then
+    	echo -e "${GREEN}## POSTGRES : plugin_db password update SUCCESSFUL ##${NC}"
+        sleep 2s
+    else
+    	echo -e "${RED}## POSTGRES : plugin_db password update FAILED ##${NC}"
+        sleep 2s
+        FUNC_EXIT_ERROR
+    fi
+
+
+
 
 
 
@@ -428,7 +465,7 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}## Install: Update file $BASH_FILE3 with TLS values...${NC}"
 
     sed -i.bak "s/HTTPSPort = 0/HTTPSPort = $PLI_HTTPS_PORT/g" $BASH_FILE3
-    sed "/^HTTPSPort*/a \nCertPath = '$TLS_CERT_PATH/server.crt'\nKeyPath = '$TLS_CERT_PATH/server.key'" $BASH_FILE3
+    sed -i "/^HTTPSPort*/a CertPath = '$TLS_CERT_PATH/server.crt'\nKeyPath = '$TLS_CERT_PATH/server.key'" $BASH_FILE3
     #sed "s/^ForceRedirect*/ForceRedirect = true/g" $BASH_FILE3
 
     #sleep 1s
@@ -527,7 +564,7 @@ plugin --admin-credentials-file apicredentials.txt -c config.toml -s secrets.tom
 echo "<<<<<<<<<------------------PLUGIN 2.0 VALIDATOR NODE is running .. use "pm2 status" to check details--------------------->>>>>>>>>"
 EOF
     chmod +x $BASH_FILE2
-    
+
     npm install pm2 -g
 
     pm2 startup systemd
@@ -824,8 +861,8 @@ EOF
 
 
 FUNC_NODE_ADDR(){
-    cd ~/plugin-deployment
-    plugin admin login -f .env.apicred
+    cd ~/$PLI_DEPLOY_DIR
+    plugin admin login -f $FILE_API
     node_keys_arr=()
     IFS=$'\n' read -r -d '' -a node_keys_arr < <( plugin keys eth list | grep Address && printf '\0' )
     node_key_primary=$(echo ${node_keys_arr[0]} | sed s/Address:[[:space:]]/''/)
