@@ -186,11 +186,15 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}#########################################################################"
     echo -e "${GREEN}#########################################################################"
     echo -e "${GREEN}"
-    echo -e "${GREEN}                  Modular Deployment Script Method"
+    echo -e "${GREEN}             GoPlugin 2.0 Validator Node - Install"
     echo -e "${GREEN}"
     echo -e "${GREEN}#########################################################################"
     echo -e "${GREEN}#########################################################################${NC}"
     
+    # Set working directory to user home folder
+    cd ~/
+
+
     # loads variables 
     FUNC_VARS;
 
@@ -207,70 +211,205 @@ FUNC_NODE_DEPLOY(){
 
     echo
     echo -e "${GREEN}#########################################################################"
-    echo -e "${GREEN}## Install: Clone repo to local install folder...${NC}"
+    echo -e "${GREEN}## Install: GO & NVM Packages...${NC}"
      
     
-    if [ ! -d "/$PLI_BASE_DIR" ]; then
-        sudo mkdir "/$PLI_BASE_DIR"
-        #USER_ID=$(getent passwd $EUID | cut -d: -f1)
-        sudo chown $USER_ID\:$USER_ID -R "/$PLI_BASE_DIR"
+    #if [ ! -d "/$PLI_BASE_DIR" ]; then
+    #    sudo mkdir "/$PLI_BASE_DIR"
+    #    #USER_ID=$(getent passwd $EUID | cut -d: -f1)
+    #    sudo chown $USER_ID\:$USER_ID -R "/$PLI_BASE_DIR"
+    #fi
+
+    #cd /$PLI_BASE_DIR
+    #git clone https://github.com/GoPlugin/plugin-deployment.git && cd plugin-deployment
+    #rm -f {apicredentials.txt,password.txt}
+    #sleep 2s
+
+
+
+    # Install GO package
+    wget https://dl.google.com/go/go1.20.6.linux-amd64.tar.gz
+    if [ $? != 0 ]; then
+      echo
+      echo  -e "${RED}## ERROR :: Go package download encoutered issues${NC}"
+      echo  -e "${RED}## ERROR :: re-trying download once more...${NC}"
+      wget https://dl.google.com/go/go1.20.6.linux-amd64.tar.gz
+      sleep 1s
+      if [ $? != 0 ]; then
+        echo -e "${RED}## WGET of Go package failed... exiting${NC}"
+        FUNC_EXIT_ERROR
+      fi
+    else
+      echo "INFO :: Successfully downloaded"
     fi
-    cd /$PLI_BASE_DIR
-    git clone https://github.com/GoPlugin/plugin-deployment.git && cd plugin-deployment
+
+
+
+    # Extract GO install binaries 
+    sudo tar -xvf go1.20.6.linux-amd64.tar.gz
+
+
+
+    # Set GO Package PATH values
+    sudo mv go /usr/local
+    export GOROOT=/usr/local/go
+    export GOPATH=$HOME/go
+    export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+    #go version
+
+    GO_VER=$(go version)
+    go version; GO_EC=$?
+    case $GO_EC in
+        0) echo -e "${GREEN}## Command exited with NO error...${NC}"
+            echo $GO_VER
+            echo
+            echo -e "${GREEN}## Install proceeding as normal...${NC}"
+            ;;
+        1) echo -e "${RED}## Command exited with ERROR - exiting...${NC}"
+            #source ~/.profile;
+            #sudo sh -c 'echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile'
+            #echo "cat "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile"
+            echo -e "${RED}## Check GO Version manually...${NC}"
+            sleep 2s
+            FUNC_EXIT_ERROR
+            #exit 1
+            ;;
+        *) echo -e "${RED}## Command exited with OTHER ERROR...${NC}"
+            echo -e "${RED}## 'go version' returned : $GO_EC ${NC}"
+            FUNC_EXIT_ERROR
+            #exit 1
+            ;;
+    esac
+
+
+
+    # Get Node Version Manager (NVM) Package & execute 
+    cd ~/
+    curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+    if [ $? != 0 ]; then
+      echo
+      echo  -e "${RED}## ERROR :: NVM package download / install encoutered issues${NC}"
+      #echo  -e "${RED}## ERROR :: re-trying download once more...${NC}"
+      #wget https://dl.google.com/go/go1.20.6.linux-amd64.tar.gz
+      sleep 2s
+      FUNC_EXIT_ERROR
+    else
+      echo "INFO :: Successfully downloaded & executed NVM install script"
+      sleep 2s
+      source ~/.bashrc
+
+      # Install Node Manager Package version & enable
+      nvm install 16.14.0
+      nvm use 16.14.0
+      node --version
+
+    fi
+    
+
+
+    echo
+    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}## Install: Clone GoPlugin V2 repo...${NC}"
+     
+    git clone https://github.com/GoPlugin/pluginV2.git && cd pluginV2
     rm -f {apicredentials.txt,password.txt}
-    sleep 2s
+
+
+    echo
+    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}## Install: GoPlugin V2 dependancies...${NC}"
+
+    npm install -g pnpm
+    if [ $? != 0 ]; then
+      echo
+      echo  -e "${RED}## ERROR :: PNPM dependancies install encoutered issues${NC}"
+      #echo  -e "${RED}## ERROR :: re-trying download once more...${NC}"
+      #wget https://dl.google.com/go/go1.20.6.linux-amd64.tar.gz
+      sleep 2s
+      FUNC_EXIT_ERROR
+    else
+      echo -e "${GREEN}INFO :: Successfully downloaded & installed dependancies${NC}"
+      sleep 2s
+    fi
+
+
+
+    # Build packages..
+
+    echo
+    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}## Install: install build complier files...${NC}"
+     
+    sudo apt install build-essential
+
+
+
+    # Make Install
+
+    echo
+    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}## Install: Complie dependancy install files...${NC}"
+     
+    make install
+    if [ $? != 0 ]; then
+      echo
+      echo  -e "${RED}## ERROR :: MAKE install encoutered issues${NC}"
+      #echo  -e "${RED}## ERROR :: re-trying download once more...${NC}"
+      #wget https://dl.google.com/go/go1.20.6.linux-amd64.tar.gz
+      sleep 2s
+      FUNC_EXIT_ERROR
+    else
+      echo -e "${GREEN}INFO :: Successfully complied dependancy install files${NC}"
+      sleep 2s
+    fi
+
+
+
+
+
+
+
     
     touch {$FILE_KEYSTORE,$FILE_API}
     chmod 666 {$FILE_KEYSTORE,$FILE_API}
 
     echo $API_EMAIL > $FILE_API
     echo $API_PASS >> $FILE_API
-    echo $PASS_KEYSTORE > $FILE_KEYSTORE
+    #echo $PASS_KEYSTORE > $FILE_KEYSTORE
 
-    chmod 600 {$FILE_KEYSTORE,$FILE_API}
+    #chmod 600 {$FILE_KEYSTORE,$FILE_API}
 
     # Remove the file if necessary; sudo rm -f {.env.apicred,.env.password}
  
     echo 
     echo -e "${GREEN}#########################################################################"
-    echo -e "${GREEN}## Install: UPDATE bash file $BASH_FILE1 with user values...${NC}"
+    echo -e "${GREEN}## Install: UPDATE file $BASH_FILE1 with new DB password value...${NC}"
 
-    sed -i.bak "s/$DB_PWD_FIND/'$DB_PWD_NEW'/g" $BASH_FILE1
+    #sed -i.bak "s/$DB_PWD_FIND/'$DB_PWD_NEW'/g" $BASH_FILE1
+    sed -i.bak "/^URL*/c\URL = 'postgresql://postgres:'$DB_PWD_NEW'@127.0.0.1:5432/$DB_NAME?sslmode=disable'" $BASH_FILE1
     #cat $BASH_FILE1 | grep 'postgres PASSWORD'
     sleep 1s
 
     echo 
     echo -e "${GREEN}#########################################################################"
-    echo -e "${GREEN}## Install: PRE-CHECKS for bash file $BASH_FILE1...${NC}"
+    echo -e "${GREEN}## Install: UPDATE file $BASH_FILE1 with new KEYSTORE password value...${NC}"
 
-    sudo apt remove --autoremove golang -y
-    sudo rm -rf /usr/local/go
 
-    echo 
-    echo -e "${GREEN}#########################################################################"
-    echo -e "${GREEN}## Install: EXECUTE bash file $BASH_FILE1...${NC}"
+    sed -i "/^Keystore*/c\Keystore = '$PASS_KEYSTORE'" $BASH_FILE1
+    #sleep 1s
 
-    bash /$PLI_BASE_DIR/$PLI_DEPLOY_DIR/$BASH_FILE1
-
-    echo 
-    echo -e "${GREEN}#########################################################################"
-    echo -e "${GREEN}## Install: Update bash file $BASH_FILE2 with user CREDENTIALS values...${NC}"
-
-    sed -i.bak "s/password.txt/$FILE_KEYSTORE/g" $BASH_FILE2
-    sed -i.bak "s/apicredentials.txt/$FILE_API/g" $BASH_FILE2
-    sed -i.bak "s/:postgres/:$DB_PWD_NEW/g" $BASH_FILE2
-    sed -i.bak '/SECURE_COOKIES=false/d' $BASH_FILE2
-    cat $BASH_FILE2 | grep node
-    sleep 1s
+    
 
      
     echo 
-    echo -e "${GREEN}## Install: Update bash file $BASH_FILE2 with user TLS values...${NC}"
+    echo -e "${GREEN}## Install: Update file $BASH_FILE3 with TLS values...${NC}"
 
-    sed -i.bak "s/PLUGIN_TLS_PORT=0/PLUGIN_TLS_PORT=$PLI_HTTPS_PORT/g" $BASH_FILE2
-    sed -i.bak "/^export PLUGIN_TLS_PORT=.*/a export TLS_CERT_PATH=$TLS_CERT_PATH/server.crt\nexport TLS_KEY_PATH=$TLS_CERT_PATH/server.key" $BASH_FILE2
-    cat $BASH_FILE2 | grep TLS
-    sleep 1s
+    sed -i.bak "s/HTTPSPort = 0/HTTPSPort = $PLI_HTTPS_PORT/g" $BASH_FILE3
+    sed "/^HTTPSPort*/a\nCertPath = '$TLS_CERT_PATH/server.crt'\nKeyPath = '$TLS_CERT_PATH/server.key'" $BASH_FILE3
+    #sed "s/^ForceRedirect*/ForceRedirect = true/g" $BASH_FILE3
+
+    #sleep 1s
+
 
     echo 
     echo -e "${GREEN}## Install: Create TLS CA / Certificate & files / folders...${NC}"
@@ -283,58 +422,88 @@ extendedKeyUsage=serverAuth) -subj "/CN=localhost"
     sleep 1s
 
 
-    echo 
-    echo -e "${GREEN}## Install: Update bash file $BASH_FILE2 with INITIATORS values...${NC}"
 
-    sed -i.bak "/^ export DATABASE_TIMEOUT=.*/a export FEATURE_EXTERNAL_INITIATORS=true" $BASH_FILE2
-    cat $BASH_FILE2 | grep INITIATORS
-    sleep 1s
-
-
-    echo 
-    echo -e "${GREEN}## Install: Update '.profile' with string 'FEATURE_EXTERNAL_INITIATORS'...${NC}"
-
-    isInFile=$(cat ~/.profile | grep -c "FEATURE_EXTERNAL_INITIATORS")
+    # Update user profile with GO path values
+    
+    isInFile=$(cat ~/.profile | grep -c "GOROOT*")
     if [ $isInFile -eq 0 ]; then
-        echo "export FEATURE_EXTERNAL_INITIATORS=true" >> ~/.profile
-        echo -e "${GREEN}## Success: '.profile' updated with string 'FEATURE_EXTERNAL_INITIATORS'...${NC}"
+        echo "export GOROOT=/usr/local/go" >> ~/.profile
+        echo "export GOPATH=$HOME/go" >> ~/.profile
+        echo "PATH=$GOPATH/bin:$GOROOT/bin:$PATH" >> ~/.profile
+        echo "SECURE_COOKIES=false" >> ~/.profile
+
+        echo -e "${GREEN}## Success: '.profile' updated with GO PATH values...${NC}"
     else
-        echo -e "${GREEN}## Skipping: '.profile' contains string 'FEATURE_EXTERNAL_INITIATORS'...${NC}"
+        echo -e "${GREEN}## Skipping: '.profile' contains GO PATH values...${NC}"
     fi
 
-
-    echo -e "${GREEN}## Install: Check Golang version & bash profile path...${NC}"
-
     source ~/.profile
-    GO_VER=$(go version)
-    go version; GO_EC=$?
-    case $GO_EC in
-        0) echo -e "${GREEN}## Command exited with NO error...${NC}"
-            echo $GO_VER
-            echo
-            echo -e "${GREEN}## Install proceeding as normal...${NC}"
-            ;;
-        1) echo -e "${RED}## Command exited with ERROR - updating bash profile...${NC}"
-            source ~/.profile;
-            sudo sh -c 'echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile'
-            echo "cat "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile"
-            echo -e "${RED}## Check GO Version manually...${NC}"
-            sleep 2s
-            #FUNC_EXIT_ERROR
-            #exit 1
-            ;;
-        *) echo -e "${RED}## Command exited with OTHER ERROR...${NC}"
-            echo -e "${RED}## 'go version' returned : $GO_EC ${NC}"
-            FUNC_EXIT_ERROR
-            #exit 1
-            ;;
-    esac
 
-    sleep 1s
+    #    GOROOT=/usr/local/go
+    #    GOPATH=$HOME/go
+    #    PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+    #    SECURE_COOKIES=false
+
+
+    #echo 
+    #echo -e "${GREEN}## Install: Update bash file $BASH_FILE2 with INITIATORS values...${NC}"
+#
+    #sed -i.bak "/^ export DATABASE_TIMEOUT=.*/a export FEATURE_EXTERNAL_INITIATORS=true" $BASH_FILE2
+    #cat $BASH_FILE2 | grep INITIATORS
+    #sleep 1s
+
+
+    #echo 
+    #echo -e "${GREEN}## Install: Update '.profile' with string 'FEATURE_EXTERNAL_INITIATORS'...${NC}"
+
+    #isInFile=$(cat ~/.profile | grep -c "FEATURE_EXTERNAL_INITIATORS")
+    #if [ $isInFile -eq 0 ]; then
+    #    echo "export FEATURE_EXTERNAL_INITIATORS=true" >> ~/.profile
+    #    echo -e "${GREEN}## Success: '.profile' updated with string 'FEATURE_EXTERNAL_INITIATORS'...${NC}"
+    #else
+    #    echo -e "${GREEN}## Skipping: '.profile' contains string 'FEATURE_EXTERNAL_INITIATORS'...${NC}"
+    #fi
+
+
+    #echo -e "${GREEN}## Install: Check Golang version & bash profile path...${NC}"
+#
+    #source ~/.profile
+    #GO_VER=$(go version)
+    #go version; GO_EC=$?
+    #case $GO_EC in
+    #    0) echo -e "${GREEN}## Command exited with NO error...${NC}"
+    #        echo $GO_VER
+    #        echo
+    #        echo -e "${GREEN}## Install proceeding as normal...${NC}"
+    #        ;;
+    #    1) echo -e "${RED}## Command exited with ERROR - updating bash profile...${NC}"
+    #        source ~/.profile;
+    #        sudo sh -c 'echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile'
+    #        echo "cat "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile"
+    #        echo -e "${RED}## Check GO Version manually...${NC}"
+    #        sleep 2s
+    #        #FUNC_EXIT_ERROR
+    #        #exit 1
+    #        ;;
+    #    *) echo -e "${RED}## Command exited with OTHER ERROR...${NC}"
+    #        echo -e "${RED}## 'go version' returned : $GO_EC ${NC}"
+    #        FUNC_EXIT_ERROR
+    #        #exit 1
+    #        ;;
+    #esac
+#
+    #sleep 1s
 
     echo -e "${GREEN}## Install: Start PM2 $BASH_FILE2 & set auto start on reboot...${NC}"
 
     cd /$PLI_DEPLOY_PATH
+    cat <<EOF > $BASH_FILE2
+#!/bin/bash
+echo "<<<<<<<<<--------------------------------STARTING PLUGIN 2.0 VALIDATOR NODE----------------------------------->>>>>>>>>"
+plugin --admin-credentials-file apicredentials.txt -c config.toml -s secrets.toml node start
+echo "<<<<<<<<<------------------PLUGIN 2.0 VALIDATOR NODE is running .. use "pm2 status" to check details--------------------->>>>>>>>>"
+EOF
+
     pm2 start $BASH_FILE2
     sleep 1s
     pm2 list 
@@ -350,7 +519,7 @@ extendedKeyUsage=serverAuth) -subj "/CN=localhost"
 
     # NON-INTERACTIVE: Proceed with next stage of setup.
     FUNC_EXPORT_NODE_KEYS;
-    FUNC_INITIATOR;
+    #FUNC_INITIATOR;
     }
 
 
@@ -382,194 +551,194 @@ sleep 4s
 
 
 
-FUNC_INITIATOR(){
-    FUNC_VARS;
-
-    source ~/.profile
-
-    if [ ! -d "/$PLI_DEPLOY_PATH/$PLI_INITOR_DIR" ]; then
-        echo 
-        echo -e "${GREEN}#########################################################################${NC}"
-        echo -e "${GREEN}## CLONE & INSTALL LOCAL INITIATOR...${NC}"
-        echo 
-
-        # Added to resolve error running 'plugin help'
-        source ~/.profile
-    
-        cd /$PLI_DEPLOY_PATH
-        git clone https://github.com/GoPlugin/external-Initiator
-        cd $PLI_INITOR_DIR
-        git checkout main
-        go install
-    fi
-
-
-    echo 
-    echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## CREATE / REPAIR  EXTERNAL INITIATOR...${NC}"
-    
-    sleep 3s
-    export FEATURE_EXTERNAL_INITIATORS=true
-    plugin admin login -f "/$PLI_DEPLOY_PATH/$FILE_API"
-    if [ $? != 0 ]; then
-      echo
-      echo "ERROR :: Unable to Authenticate to Initiator API"
-      echo "ERROR :: Re-run initiators function to resole - continuting deployment"
-      sleep 5s
-      #FUNC_EXIT_ERROR;
-    else
-      echo "INFO :: Successfully Authenticated to Initiator API"
-    fi
-
-    ### Check if intitator with name xdc already exists
-
-    sleep 0.5s
-
-    plugin initiators create $PLI_L_INIT_NAME http://localhost:8080/jobs > $PLI_INIT_RAWFILE 
-    #&> /dev/null 2>&1
-    if [ $? != 0 ]; then
-      echo "ERROR :: Name $PLI_L_INIT_NAME already exists"
-      plugin initiators destroy $PLI_L_INIT_NAME
-
-      EI_FILE=$(echo "$BASH_FILE3" | sed -e 's/\.[^.]*$//')                       # cuts the file extension to get the namespace for pm2
-      pm2 stop $EI_FILE && pm2 delete $EI_FILE && pm2 reset all && pm2 save       # deletes existing EI process 
-      
-      sleep 1s
-      plugin initiators create $PLI_L_INIT_NAME http://localhost:8080/jobs > $PLI_INIT_RAWFILE 
-    else
-      echo "INFO :: Successfully created Initiator"
-    fi
-
-
-    echo 
-    echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## CAPTURE INITIATOR CREDENTIALS & FILE MANIPULATION...${NC}"
-
-    sed -i 's/ ║ /,/g;s/╬//g;s/═//g;s/║//g' $PLI_INIT_RAWFILE
-    sed -n '/'"$PLI_L_INIT_NAME"'/,//p' $PLI_INIT_RAWFILE > $PLI_INIT_DATFILE
-    sed -i 's/,/\n/g;s/^.'"$PLI_L_INIT_NAME"'//g' $PLI_INIT_DATFILE
-    sed -i 's/^http.*//g' $PLI_INIT_DATFILE
-    sed -i.bak '/^$/d;/^\s*$/d;s/[ \t]\+$//' $PLI_INIT_DATFILE
-    cp -n $PLI_INIT_DATFILE ~/$PLI_INIT_DATFILE.bak  && chmod 600 ~/$PLI_INIT_DATFILE.bak
-    cat $PLI_INIT_DATFILE
-    sleep 1s
-
-
-    echo 
-    echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## READ INITIATOR CREDENTIALS AS VARIABLES...${NC}"
-    echo 
-    read -r -d '' EXT_ACCESSKEY EXT_SECRET EXT_OUTGOINGTOKEN EXT_OUTGOINGSECRET <$PLI_INIT_DATFILE
-
-    sleep 2s
-
-    echo
-    echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## CREATE INITIATOR PM2 SERVICE FILE: $BASH_FILE3 & file perms ${NC}"
-
-    cd /$PLI_DEPLOY_PATH
-    cat <<EOF > $BASH_FILE3
-#!/bin/bash
-export EI_DATABASEURL=postgresql://postgres:${DB_PWD_NEW}@127.0.0.1:5432/plugin_mainnet_db?sslmode=disable
-export EI_CHAINLINKURL=http://localhost:6688
-export EI_IC_ACCESSKEY=${EXT_ACCESSKEY}
-export EI_IC_SECRET=${EXT_SECRET}
-export EI_CI_ACCESSKEY=${EXT_OUTGOINGTOKEN}
-export EI_CI_SECRET=${EXT_OUTGOINGSECRET}
-echo *** Starting EXTERNAL INITIATOR ***
-external-initiator "{\"name\":\"$PLI_E_INIT_NAME\",\"type\":\"xinfin\",\"url\":\"https://plixdcrpc.icotokens.net\"}" --chainlinkurl "http://localhost:6688/"
-EOF
-    #sleep 1s
-    #cat $BASH_FILE3
-    chmod u+x $BASH_FILE3
-
-
-    echo 
-    echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## START INITIATOR PM2 SERVICE $BASH_FILE3 ${NC}"
-    
-    pm2 start $BASH_FILE3
-    sleep 1s
-    pm2 status
-    sleep 3s
-    pm2 startup systemd
-    sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER_ID --hp /home/$USER_ID
-    pm2 save
-
-    if [ "$_OPTION" == "initiator" ]; then
-        echo "CREATE / REPAIR  EXTERNAL INITIATOR COMPLETED"
-        FUNC_EXIT;
-    fi
-
-    
-    FUNC_LOGROTATE;
-    
-
-    if [ "$_OPTION" == "fullnode" ]; then
-        echo "...INITIAL SETUP FOR BACKUP FOLDER & PERMS"
-        bash ~/pli_node_conf/_plinode_setup_bkup.sh
-    fi
-
-    echo
-    echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}#########################################################################${NC}"
-    echo
-    echo -e "${RED}##  IMPORTANT INFORMATION - PLEASE RECORD TO YOUR PASSWORD SAFE${NC}"
-    echo
-    echo -e "${GREEN}#########################################################################${NC}"
-    echo
-    echo
-    echo -e "${RED}##  KEY STORE SECRET:        $PASS_KEYSTORE${NC}"
-    echo
-    echo -e "${RED}##  POSTGRES DB PASSWORD:    $DB_PWD_NEW${NC}"
-    echo
-    echo -e "${RED}##  API USERNAME:    $API_EMAIL${NC}"
-    echo -e "${RED}##  API PASSWORD:    $API_PASS${NC}"
-    echo
-    echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}#########################################################################${NC}"
-    
-    #source ~/.profile
-    #set -x
-    source ~/.profile
-    export GOROOT=/usr/local/go
-    export GOPATH=$HOME/work
-    export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-    export FEATURE_EXTERNAL_INITIATORS=true
-    . ~/.profile
-
-    FUNC_NODE_ADDR;
-    FUNC_NODE_GUI_IPADDR;
-    FUNC_EXIT;
-}
-
-
+#FUNC_INITIATOR(){
+#    FUNC_VARS;
+#
+#    source ~/.profile
+#
+#    if [ ! -d "/$PLI_DEPLOY_PATH/$PLI_INITOR_DIR" ]; then
+#        echo 
+#        echo -e "${GREEN}#########################################################################${NC}"
+#        echo -e "${GREEN}## CLONE & INSTALL LOCAL INITIATOR...${NC}"
+#        echo 
+#
+#        # Added to resolve error running 'plugin help'
+#        source ~/.profile
+#    
+#        cd /$PLI_DEPLOY_PATH
+#        git clone https://github.com/GoPlugin/external-Initiator
+#        cd $PLI_INITOR_DIR
+#        git checkout main
+#        go install
+#    fi
+#
+#
+#    echo 
+#    echo -e "${GREEN}#########################################################################${NC}"
+#    echo -e "${GREEN}## CREATE / REPAIR  EXTERNAL INITIATOR...${NC}"
+#    
+#    sleep 3s
+#    export FEATURE_EXTERNAL_INITIATORS=true
+#    plugin admin login -f "/$PLI_DEPLOY_PATH/$FILE_API"
+#    if [ $? != 0 ]; then
+#      echo
+#      echo "ERROR :: Unable to Authenticate to Initiator API"
+#      echo "ERROR :: Re-run initiators function to resole - continuting deployment"
+#      sleep 5s
+#      #FUNC_EXIT_ERROR;
+#    else
+#      echo "INFO :: Successfully Authenticated to Initiator API"
+#    fi
+#
+#    ### Check if intitator with name xdc already exists
+#
+#    sleep 0.5s
+#
+#    plugin initiators create $PLI_L_INIT_NAME http://localhost:8080/jobs > $PLI_INIT_RAWFILE 
+#    #&> /dev/null 2>&1
+#    if [ $? != 0 ]; then
+#      echo "ERROR :: Name $PLI_L_INIT_NAME already exists"
+#      plugin initiators destroy $PLI_L_INIT_NAME
+#
+#      EI_FILE=$(echo "$BASH_FILE3" | sed -e 's/\.[^.]*$//')                       # cuts the file extension to get the namespace for pm2
+#      pm2 stop $EI_FILE && pm2 delete $EI_FILE && pm2 reset all && pm2 save       # deletes existing EI process 
+#      
+#      sleep 1s
+#      plugin initiators create $PLI_L_INIT_NAME http://localhost:8080/jobs > $PLI_INIT_RAWFILE 
+#    else
+#      echo "INFO :: Successfully created Initiator"
+#    fi
+#
+#
+#    echo 
+#    echo -e "${GREEN}#########################################################################${NC}"
+#    echo -e "${GREEN}## CAPTURE INITIATOR CREDENTIALS & FILE MANIPULATION...${NC}"
+#
+#    sed -i 's/ ║ /,/g;s/╬//g;s/═//g;s/║//g' $PLI_INIT_RAWFILE
+#    sed -n '/'"$PLI_L_INIT_NAME"'/,//p' $PLI_INIT_RAWFILE > $PLI_INIT_DATFILE
+#    sed -i 's/,/\n/g;s/^.'"$PLI_L_INIT_NAME"'//g' $PLI_INIT_DATFILE
+#    sed -i 's/^http.*//g' $PLI_INIT_DATFILE
+#    sed -i.bak '/^$/d;/^\s*$/d;s/[ \t]\+$//' $PLI_INIT_DATFILE
+#    cp -n $PLI_INIT_DATFILE ~/$PLI_INIT_DATFILE.bak  && chmod 600 ~/$PLI_INIT_DATFILE.bak
+#    cat $PLI_INIT_DATFILE
+#    sleep 1s
+#
+#
+#    echo 
+#    echo -e "${GREEN}#########################################################################${NC}"
+#    echo -e "${GREEN}## READ INITIATOR CREDENTIALS AS VARIABLES...${NC}"
+#    echo 
+#    read -r -d '' EXT_ACCESSKEY EXT_SECRET EXT_OUTGOINGTOKEN EXT_OUTGOINGSECRET <$PLI_INIT_DATFILE
+#
+#    sleep 2s
+#
+#    echo
+#    echo -e "${GREEN}#########################################################################${NC}"
+#    echo -e "${GREEN}## CREATE INITIATOR PM2 SERVICE FILE: $BASH_FILE3 & file perms ${NC}"
+#
+#    cd /$PLI_DEPLOY_PATH
+#    cat <<EOF > $BASH_FILE3
+##!/bin/bash
+#export EI_DATABASEURL=postgresql://postgres:${DB_PWD_NEW}@127.0.0.1:5432/plugin_mainnet_db?sslmode=disable
+#export EI_CHAINLINKURL=http://localhost:6688
+#export EI_IC_ACCESSKEY=${EXT_ACCESSKEY}
+#export EI_IC_SECRET=${EXT_SECRET}
+#export EI_CI_ACCESSKEY=${EXT_OUTGOINGTOKEN}
+#export EI_CI_SECRET=${EXT_OUTGOINGSECRET}
+#echo *** Starting EXTERNAL INITIATOR ***
+#external-initiator "{\"name\":\"$PLI_E_INIT_NAME\",\"type\":\"xinfin\",\"url\":\"https://plixdcrpc.icotokens.net\"}" --chainlinkurl "http://localhost:6688/"
+#EOF
+#    #sleep 1s
+#    #cat $BASH_FILE3
+#    chmod u+x $BASH_FILE3
+#
+#
+#    echo 
+#    echo -e "${GREEN}#########################################################################${NC}"
+#    echo -e "${GREEN}## START INITIATOR PM2 SERVICE $BASH_FILE3 ${NC}"
+#    
+#    pm2 start $BASH_FILE3
+#    sleep 1s
+#    pm2 status
+#    sleep 3s
+#    pm2 startup systemd
+#    sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER_ID --hp /home/$USER_ID
+#    pm2 save
+#
+#    if [ "$_OPTION" == "initiator" ]; then
+#        echo "CREATE / REPAIR  EXTERNAL INITIATOR COMPLETED"
+#        FUNC_EXIT;
+#    fi
+#
+#    
+#    FUNC_LOGROTATE;
+#    
+#
+#    if [ "$_OPTION" == "fullnode" ]; then
+#        echo "...INITIAL SETUP FOR BACKUP FOLDER & PERMS"
+#        bash ~/pli_node_conf/_plinode_setup_bkup.sh
+#    fi
+#
+#    echo
+#    echo -e "${GREEN}#########################################################################${NC}"
+#    echo -e "${GREEN}#########################################################################${NC}"
+#    echo
+#    echo -e "${RED}##  IMPORTANT INFORMATION - PLEASE RECORD TO YOUR PASSWORD SAFE${NC}"
+#    echo
+#    echo -e "${GREEN}#########################################################################${NC}"
+#    echo
+#    echo
+#    echo -e "${RED}##  KEY STORE SECRET:        $PASS_KEYSTORE${NC}"
+#    echo
+#    echo -e "${RED}##  POSTGRES DB PASSWORD:    $DB_PWD_NEW${NC}"
+#    echo
+#    echo -e "${RED}##  API USERNAME:    $API_EMAIL${NC}"
+#    echo -e "${RED}##  API PASSWORD:    $API_PASS${NC}"
+#    echo
+#    echo -e "${GREEN}#########################################################################${NC}"
+#    echo -e "${GREEN}#########################################################################${NC}"
+#    
+#    #source ~/.profile
+#    #set -x
+#    source ~/.profile
+#    export GOROOT=/usr/local/go
+#    export GOPATH=$HOME/work
+#    export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+#    export FEATURE_EXTERNAL_INITIATORS=true
+#    . ~/.profile
+#
+#    FUNC_NODE_ADDR;
+#    FUNC_NODE_GUI_IPADDR;
+#    FUNC_EXIT;
+#}
 
 
-FUNC_DO_INIT_CHECK(){
 
-    echo -e "${GREEN}#########################################################################"
-    echo -e "${GREEN}## CONFIRM SCRIPTS EXPORT VALUES HAVE BEEN UPDATED...${NC}"
-    
-        while true; do
-            read -t10 -r -p "Do you wish to proceed to INITIATOR SETUP ? (Y/n) " _input
-            if [ $? -gt 128 ]; then
-                echo "timed out waiting for user response - proceeding as normal..."
-                FUNC_INITIATOR;
-            fi
-            case $_input in
-                [Yy][Ee][Ss]|[Yy]* ) 
-                    FUNC_INITIATOR
-                    break
-                    ;;
-                [Nn][Oo]|[Nn]* ) 
-                    FUNC_EXIT
-                    ;;
-                * ) echo "Please answer (y)es or (n)o."
-                    echo "NOTE: timeout value is (y)es";;
-            esac
-        done
-}
+
+#FUNC_DO_INIT_CHECK(){
+#
+#    echo -e "${GREEN}#########################################################################"
+#    echo -e "${GREEN}## CONFIRM SCRIPTS EXPORT VALUES HAVE BEEN UPDATED...${NC}"
+#    
+#        while true; do
+#            read -t10 -r -p "Do you wish to proceed to INITIATOR SETUP ? (Y/n) " _input
+#            if [ $? -gt 128 ]; then
+#                echo "timed out waiting for user response - proceeding as normal..."
+#                FUNC_INITIATOR;
+#            fi
+#            case $_input in
+#                [Yy][Ee][Ss]|[Yy]* ) 
+#                    FUNC_INITIATOR
+#                    break
+#                    ;;
+#                [Nn][Oo]|[Nn]* ) 
+#                    FUNC_EXIT
+#                    ;;
+#                * ) echo "Please answer (y)es or (n)o."
+#                    echo "NOTE: timeout value is (y)es";;
+#            esac
+#        done
+#}
 
 
 FUNC_LOGROTATE(){
@@ -673,10 +842,10 @@ case "$1" in
                 FUNC_NODE_DEPLOY
                 #FUNC_VALUE_CHECK
                 ;;
-        initiator)
-                _OPTION="initiator"
-                FUNC_INITIATOR
-                ;;
+        #initiator)
+        #        _OPTION="initiator"
+        #        FUNC_INITIATOR
+        #        ;;
         keys)
                 FUNC_EXPORT_NODE_KEYS
                 ;;
@@ -701,8 +870,8 @@ case "$1" in
                 echo "where {function} is one of the following;"
                 echo 
                 echo "      fullnode      ==  deploys the full node incl. external initiator & exports the node keys"
-                echo 
-                echo "      initiator     ==  creates / rebuilds the external initiator only"
+                #echo 
+                #echo "      initiator     ==  creates / rebuilds the external initiator only"
                 echo
                 echo "      keys          ==  extracts the node keys from DB and exports to json file for import to MetaMask"
                 echo
