@@ -244,8 +244,9 @@ FUNC_NODE_DEPLOY(){
     sudo systemctl start postgresql.service
     #sudo -i -u postgres psql
 
+# sudo -u postgres -i psql -d $DB_NAME -t -c"select json from keys where id=1;")
 
-    sudo - postgres psql -c "CREATE DATABASE $DB_NAME;"
+    sudo -u postgres -i psql -c "CREATE DATABASE $DB_NAME;"
     if [ $? -eq 0 ]; then
     	echo -e "${GREEN}## POSTGRES : plugin_db creation SUCCESSFUL ##${NC}"
         sleep 2s
@@ -255,7 +256,7 @@ FUNC_NODE_DEPLOY(){
         FUNC_EXIT_ERROR
     fi
 
-    sudo - postgres psql -c "ALTER USER postgres WITH PASSWORD '$DB_PWD_NEW';"
+    sudo -u postgres -i psql -c "ALTER USER postgres WITH PASSWORD '$DB_PWD_NEW';"
     if [ $? -eq 0 ]; then
     	echo -e "${GREEN}## POSTGRES : plugin_db password update SUCCESSFUL ##${NC}"
         sleep 2s
