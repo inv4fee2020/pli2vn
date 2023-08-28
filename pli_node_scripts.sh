@@ -199,7 +199,7 @@ FUNC_NODE_DEPLOY(){
     FUNC_VARS;
 
     # call base_sys_setup script to perform basic system updates etc.
-    . base_sys_setup.sh -D
+    sh base_sys_setup.sh -D
 
     echo
     echo -e "${GREEN}#########################################################################"
