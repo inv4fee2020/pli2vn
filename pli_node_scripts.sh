@@ -245,7 +245,7 @@ FUNC_NODE_DEPLOY(){
     #sudo -i -u postgres psql
 
 
-    sudo -u postgres psql -c "CREATE DATABASE $DB_NAME"
+    sudo -u postgres psql -c "CREATE DATABASE $DB_NAME;"
     if [ $? -eq 0 ]; then
     	echo -e "${GREEN}## POSTGRES : plugin_db creation SUCCESSFUL ##${NC}"
         sleep 2s
@@ -255,7 +255,7 @@ FUNC_NODE_DEPLOY(){
         FUNC_EXIT_ERROR
     fi
 
-    sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$DB_PWD_NEW'"
+    sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$DB_PWD_NEW';"
     if [ $? -eq 0 ]; then
     	echo -e "${GREEN}## POSTGRES : plugin_db password update SUCCESSFUL ##${NC}"
         sleep 2s
@@ -505,60 +505,7 @@ extendedKeyUsage=serverAuth) -subj "/CN=localhost"
 
     source ~/.profile
 
-    #    GOROOT=/usr/local/go
-    #    GOPATH=$HOME/go
-    #    PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-    #    SECURE_COOKIES=false
 
-
-    #echo 
-    #echo -e "${GREEN}## Install: Update bash file $BASH_FILE2 with INITIATORS values...${NC}"
-#
-    #sed -i.bak "/^ export DATABASE_TIMEOUT=.*/a export FEATURE_EXTERNAL_INITIATORS=true" $BASH_FILE2
-    #cat $BASH_FILE2 | grep INITIATORS
-    #sleep 1s
-
-
-    #echo 
-    #echo -e "${GREEN}## Install: Update '.profile' with string 'FEATURE_EXTERNAL_INITIATORS'...${NC}"
-
-    #isInFile=$(cat ~/.profile | grep -c "FEATURE_EXTERNAL_INITIATORS")
-    #if [ $isInFile -eq 0 ]; then
-    #    echo "export FEATURE_EXTERNAL_INITIATORS=true" >> ~/.profile
-    #    echo -e "${GREEN}## Success: '.profile' updated with string 'FEATURE_EXTERNAL_INITIATORS'...${NC}"
-    #else
-    #    echo -e "${GREEN}## Skipping: '.profile' contains string 'FEATURE_EXTERNAL_INITIATORS'...${NC}"
-    #fi
-
-
-    #echo -e "${GREEN}## Install: Check Golang version & bash profile path...${NC}"
-#
-    #source ~/.profile
-    #GO_VER=$(go version)
-    #go version; GO_EC=$?
-    #case $GO_EC in
-    #    0) echo -e "${GREEN}## Command exited with NO error...${NC}"
-    #        echo $GO_VER
-    #        echo
-    #        echo -e "${GREEN}## Install proceeding as normal...${NC}"
-    #        ;;
-    #    1) echo -e "${RED}## Command exited with ERROR - updating bash profile...${NC}"
-    #        source ~/.profile;
-    #        sudo sh -c 'echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile'
-    #        echo "cat "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile"
-    #        echo -e "${RED}## Check GO Version manually...${NC}"
-    #        sleep 2s
-    #        #FUNC_EXIT_ERROR
-    #        #exit 1
-    #        ;;
-    #    *) echo -e "${RED}## Command exited with OTHER ERROR...${NC}"
-    #        echo -e "${RED}## 'go version' returned : $GO_EC ${NC}"
-    #        FUNC_EXIT_ERROR
-    #        #exit 1
-    #        ;;
-    #esac
-#
-    #sleep 1s
 
     echo -e "${GREEN}## Install: Start PM2 $BASH_FILE2 & set auto start on reboot...${NC}"
 
@@ -591,6 +538,8 @@ EOF
     }
 
 
+
+
 FUNC_EXPORT_NODE_KEYS(){
 
 echo 
@@ -619,194 +568,6 @@ sleep 4s
 
 
 
-#FUNC_INITIATOR(){
-#    FUNC_VARS;
-#
-#    source ~/.profile
-#
-#    if [ ! -d "/$PLI_DEPLOY_PATH/$PLI_INITOR_DIR" ]; then
-#        echo 
-#        echo -e "${GREEN}#########################################################################${NC}"
-#        echo -e "${GREEN}## CLONE & INSTALL LOCAL INITIATOR...${NC}"
-#        echo 
-#
-#        # Added to resolve error running 'plugin help'
-#        source ~/.profile
-#    
-#        cd /$PLI_DEPLOY_PATH
-#        git clone https://github.com/GoPlugin/external-Initiator
-#        cd $PLI_INITOR_DIR
-#        git checkout main
-#        go install
-#    fi
-#
-#
-#    echo 
-#    echo -e "${GREEN}#########################################################################${NC}"
-#    echo -e "${GREEN}## CREATE / REPAIR  EXTERNAL INITIATOR...${NC}"
-#    
-#    sleep 3s
-#    export FEATURE_EXTERNAL_INITIATORS=true
-#    plugin admin login -f "/$PLI_DEPLOY_PATH/$FILE_API"
-#    if [ $? != 0 ]; then
-#      echo
-#      echo "ERROR :: Unable to Authenticate to Initiator API"
-#      echo "ERROR :: Re-run initiators function to resole - continuting deployment"
-#      sleep 5s
-#      #FUNC_EXIT_ERROR;
-#    else
-#      echo "INFO :: Successfully Authenticated to Initiator API"
-#    fi
-#
-#    ### Check if intitator with name xdc already exists
-#
-#    sleep 0.5s
-#
-#    plugin initiators create $PLI_L_INIT_NAME http://localhost:8080/jobs > $PLI_INIT_RAWFILE 
-#    #&> /dev/null 2>&1
-#    if [ $? != 0 ]; then
-#      echo "ERROR :: Name $PLI_L_INIT_NAME already exists"
-#      plugin initiators destroy $PLI_L_INIT_NAME
-#
-#      EI_FILE=$(echo "$BASH_FILE3" | sed -e 's/\.[^.]*$//')                       # cuts the file extension to get the namespace for pm2
-#      pm2 stop $EI_FILE && pm2 delete $EI_FILE && pm2 reset all && pm2 save       # deletes existing EI process 
-#      
-#      sleep 1s
-#      plugin initiators create $PLI_L_INIT_NAME http://localhost:8080/jobs > $PLI_INIT_RAWFILE 
-#    else
-#      echo "INFO :: Successfully created Initiator"
-#    fi
-#
-#
-#    echo 
-#    echo -e "${GREEN}#########################################################################${NC}"
-#    echo -e "${GREEN}## CAPTURE INITIATOR CREDENTIALS & FILE MANIPULATION...${NC}"
-#
-#    sed -i 's/ ║ /,/g;s/╬//g;s/═//g;s/║//g' $PLI_INIT_RAWFILE
-#    sed -n '/'"$PLI_L_INIT_NAME"'/,//p' $PLI_INIT_RAWFILE > $PLI_INIT_DATFILE
-#    sed -i 's/,/\n/g;s/^.'"$PLI_L_INIT_NAME"'//g' $PLI_INIT_DATFILE
-#    sed -i 's/^http.*//g' $PLI_INIT_DATFILE
-#    sed -i.bak '/^$/d;/^\s*$/d;s/[ \t]\+$//' $PLI_INIT_DATFILE
-#    cp -n $PLI_INIT_DATFILE ~/$PLI_INIT_DATFILE.bak  && chmod 600 ~/$PLI_INIT_DATFILE.bak
-#    cat $PLI_INIT_DATFILE
-#    sleep 1s
-#
-#
-#    echo 
-#    echo -e "${GREEN}#########################################################################${NC}"
-#    echo -e "${GREEN}## READ INITIATOR CREDENTIALS AS VARIABLES...${NC}"
-#    echo 
-#    read -r -d '' EXT_ACCESSKEY EXT_SECRET EXT_OUTGOINGTOKEN EXT_OUTGOINGSECRET <$PLI_INIT_DATFILE
-#
-#    sleep 2s
-#
-#    echo
-#    echo -e "${GREEN}#########################################################################${NC}"
-#    echo -e "${GREEN}## CREATE INITIATOR PM2 SERVICE FILE: $BASH_FILE3 & file perms ${NC}"
-#
-#    cd /$PLI_DEPLOY_PATH
-#    cat <<EOF > $BASH_FILE3
-##!/bin/bash
-#export EI_DATABASEURL=postgresql://postgres:${DB_PWD_NEW}@127.0.0.1:5432/plugin_mainnet_db?sslmode=disable
-#export EI_CHAINLINKURL=http://localhost:6688
-#export EI_IC_ACCESSKEY=${EXT_ACCESSKEY}
-#export EI_IC_SECRET=${EXT_SECRET}
-#export EI_CI_ACCESSKEY=${EXT_OUTGOINGTOKEN}
-#export EI_CI_SECRET=${EXT_OUTGOINGSECRET}
-#echo *** Starting EXTERNAL INITIATOR ***
-#external-initiator "{\"name\":\"$PLI_E_INIT_NAME\",\"type\":\"xinfin\",\"url\":\"https://plixdcrpc.icotokens.net\"}" --chainlinkurl "http://localhost:6688/"
-#EOF
-#    #sleep 1s
-#    #cat $BASH_FILE3
-#    chmod u+x $BASH_FILE3
-#
-#
-#    echo 
-#    echo -e "${GREEN}#########################################################################${NC}"
-#    echo -e "${GREEN}## START INITIATOR PM2 SERVICE $BASH_FILE3 ${NC}"
-#    
-#    pm2 start $BASH_FILE3
-#    sleep 1s
-#    pm2 status
-#    sleep 3s
-#    pm2 startup systemd
-#    sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER_ID --hp /home/$USER_ID
-#    pm2 save
-#
-#    if [ "$_OPTION" == "initiator" ]; then
-#        echo "CREATE / REPAIR  EXTERNAL INITIATOR COMPLETED"
-#        FUNC_EXIT;
-#    fi
-#
-#    
-#    FUNC_LOGROTATE;
-#    
-#
-#    if [ "$_OPTION" == "fullnode" ]; then
-#        echo "...INITIAL SETUP FOR BACKUP FOLDER & PERMS"
-#        bash ~/pli_node_conf/_plinode_setup_bkup.sh
-#    fi
-#
-#    echo
-#    echo -e "${GREEN}#########################################################################${NC}"
-#    echo -e "${GREEN}#########################################################################${NC}"
-#    echo
-#    echo -e "${RED}##  IMPORTANT INFORMATION - PLEASE RECORD TO YOUR PASSWORD SAFE${NC}"
-#    echo
-#    echo -e "${GREEN}#########################################################################${NC}"
-#    echo
-#    echo
-#    echo -e "${RED}##  KEY STORE SECRET:        $PASS_KEYSTORE${NC}"
-#    echo
-#    echo -e "${RED}##  POSTGRES DB PASSWORD:    $DB_PWD_NEW${NC}"
-#    echo
-#    echo -e "${RED}##  API USERNAME:    $API_EMAIL${NC}"
-#    echo -e "${RED}##  API PASSWORD:    $API_PASS${NC}"
-#    echo
-#    echo -e "${GREEN}#########################################################################${NC}"
-#    echo -e "${GREEN}#########################################################################${NC}"
-#    
-#    #source ~/.profile
-#    #set -x
-#    source ~/.profile
-#    export GOROOT=/usr/local/go
-#    export GOPATH=$HOME/work
-#    export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-#    export FEATURE_EXTERNAL_INITIATORS=true
-#    . ~/.profile
-#
-#    FUNC_NODE_ADDR;
-#    FUNC_NODE_GUI_IPADDR;
-#    FUNC_EXIT;
-#}
-
-
-
-
-#FUNC_DO_INIT_CHECK(){
-#
-#    echo -e "${GREEN}#########################################################################"
-#    echo -e "${GREEN}## CONFIRM SCRIPTS EXPORT VALUES HAVE BEEN UPDATED...${NC}"
-#    
-#        while true; do
-#            read -t10 -r -p "Do you wish to proceed to INITIATOR SETUP ? (Y/n) " _input
-#            if [ $? -gt 128 ]; then
-#                echo "timed out waiting for user response - proceeding as normal..."
-#                FUNC_INITIATOR;
-#            fi
-#            case $_input in
-#                [Yy][Ee][Ss]|[Yy]* ) 
-#                    FUNC_INITIATOR
-#                    break
-#                    ;;
-#                [Nn][Oo]|[Nn]* ) 
-#                    FUNC_EXIT
-#                    ;;
-#                * ) echo "Please answer (y)es or (n)o."
-#                    echo "NOTE: timeout value is (y)es";;
-#            esac
-#        done
-#}
 
 
 FUNC_LOGROTATE(){
