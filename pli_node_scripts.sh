@@ -409,7 +409,7 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}## Install: UPDATE file $BASH_FILE1 with new DB password value...${NC}"
 
     #sed -i.bak "s/$DB_PWD_FIND/'$DB_PWD_NEW'/g" $BASH_FILE1
-    sed -i.bak "/^URL*/c\URL = 'postgresql://postgres:'$DB_PWD_NEW'@127.0.0.1:5432/$DB_NAME?sslmode=disable'" $BASH_FILE1
+    sed -i.bak "/^URL*/c\URL = 'postgresql://postgres:$DB_PWD_NEW@127.0.0.1:5432/$DB_NAME?sslmode=disable'" $BASH_FILE1
     #cat $BASH_FILE1 | grep 'postgres PASSWORD'
     sleep 1s
 
@@ -428,7 +428,7 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}## Install: Update file $BASH_FILE3 with TLS values...${NC}"
 
     sed -i.bak "s/HTTPSPort = 0/HTTPSPort = $PLI_HTTPS_PORT/g" $BASH_FILE3
-    sed "/^HTTPSPort*/a\nCertPath = '$TLS_CERT_PATH/server.crt'\nKeyPath = '$TLS_CERT_PATH/server.key'" $BASH_FILE3
+    sed "/^HTTPSPort*/a \nCertPath = '$TLS_CERT_PATH/server.crt'\nKeyPath = '$TLS_CERT_PATH/server.key'" $BASH_FILE3
     #sed "s/^ForceRedirect*/ForceRedirect = true/g" $BASH_FILE3
 
     #sleep 1s
