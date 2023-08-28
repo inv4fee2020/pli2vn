@@ -26,21 +26,21 @@ FUNC_VARS(){
 
 
     PLI_VARS_FILE="plinode_$(hostname -f)".vars
-    if [ ! -e ~/$PLI_VARS_FILE ]; then
+    if [ ! -e '~/$PLI_VARS_FILE' ]; then
         #clear
         echo
         echo -e "${RED} #### NOTICE: No VARIABLES file found. ####${NC}"
         echo -e "${RED} ..creating local vars file '$HOME/$PLI_VARS_FILE' ${NC}"
 
-        cp sample.vars ~/$PLI_VARS_FILE
-        chmod 600 ~/$PLI_VARS_FILE
+        cp sample.vars '~/$PLI_VARS_FILE'
+        chmod 600 '~/$PLI_VARS_FILE'
 
         echo
-        echo -e "${GREEN}nano ~/$PLI_VARS_FILE ${NC}"
+        echo -e "${GREEN}nano '~/$PLI_VARS_FILE' ${NC}"
         #sleep 2s
     fi
 
-    source ~/$PLI_VARS_FILE
+    source '~/$PLI_VARS_FILE'
 
     if [[ "$CHECK_PASSWD" == "true" ]]; then
         FUNC_PASSWD_CHECKS
