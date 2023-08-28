@@ -290,8 +290,6 @@ FUNC_NODE_DEPLOY(){
     if [ $? != 0 ]; then
       echo
       echo  -e "${RED}## ERROR :: NVM package download / install encoutered issues${NC}"
-      #echo  -e "${RED}## ERROR :: re-trying download once more...${NC}"
-      #wget https://dl.google.com/go/go1.20.6.linux-amd64.tar.gz
       sleep 2s
       FUNC_EXIT_ERROR
     else
@@ -302,7 +300,8 @@ FUNC_NODE_DEPLOY(){
 
     source ~/.bashrc
     #cd ~/
-    #export NVM_DIR=$HOME/.nvm;
+    export NVM_DIR=$HOME/.nvm
+    source $NVM_DIR/nvm.sh
     # Install Node Manager Package version & enable
     source nvm install 16.14.0
     source nvm use 16.14.0
