@@ -527,16 +527,21 @@ plugin --admin-credentials-file apicredentials.txt -c config.toml -s secrets.tom
 echo "<<<<<<<<<------------------PLUGIN 2.0 VALIDATOR NODE is running .. use "pm2 status" to check details--------------------->>>>>>>>>"
 EOF
     chmod +x $BASH_FILE2
+    
+    npm install pm2 -g
+
+    pm2 startup systemd
+    sudo env PATH=$PATH:/home/$USER_ID/.nvm/versions/node/v16.14.0/bin /home/$USER_ID/.nvm/versions/node/v16.14.0/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER_ID --hp /home/$USER_ID
+    pm2 save
+
+    sleep2s
+
     pm2 start $BASH_FILE2
     sleep 1s
     pm2 list 
     
     sleep 2s
     pm2 list
-    pm2 startup systemd
-    sudo env PATH=$PATH:/home/$USER_ID/.nvm/versions/node/v16.14.0/bin /home/$USER_ID/.nvm/versions/node/v16.14.0/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER_ID --hp /home/$USER_ID
-    pm2 save
-
     # NON-INTERACTIVE: Proceed with next stage of setup.
     FUNC_EXPORT_NODE_KEYS;
     #FUNC_INITIATOR;
