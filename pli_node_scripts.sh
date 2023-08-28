@@ -298,8 +298,23 @@ FUNC_NODE_DEPLOY(){
     fi
 
 
+
+    echo
+    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}## Install: Clone GoPlugin V2 repo...${NC}"
+     
+    git clone https://github.com/GoPlugin/pluginV2.git && cd pluginV2
+    rm -f {apicredentials.txt,password.txt}
+    sleep 2s
+
+
+
+    echo
+    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}## Install: GoPlugin V2 NVM...${NC}"
+
     #source ~/.bashrc
-    cd $PLI_DEPLOY_PATH
+    #cd $PLI_DEPLOY_PATH
     #export NVM_DIR=$HOME/.nvm
     bash ~/.nvm/nvm.sh
 
@@ -309,14 +324,6 @@ FUNC_NODE_DEPLOY(){
     source node --version
     
 
-
-    echo
-    echo -e "${GREEN}#########################################################################"
-    echo -e "${GREEN}## Install: Clone GoPlugin V2 repo...${NC}"
-     
-    git clone https://github.com/GoPlugin/pluginV2.git && cd pluginV2
-    rm -f {apicredentials.txt,password.txt}
-    sleep 2s
 
     echo
     echo -e "${GREEN}#########################################################################"
