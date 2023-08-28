@@ -363,7 +363,7 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}#########################################################################"
     echo -e "${GREEN}## Install: install build complier files...${NC}"
      
-    sudo apt install build-essential
+    sudo apt install -y build-essential
 
 
 
@@ -526,7 +526,7 @@ echo "<<<<<<<<<--------------------------------STARTING PLUGIN 2.0 VALIDATOR NOD
 plugin --admin-credentials-file apicredentials.txt -c config.toml -s secrets.toml node start
 echo "<<<<<<<<<------------------PLUGIN 2.0 VALIDATOR NODE is running .. use "pm2 status" to check details--------------------->>>>>>>>>"
 EOF
-
+    chmod +x $BASH_FILE2
     pm2 start $BASH_FILE2
     sleep 1s
     pm2 list 
@@ -534,11 +534,8 @@ EOF
     sleep 2s
     pm2 list
     pm2 startup systemd
-    sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER_ID --hp /home/$USER_ID
+    sudo env PATH=$PATH:/home/$USER_ID/.nvm/versions/node/v16.14.0/bin /home/$USER_ID/.nvm/versions/node/v16.14.0/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER_ID --hp /home/$USER_ID
     pm2 save
-
-    # INTERACTIVE: Calls function to check if user wants to proceed to next stage of setup.
-    #FUNC_DO_INIT_CHECK;
 
     # NON-INTERACTIVE: Proceed with next stage of setup.
     FUNC_EXPORT_NODE_KEYS;
