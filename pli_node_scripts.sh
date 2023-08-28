@@ -241,7 +241,7 @@ FUNC_NODE_DEPLOY(){
         FUNC_EXIT_ERROR
       fi
     else
-      echo "INFO :: Successfully downloaded"
+      echo -e "${GREEN}INFO :: Successfully downloaded${NC}"
     fi
 
 
@@ -295,10 +295,10 @@ FUNC_NODE_DEPLOY(){
       sleep 2s
       FUNC_EXIT_ERROR
     else
-      echo "INFO :: Successfully downloaded & executed NVM install script"
+      echo -e "${GREEN}INFO :: Successfully downloaded & executed NVM install script${NC}"
       sleep 2s
       source ~/.bashrc
-
+      cd ~/
       # Install Node Manager Package version & enable
       nvm install 16.14.0
       nvm use 16.14.0
