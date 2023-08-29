@@ -543,6 +543,8 @@ EOF
 
 FUNC_EXPORT_NODE_KEYS(){
 
+
+source ~/"plinode_$(hostname -f)".vars
 echo 
 echo -e "${GREEN}#########################################################################${NC}"
 echo -e "${GREEN}   export node keys - add current user to 'postgres' group"
@@ -556,7 +558,8 @@ echo -e   "${RED}######    IMPORTANT FILE - NODE ADDRESS EXPORT FOR WALLET ACCES
 echo -e   "${RED}######    IMPORTANT FILE - PLEASE SECURE APPROPRIATELY               #####${NC}"
 echo 
 echo -e "${GREEN}   export node keys - exporting keys to file: ~/"plinode_$(hostname -f)_keys_${FDATE}".json${NC}"
-echo $(sudo -u postgres -i psql -d $DB_NAME -t -c"select json from keys where id=1;")  > ~/"plinode_$(hostname -f)_keys_${FDATE}".json
+
+echo $(sudo -u postgres -i psql -d '$DB_NAME' -c"select json from keys where id=1;")  > ~/"plinode_$(hostname -f)_keys_${FDATE}".json
  
 echo -e "${GREEN}   export node keys - securing file permissions${NC}"
 
