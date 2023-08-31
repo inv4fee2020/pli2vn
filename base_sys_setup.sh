@@ -325,7 +325,7 @@ case "$1" in
                 echo "where {function} is one of the following;"
                 echo 
                 echo "      -D      ==  performs a normal base setup (excludes User acc & Securing SSH)"
-                echo "                  -- this assumes you are installing under your current admin session (preferable not root)"
+                echo "                  -- this assumes you are installing under your current admin session (preferably not root)"
                 echo
                 echo "      -os     ==  perform OS updates & installs required packages (see sample.vars 'BASE_SYS_PACKAGES')"
                 echo "      -user   ==  Adds a new admin account (to install the plugin node under) & SSH keys"
