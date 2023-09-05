@@ -537,7 +537,7 @@ EOF
     #FUNC_EXPORT_NODE_KEYS;
     #FUNC_INITIATOR;
 
-    plugin --admin-credentials-file PLI_DEPLOY_PATH/apicredentials.txt -c PLI_DEPLOY_PATH/config.toml -s PLI_DEPLOY_PATH/secrets.toml node start
+    plugin --admin-credentials-file $PLI_DEPLOY_PATH/apicredentials.txt -c $PLI_DEPLOY_PATH/config.toml -s $PLI_DEPLOY_PATH/secrets.toml node start
     }
 
 
