@@ -563,7 +563,7 @@ echo -e "${GREEN}   export node keys - exporting keys to file: ~/"plinode_$(host
 FUNC_NODE_ADDR
 echo $PASS_KEYSTORE > $PLI_DEPLOY_PATH/pass
 chmod 400 $PLI_DEPLOY_PATH/pass
-plugin keys eth export $node_key_primary --newpassword  $PLI_DEPLOY_PATH/pass --output ~/"plinode_$(hostname -f)_keys".json
+plugin keys eth export $node_key_primary --newpassword  $PLI_DEPLOY_PATH/pass --output ~/"plinode_$(hostname -f)_keys_${FDATE}".json
 
 #echo $(sudo -u postgres -i psql -d '$DB_NAME' -c "select json from keys where id=1;")  > ~/"plinode_$(hostname -f)_keys_${FDATE}".json
  
