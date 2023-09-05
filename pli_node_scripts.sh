@@ -527,7 +527,7 @@ EOF
 
     sleep2s
 
-    #pm2 start $BASH_FILE2
+    pm2 start $BASH_FILE2
     #sleep 1s
     #pm2 list 
     
@@ -537,7 +537,7 @@ EOF
     #FUNC_EXPORT_NODE_KEYS;
     #FUNC_INITIATOR;
 
-    plugin --admin-credentials-file apicredentials.txt -c config.toml -s secrets.toml node start
+    plugin --admin-credentials-file PLI_DEPLOY_PATH/apicredentials.txt -c PLI_DEPLOY_PATH/config.toml -s PLI_DEPLOY_PATH/secrets.toml node start
     }
 
 
@@ -561,7 +561,7 @@ echo -e   "${RED}######    IMPORTANT FILE - PLEASE SECURE APPROPRIATELY         
 echo 
 echo -e "${GREEN}   export node keys - exporting keys to file: ~/"plinode_$(hostname -f)_keys_${FDATE}".json${NC}"
 
-echo $(sudo -u postgres -i psql -d '$DB_NAME' -c"select json from keys where id=1;")  > ~/"plinode_$(hostname -f)_keys_${FDATE}".json
+echo $(sudo -u postgres -i psql -d '$DB_NAME' -c "select json from keys where id=1;")  > ~/"plinode_$(hostname -f)_keys_${FDATE}".json
  
 echo -e "${GREEN}   export node keys - securing file permissions${NC}"
 
