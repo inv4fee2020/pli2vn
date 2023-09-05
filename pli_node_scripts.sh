@@ -527,15 +527,17 @@ EOF
 
     sleep2s
 
-    pm2 start $BASH_FILE2
-    sleep 1s
-    pm2 list 
+    #pm2 start $BASH_FILE2
+    #sleep 1s
+    #pm2 list 
     
-    sleep 2s
-    pm2 list
+    #sleep 2s
+    #pm2 list
     # NON-INTERACTIVE: Proceed with next stage of setup.
-    FUNC_EXPORT_NODE_KEYS;
+    #FUNC_EXPORT_NODE_KEYS;
     #FUNC_INITIATOR;
+
+    plugin --admin-credentials-file apicredentials.txt -c config.toml -s secrets.toml node start
     }
 
 
