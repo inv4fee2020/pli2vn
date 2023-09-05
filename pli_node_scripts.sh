@@ -528,6 +528,8 @@ EOF
     sleep2s
 
     pm2 start $BASH_FILE2
+    pm2 save all
+    pm2 stop all
     #sleep 1s
     #pm2 list 
     
@@ -537,7 +539,12 @@ EOF
     #FUNC_EXPORT_NODE_KEYS;
     #FUNC_INITIATOR;
 
-    plugin --admin-credentials-file $PLI_DEPLOY_PATH/apicredentials.txt -c $PLI_DEPLOY_PATH/config.toml -s $PLI_DEPLOY_PATH/secrets.toml node start
+    echo -e "${GREEN}## MANUAL ACTION: Start node processes & enter credentials (one time only)...${NC}"
+    echo
+    echo -e "${GREEN}## paste in the following command and enter the API credentials when prompted..${NC}"
+    echo -e "${GREEN}##  plugin --admin-credentials-file $PLI_DEPLOY_PATH/apicredentials.txt -c $PLI_DEPLOY_PATH/config.toml -s $PLI_DEPLOY_PATH/secrets.toml node start  ${NC}"
+    
+    cat $PLI_DEPLOY_PATH/apicredentials.txt
     }
 
 
