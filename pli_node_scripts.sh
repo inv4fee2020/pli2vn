@@ -549,9 +549,9 @@ FUNC_EXPORT_NODE_KEYS(){
 source ~/"plinode_$(hostname -f)".vars
 echo 
 echo -e "${GREEN}#########################################################################${NC}"
-echo -e "${GREEN}   export node keys - add current user to 'postgres' group"
+echo -e "${GREEN}   export node keys {NC}"
 
-sudo usermod -aG postgres $(getent passwd $EUID | cut -d: -f1)
+#sudo usermod -aG postgres $(getent passwd $EUID | cut -d: -f1)
 
 #echo 
 #echo -e "${GREEN}#########################################################################${NC}"
@@ -560,8 +560,12 @@ echo -e   "${RED}######    IMPORTANT FILE - NODE ADDRESS EXPORT FOR WALLET ACCES
 echo -e   "${RED}######    IMPORTANT FILE - PLEASE SECURE APPROPRIATELY               #####${NC}"
 echo 
 echo -e "${GREEN}   export node keys - exporting keys to file: ~/"plinode_$(hostname -f)_keys_${FDATE}".json${NC}"
+FUNC_NODE_ADDR
+echo $PASS_KEYSTORE > $PLI_DEPLOY_PATH/pass
+chmod 400 $PLI_DEPLOY_PATH/pass
+plugin keys eth export $node_key_primary --newpassword  $PLI_DEPLOY_PATH/pass --output ~/"plinode_$(hostname -f)_keys".json
 
-echo $(sudo -u postgres -i psql -d '$DB_NAME' -c "select json from keys where id=1;")  > ~/"plinode_$(hostname -f)_keys_${FDATE}".json
+#echo $(sudo -u postgres -i psql -d '$DB_NAME' -c "select json from keys where id=1;")  > ~/"plinode_$(hostname -f)_keys_${FDATE}".json
  
 echo -e "${GREEN}   export node keys - securing file permissions${NC}"
 
