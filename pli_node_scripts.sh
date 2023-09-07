@@ -544,7 +544,13 @@ EOF
     echo -e "${GREEN}## paste in the following command and enter the API credentials when prompted..${NC}"
     echo -e "${GREEN}##  plugin --admin-credentials-file $PLI_DEPLOY_PATH/apicredentials.txt -c $PLI_DEPLOY_PATH/config.toml -s $PLI_DEPLOY_PATH/secrets.toml node start  ${NC}"
     
+    echo
+    echo
+    echo
+    echo -e "${GREEN}## Your API Credentials ${NC}"
+    echo
     cat $PLI_DEPLOY_PATH/apicredentials.txt
+    source ~/.profile
     }
 
 
