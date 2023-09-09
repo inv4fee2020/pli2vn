@@ -525,7 +525,11 @@ EOF
     sudo env PATH=$PATH:/home/$USER_ID/.nvm/versions/node/v16.14.0/bin /home/$USER_ID/.nvm/versions/node/v16.14.0/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER_ID --hp /home/$USER_ID
     pm2 save
 
-    sleep2s
+
+
+
+    echo -e "${GREEN}## Install: Create Expect script...${NC}"
+    sleep 1s
 
 
     cat <<EOF > expect.sh
@@ -546,7 +550,11 @@ exit 0
 EOF
     chmod +x expect.sh
     
-    expect.sh $API_EMAIL $API_PASS 
+
+    echo -e "${GREEN}## Install: RUN Expect script...${NC}"
+    sleep 1s
+
+    ./expect.sh $API_EMAIL $API_PASS 
 
     sleep 2s
 
