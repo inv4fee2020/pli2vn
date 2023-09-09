@@ -541,6 +541,7 @@ plugin keys eth export $node_key_primary --newpassword  $PLI_DEPLOY_PATH/pass --
 echo -e "${GREEN}   export node keys - securing file permissions${NC}"
 
 chmod 400 ~/"plinode_$(hostname -f)_keys_${FDATE}".json
+rm $PLI_DEPLOY_PATH/pass
 sleep 4s
 }
 
