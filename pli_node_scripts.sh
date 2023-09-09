@@ -508,7 +508,7 @@ extendedKeyUsage=serverAuth) -subj "/CN=localhost"
 
 
 
-    echo -e "${GREEN}## Install: Start PM2 $BASH_FILE2 & set auto start on reboot...${NC}"
+    echo -e "${GREEN}## Install: Create PM2 file $BASH_FILE2 & set auto start on reboot...${NC}"
 
     cd /$PLI_DEPLOY_PATH
     cat <<EOF > $BASH_FILE2
@@ -558,6 +558,7 @@ EOF
 
     sleep 2s
 
+    echo -e "${GREEN}## Install: PM2 RUN $BASH_FILE2 ...${NC}"
     pm2 start $BASH_FILE2
     pm2 save all
     #pm2 stop all
@@ -566,23 +567,14 @@ EOF
     
     sleep 2s
     pm2 list
-    # NON-INTERACTIVE: Proceed with next stage of setup.
     sleep 5s
     source ~/.profile
-    FUNC_EXPORT_NODE_KEYS;
-    #FUNC_INITIATOR;
+    
+    echo
+    echo
 
-    #echo -e "${GREEN}## MANUAL ACTION: Start node processes & enter credentials (one time only)...${NC}"
-    #echo
-    #echo -e "${GREEN}## paste in the following command and enter the API credentials when prompted..${NC}"
-    #echo -e "${GREEN}##  plugin --admin-credentials-file $PLI_DEPLOY_PATH/apicredentials.txt -c $PLI_DEPLOY_PATH/config.toml -s $PLI_DEPLOY_PATH/secrets.toml node start  ${NC}"
-    #
-    #echo
-    #echo
-    #echo
-    #echo -e "${GREEN}## Your API Credentials ${NC}"
-    #echo
-    #cat $PLI_DEPLOY_PATH/apicredentials.txt
+    FUNC_EXPORT_NODE_KEYS;
+    FUNC_EXIT;
     }
 
 
@@ -614,8 +606,6 @@ fi
 
 plugin keys eth export $node_key_primary --newpassword  $PLI_DEPLOY_PATH/pass --output ~/"plinode_$(hostname -f)_keys_${FDATE}".json
 
-#echo $(sudo -u postgres -i psql -d '$DB_NAME' -c "select json from keys where id=1;")  > ~/"plinode_$(hostname -f)_keys_${FDATE}".json
- 
 echo -e "${GREEN}   export node keys - securing file permissions${NC}"
 
 chmod 400 ~/"plinode_$(hostname -f)_keys_${FDATE}".json
