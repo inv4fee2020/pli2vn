@@ -567,14 +567,14 @@ EOF
     
     sleep 2s
     pm2 list
-    sleep 5s
+    #sleep 5s
     source ~/.profile
     
     echo
     echo
 
-    FUNC_EXPORT_NODE_KEYS;
-    FUNC_EXIT;
+    #FUNC_EXPORT_NODE_KEYS;
+    #FUNC_EXIT;
     }
 
 
@@ -719,6 +719,7 @@ case "$1" in
         full)
                 #_OPTION="fullnode"
                 FUNC_NODE_DEPLOY
+                FUNC_EXPORT_NODE_KEYS
                 #FUNC_VALUE_CHECK
                 ;;
         #initiator)
