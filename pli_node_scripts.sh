@@ -527,29 +527,52 @@ EOF
 
     sleep2s
 
+
+    cat <<EOF > expect.sh
+#!/usr/bin/expect -f
+
+set timeout 3
+
+set API_EMAIL [lindex $argv 0]
+set API_PASS [lindex $argv 1]
+
+
+spawn ./NodeStartPM2.sh
+
+expect "*Enter API Email?" { send -- "$API_EMAIL\r" }
+expect "*Enter API Password?" { send -- "$API_PASS\r" }
+expect eof
+exit 0
+EOF
+    chmod +x expect.sh
+    
+    expect.sh $API_EMAIL $API_PASS 
+
+    sleep 2s
+
     pm2 start $BASH_FILE2
     pm2 save all
-    pm2 stop all
+    #pm2 stop all
     #sleep 1s
-    #pm2 list 
+    pm2 list 
     
-    #sleep 2s
-    #pm2 list
+    sleep 2s
+    pm2 list
     # NON-INTERACTIVE: Proceed with next stage of setup.
-    #FUNC_EXPORT_NODE_KEYS;
+    FUNC_EXPORT_NODE_KEYS;
     #FUNC_INITIATOR;
 
-    echo -e "${GREEN}## MANUAL ACTION: Start node processes & enter credentials (one time only)...${NC}"
-    echo
-    echo -e "${GREEN}## paste in the following command and enter the API credentials when prompted..${NC}"
-    echo -e "${GREEN}##  plugin --admin-credentials-file $PLI_DEPLOY_PATH/apicredentials.txt -c $PLI_DEPLOY_PATH/config.toml -s $PLI_DEPLOY_PATH/secrets.toml node start  ${NC}"
-    
-    echo
-    echo
-    echo
-    echo -e "${GREEN}## Your API Credentials ${NC}"
-    echo
-    cat $PLI_DEPLOY_PATH/apicredentials.txt
+    #echo -e "${GREEN}## MANUAL ACTION: Start node processes & enter credentials (one time only)...${NC}"
+    #echo
+    #echo -e "${GREEN}## paste in the following command and enter the API credentials when prompted..${NC}"
+    #echo -e "${GREEN}##  plugin --admin-credentials-file $PLI_DEPLOY_PATH/apicredentials.txt -c $PLI_DEPLOY_PATH/config.toml -s $PLI_DEPLOY_PATH/secrets.toml node start  ${NC}"
+    #
+    #echo
+    #echo
+    #echo
+    #echo -e "${GREEN}## Your API Credentials ${NC}"
+    #echo
+    #cat $PLI_DEPLOY_PATH/apicredentials.txt
     source ~/.profile
     }
 
@@ -610,7 +633,7 @@ FUNC_LOGROTATE(){
     if [ "$USER_ID" == "root" ]; then
         cat <<EOF > /tmp/tmpplugin-logs
 /$USER_ID/.pm2/logs/*.log
-/$USER_ID/.plugin/*.jsonl
+/$USER_ID/.plugin/*.log
 /$USER_ID/.cache/*.logf
         {
             su $USER_ID $USER_ID
