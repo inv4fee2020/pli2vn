@@ -79,7 +79,6 @@ FUNC_VALUE_CHECK(){
         while true; do
             read -t7 -r -p "please confirm that you have updated the vars file with your values ? (Y/n) " _input
             if [ $? -gt 128 ]; then
-                #clear
                 echo
                 echo "timed out waiting for user response - proceeding as normal..."
                 CHECK_PASSWD=true
@@ -122,10 +121,8 @@ FUNC_PASSWD_CHECKS(){
     
     echo 
     echo -e "${GREEN}     VARIABLE 'PASS_KEYSTORE' NOT UPDATED MANUALLY - AUTO GENERATING VALUE NOW"
-    #echo -e "${GREEN}     YOUR NODE VARS FILE WILL BE UPDATED WITH THE GENERATED CREDENTIALS${NC}"
     sleep 2s
 
-    #_AUTOGEN_KEYSTORE="'$(cat /dev/urandom | tr -dc 'a-zA-Z0-9%:+*!;.?=' | head -c32)'"
     _AUTOGEN_KEYSTORE="'$(./gen_passwd.sh -keys)'"
     sed -i 's/^PASS_KEYSTORE.*/PASS_KEYSTORE='"$_AUTOGEN_KEYSTORE"'/g' ~/"plinode_$(hostname -f)".vars
     PASS_KEYSTORE=$_AUTOGEN_KEYSTORE
@@ -135,10 +132,8 @@ FUNC_PASSWD_CHECKS(){
     if ([ -z "$DB_PWD_NEW" ] || [ "$DB_PWD_NEW" == "$SAMPLE_DB_PWD" ]); then
     echo 
     echo -e "${GREEN}     VARIABLE 'DB_PWD_NEW' NOT UPDATED MANUALLY - AUTO GENERATING VALUE NOW"
-    #echo -e "${GREEN}     YOUR NODE VARS FILE WILL BE UPDATED WITH THE GENERATED CREDENTIALS${NC}"
     sleep 2s
 
-    #_AUTOGEN_DB_PWD=$(tr -cd '[:alnum:]' < /dev/urandom | fold -w20 | head -n1)
     _AUTOGEN_DB_PWD="$(./gen_passwd.sh -db)"
     sed -i 's/^DB_PWD_NEW.*/DB_PWD_NEW=\"'"${_AUTOGEN_DB_PWD}"'\"/g' ~/"plinode_$(hostname -f)".vars
     DB_PWD_NEW=$_AUTOGEN_DB_PWD
@@ -149,7 +144,6 @@ FUNC_PASSWD_CHECKS(){
     
     echo 
     echo -e "${GREEN}     VARIABLE 'API_EMAIL' NOT UPDATED MANUALLY - AUTO GENERATING VALUE NOW"
-    #echo -e "${GREEN}     YOUR NODE VARS FILE WILL BE UPDATED WITH THE GENERATED CREDENTIALS${NC}"
     sleep 2s
 
     _AUTOGEN_API_USER=$(tr -cd A-Za-z < /dev/urandom | fold -w10 | head -n1)
@@ -164,11 +158,9 @@ FUNC_PASSWD_CHECKS(){
 
     echo 
     echo -e "${GREEN}     VARIABLE 'API_PASS' NOT UPDATED MANUALLY - AUTO GENERATING VALUE NOW"
-    #echo -e "${GREEN}     YOUR NODE VARS FILE WILL BE UPDATED WITH THE GENERATED CREDENTIALS${NC}"
     echo
     sleep 2s
 
-    #_AUTOGEN_API_PWD=$(tr -cd '[:alnum:]' < /dev/urandom | fold -w18 | head -n1)
     _AUTOGEN_API_PWD="'$(./gen_passwd.sh -api)'"
     sed -i 's/^API_PASS.*/API_PASS='"${_AUTOGEN_API_PWD}"'/g' ~/"plinode_$(hostname -f)".vars
     API_PASS=$_AUTOGEN_DB_PWD
@@ -199,7 +191,6 @@ FUNC_NODE_DEPLOY(){
     FUNC_VARS;
 
     # call base_sys_setup script to perform basic system updates etc.
-    #source ~/pli2vn/base_sys_setup.sh -D
     bash base_sys_setup.sh -D
 
     echo
@@ -213,20 +204,6 @@ FUNC_NODE_DEPLOY(){
     echo
     echo -e "${GREEN}#########################################################################"
     echo -e "${GREEN}## Install: GO & NVM Packages...${NC}"
-     
-    
-    #if [ ! -d "/$PLI_BASE_DIR" ]; then
-    #    sudo mkdir "/$PLI_BASE_DIR"
-    #    #USER_ID=$(getent passwd $EUID | cut -d: -f1)
-    #    sudo chown $USER_ID\:$USER_ID -R "/$PLI_BASE_DIR"
-    #fi
-
-    #cd /$PLI_BASE_DIR
-    #git clone https://github.com/GoPlugin/plugin-deployment.git && cd plugin-deployment
-    #rm -f {apicredentials.txt,password.txt}
-    #sleep 2s
-
-
 
 
 
@@ -242,9 +219,6 @@ FUNC_NODE_DEPLOY(){
 
     sudo apt install -y postgresql postgresql-client
     sudo systemctl start postgresql.service
-    #sudo -i -u postgres psql
-
-# sudo -u postgres -i psql -d $DB_NAME -t -c"select json from keys where id=1;")
 
     sudo -u postgres -i psql -c "CREATE DATABASE $DB_NAME;"
     if [ $? -eq 0 ]; then
@@ -265,12 +239,6 @@ FUNC_NODE_DEPLOY(){
         sleep 2s
         FUNC_EXIT_ERROR
     fi
-
-
-
-
-
-
 
 
 
@@ -302,7 +270,6 @@ FUNC_NODE_DEPLOY(){
     export GOROOT=/usr/local/go
     export GOPATH=$HOME/go
     export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-    #go version
 
     GO_VER=$(go version)
     go version; GO_EC=$?
@@ -313,9 +280,6 @@ FUNC_NODE_DEPLOY(){
             echo -e "${GREEN}## Install proceeding as normal...${NC}"
             ;;
         1) echo -e "${RED}## Command exited with ERROR - exiting...${NC}"
-            #source ~/.profile;
-            #sudo sh -c 'echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile'
-            #echo "cat "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile"
             echo -e "${RED}## Check GO Version manually...${NC}"
             sleep 2s
             FUNC_EXIT_ERROR
@@ -365,10 +329,6 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}#########################################################################"
     echo -e "${GREEN}## Install: GoPlugin V2 NVM...${NC}"
 
-    #source ~/.bashrc
-    #cd $PLI_DEPLOY_PATH
-    #export NVM_DIR=$HOME/.nvm
-
     echo -e "${GREEN}## Source NVM environmentals shell script...${NC}"
     source ~/.nvm/nvm.sh
     sleep 2s
@@ -386,14 +346,10 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}#########################################################################"
     echo -e "${GREEN}## Install: GoPlugin V2 dependancies...${NC}"
 
-    #export NVM_DIR="$HOME/.nvm"
-    #source ~/.bashrc
     npm install -g pnpm
     if [ $? != 0 ]; then
       echo
       echo  -e "${RED}## ERROR :: PNPM dependancies install encoutered issues${NC}"
-      #echo  -e "${RED}## ERROR :: re-trying download once more...${NC}"
-      #wget https://dl.google.com/go/go1.20.6.linux-amd64.tar.gz
       sleep 2s
       FUNC_EXIT_ERROR
     else
@@ -423,38 +379,24 @@ FUNC_NODE_DEPLOY(){
     if [ $? != 0 ]; then
       echo
       echo  -e "${RED}## ERROR :: MAKE install encoutered issues${NC}"
-      #echo  -e "${RED}## ERROR :: re-trying download once more...${NC}"
-      #wget https://dl.google.com/go/go1.20.6.linux-amd64.tar.gz
       sleep 2s
       FUNC_EXIT_ERROR
     else
       echo -e "${GREEN}INFO :: Successfully complied dependancy install files${NC}"
       sleep 2s
     fi
-
-
-
-
-
     
     touch {$FILE_KEYSTORE,$FILE_API}
     chmod 666 {$FILE_KEYSTORE,$FILE_API}
 
     echo $API_EMAIL > $FILE_API
     echo $API_PASS >> $FILE_API
-    #echo $PASS_KEYSTORE > $FILE_KEYSTORE
-
-    #chmod 600 {$FILE_KEYSTORE,$FILE_API}
-
-    # Remove the file if necessary; sudo rm -f {.env.apicred,.env.password}
  
     echo 
     echo -e "${GREEN}#########################################################################"
     echo -e "${GREEN}## Install: UPDATE file $BASH_FILE1 with new DB password value...${NC}"
 
-    #sed -i.bak "s/$DB_PWD_FIND/'$DB_PWD_NEW'/g" $BASH_FILE1
     sed -i.bak "/^URL*/c\URL = 'postgresql://postgres:$DB_PWD_NEW@127.0.0.1:5432/$DB_NAME?sslmode=disable'" $BASH_FILE1
-    #cat $BASH_FILE1 | grep 'postgres PASSWORD'
     sleep 1s
 
     echo 
@@ -463,20 +405,12 @@ FUNC_NODE_DEPLOY(){
 
 
     sed -i "/^Keystore*/c\Keystore = '$PASS_KEYSTORE'" $BASH_FILE1
-    #sleep 1s
-
     
-
-     
     echo 
     echo -e "${GREEN}## Install: Update file $BASH_FILE3 with TLS values...${NC}"
 
     sed -i.bak "s/HTTPSPort = 0/HTTPSPort = $PLI_HTTPS_PORT/g" $BASH_FILE3
     sed -i "/^HTTPSPort*/a\CertPath = '$TLS_CERT_PATH/server.crt'\nKeyPath = '$TLS_CERT_PATH/server.key'" $BASH_FILE3
-    #sed "s/^ForceRedirect*/ForceRedirect = true/g" $BASH_FILE3
-
-    #sleep 1s
-
 
     echo 
     echo -e "${GREEN}## Install: Create TLS CA / Certificate & files / folders...${NC}"
@@ -561,10 +495,8 @@ EOF
     echo -e "${GREEN}## Install: PM2 RUN $BASH_FILE2 ...${NC}"
     pm2 start $BASH_FILE2
     pm2 save all
-    #pm2 stop all
-    #sleep 1s
-    pm2 list 
     
+    pm2 list 
     sleep 2s
     pm2 list
     #sleep 5s
@@ -574,7 +506,7 @@ EOF
     echo
 
     #FUNC_EXPORT_NODE_KEYS;
-    #FUNC_EXIT;
+    FUNC_EXIT;
     }
 
 
@@ -717,15 +649,8 @@ FUNC_EXIT_ERROR(){
 #clear
 case "$1" in
         full)
-                #_OPTION="fullnode"
                 FUNC_NODE_DEPLOY
-                FUNC_EXPORT_NODE_KEYS
-                #FUNC_VALUE_CHECK
                 ;;
-        #initiator)
-        #        _OPTION="initiator"
-        #        FUNC_INITIATOR
-        #        ;;
         keys)
                 FUNC_EXPORT_NODE_KEYS
                 ;;
@@ -750,8 +675,6 @@ case "$1" in
                 echo "where {function} is one of the following;"
                 echo 
                 echo "      full          ==  deploys the full node incl. external initiator & exports the node keys"
-                #echo 
-                #echo "      initiator     ==  creates / rebuilds the external initiator only"
                 echo
                 echo "      keys          ==  extracts the node keys from DB and exports to json file for import to MetaMask"
                 echo
