@@ -567,6 +567,7 @@ EOF
     sleep 2s
     pm2 list
     # NON-INTERACTIVE: Proceed with next stage of setup.
+    sleep 3s
     FUNC_EXPORT_NODE_KEYS;
     #FUNC_INITIATOR;
 
