@@ -483,7 +483,7 @@ EOF
     cat <<EOF > expect.sh
 #!/usr/bin/expect -f
 log_user 0
-set timeout 10
+set timeout 15
 
 set API_EMAIL [lindex $argv 0]
 set API_PASS [lindex $argv 1]
@@ -499,7 +499,11 @@ EOF
     chmod +x expect.sh
     
 
+ 
+    echo 
+    echo -e "${GREEN}#########################################################################"
     echo -e "${GREEN}## Install: RUN Expect script...${NC}"
+    echo
     sleep 1s
 
     ./expect.sh $API_EMAIL $API_PASS 
