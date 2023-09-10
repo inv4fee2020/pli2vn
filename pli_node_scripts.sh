@@ -483,7 +483,7 @@ EOF
     cat <<EOF > expect.sh
 #!/usr/bin/expect -f
 log_user 0
-set timeout 5
+set timeout 10
 
 set API_EMAIL [lindex $argv 0]
 set API_PASS [lindex $argv 1]
