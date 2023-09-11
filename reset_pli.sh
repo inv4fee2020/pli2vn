@@ -78,17 +78,17 @@ sudo rm -rf /usr/lib/postgresql/ && sudo rm -rf /var/lib/postgresql/ && sudo rm 
 # Remove the POSTGRES install system account & group
 #sudo userdel -r postgres && sudo groupdel postgres
 
-if [ $(getent passwd postgres) ]; then
-  sudo userdel -r postgres
+if [ $(getent passwd postgres > /dev/null 2>&1) ]; then
+    sudo userdel -r postgres
 fi
 
-if [ $(getent group postgres) ]; then
-  sudo groupdel postgres
+if [ $(getent group postgres > /dev/null 2>&1) ]; then
+    sudo groupdel postgres
 fi
 
 
 # Remove the group for local backups
-if [ $(getent group nodebackup) ]; then
+if [ $(getent group nodebackup) > /dev/null 2>&1 ]; then
   sudo groupdel nodebackup
 fi
 
