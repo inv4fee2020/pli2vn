@@ -518,7 +518,6 @@ EOF
     sleep 2s
     pm2 list
     #sleep 5s
-    source ~/.profile
     
     echo
     echo
@@ -657,7 +656,7 @@ FUNC_NODE_GUI_IPADDR(){
 FUNC_EXIT(){
     # remove the sudo timeout for USER_ID
     sudo sh -c 'rm -f /etc/sudoers.d/plinode_deploy'
-    source ~/.profile
+    exec bash source ~/.profile
 	exit 0
 	}
 
