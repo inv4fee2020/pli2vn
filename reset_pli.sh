@@ -122,13 +122,3 @@ sed -i '/[ -s "$NVM_DIR/bash_completion" ] \&\& \\\. "$NVM_DIR\/bash_completion"
 
 
 exec bash ~/.profile
-exec bash ~/.bashrc
-
-#echo
-#echo
-#echo
-#echo
-#echo -e "${RED} Be sure to manually update your '~/.profile' file for remaining variables...${NC}"
-#echo
-#echo
-#echo
