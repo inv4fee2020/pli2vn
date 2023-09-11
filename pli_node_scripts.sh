@@ -512,7 +512,7 @@ EOF
 
     echo -e "${GREEN}## Install: PM2 RUN $BASH_FILE2 ...${NC}"
     pm2 start $BASH_FILE2
-    pm2 save all
+    pm2 save
     
     pm2 list 
     sleep 2s
