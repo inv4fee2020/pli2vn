@@ -88,11 +88,26 @@ rm ~/.tmp_profile
 # Remove logrotate file
 sudo sh -c 'rm -f /etc/logrotate.d/plugin-logs'
 
-echo
-echo
-echo
-echo
-echo -e "${RED} Be sure to manually update your '~/.profile' file for remaining variables...${NC}"
-echo
-echo
-echo
+
+
+sed -i.bak '/GOROOT=\/usr\/local\/go/d' ~/.profile
+sed -i '/GOPATH=*/d' ~/.profile
+sed -i '/PATH=\//d' ~/.profile
+sed -i '/SECURE_COOKIES=false/d' ~/.profile
+
+sed -i.bak '/export NVM_DIR="$HOME\/\.nvm/d' ~/.bashrc
+sed -i '/[ -s "$NVM_DIR/nvm\.sh" ] \&\& \\\. "$NVM_DIR\/nvm\.sh"  # This loads nvm/d' ~/.bashrc
+sed -i '/[ -s "$NVM_DIR/bash_completion" ] \&\& \\\. "$NVM_DIR\/bash_completion"  # This loads nvm bash_completion/d' ~/.bashrc
+
+
+
+exec bash ~/.profile
+
+#echo
+#echo
+#echo
+#echo
+#echo -e "${RED} Be sure to manually update your '~/.profile' file for remaining variables...${NC}"
+#echo
+#echo
+#echo
