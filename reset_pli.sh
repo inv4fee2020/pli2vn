@@ -120,3 +120,11 @@ sed -i '/[ -s "$NVM_DIR/nvm\.sh" ] \&\& \\\. "$NVM_DIR\/nvm\.sh"  # This loads n
 sed -i '/[ -s "$NVM_DIR/bash_completion" ] \&\& \\\. "$NVM_DIR\/bash_completion"  # This loads nvm bash_completion/d' ~/.bashrc
 
 exec bash ~/.profile
+
+echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}## INFO: Reset process completed.  exiting...${NC}"
+    echo
+    echo
+    echo  -e "${GREEN}## ACTION: paste the following to update your session with updated env variables..${NC}"
+    echo
+    echo -e "${GREEN}##          source ~/.profile${NC}"
