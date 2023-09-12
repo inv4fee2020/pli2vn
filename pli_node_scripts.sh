@@ -678,7 +678,7 @@ FUNC_EXIT(){
     # remove the sudo timeout for USER_ID
     sudo sh -c 'rm -f /etc/sudoers.d/plinode_deploy'
     bash ~/.profile
-    sudo -u $USER_ID sh -c 'source ~/.profile'
+    sudo -u $USER_ID sh -c 'bash ~/.profile'
 	exit 0
 	}
 
