@@ -360,14 +360,25 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}#########################################################################"
     echo -e "${GREEN}## Install: GoPlugin V2 dependancies...${NC}"
 
-    npm install -g pnpm
+    npm install -g pnpm 
     if [ $? != 0 ]; then
       echo
       echo  -e "${RED}## ERROR :: PNPM dependancies install encoutered issues${NC}"
       sleep 2s
       FUNC_EXIT_ERROR
     else
-      echo -e "${GREEN}INFO :: Successfully downloaded & installed dependancies${NC}"
+      echo -e "${GREEN}INFO :: Successfully downloaded & installed PNPM ${NC}"
+      sleep 2s
+    fi
+
+    npm install -g  wscat
+    if [ $? != 0 ]; then
+      echo
+      echo  -e "${RED}## ERROR :: WSCAT dependancies install encoutered issues${NC}"
+      sleep 2s
+      FUNC_EXIT_ERROR
+    else
+      echo -e "${GREEN}INFO :: Successfully downloaded & installed WSCAT ${NC}"
       sleep 2s
     fi
 
