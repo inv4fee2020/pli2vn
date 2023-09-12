@@ -536,6 +536,12 @@ EOF
 
     echo -e "${GREEN}#########################################################################"
     echo -e "${GREEN}## INFO: Install process completed.  exiting...${NC}"
+    echo
+    echo
+    echo  -e "${GREEN}## ACTION: paste the following to update your session with updated env variables..${NC}"
+    echo
+    echo -e "${GREEN}##          source ~/.profile${NC}"
+    
     sleep 3s
     #FUNC_EXPORT_NODE_KEYS;
     FUNC_EXIT;
