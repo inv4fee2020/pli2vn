@@ -1,5 +1,10 @@
 #!/bin/bash
 
+
+# Get current user id and store as var
+USER_ID=$(getent passwd $EUID | cut -d: -f1)
+
+
 # Set Colour Vars
 GREEN='\033[0;32m'
 RED='\033[0;31m'
@@ -119,7 +124,9 @@ sed -i.bak '/export NVM_DIR="$HOME\/\.nvm/d' ~/.bashrc
 sed -i '/[ -s "$NVM_DIR/nvm\.sh" ] \&\& \\\. "$NVM_DIR\/nvm\.sh"  # This loads nvm/d' ~/.bashrc
 sed -i '/[ -s "$NVM_DIR/bash_completion" ] \&\& \\\. "$NVM_DIR\/bash_completion"  # This loads nvm bash_completion/d' ~/.bashrc
 
-exec bash ~/.profile
+bash ~/.profile
+sudo -u $USER_ID sh -c 'source ~/.profile'
+
 
 echo -e "${GREEN}#########################################################################"
     echo -e "${GREEN}## INFO: Reset process completed.  exiting...${NC}"

@@ -541,7 +541,7 @@ EOF
     echo  -e "${GREEN}## ACTION: paste the following to update your session with updated env variables..${NC}"
     echo
     echo -e "${GREEN}##          source ~/.profile${NC}"
-    
+
     sleep 3s
     #FUNC_EXPORT_NODE_KEYS;
     FUNC_EXIT;
@@ -677,7 +677,8 @@ FUNC_NODE_GUI_IPADDR(){
 FUNC_EXIT(){
     # remove the sudo timeout for USER_ID
     sudo sh -c 'rm -f /etc/sudoers.d/plinode_deploy'
-    exec bash ~/.profile
+    bash ~/.profile
+    sudo -u $USER_ID sh -c 'source ~/.profile'
 	exit 0
 	}
 
