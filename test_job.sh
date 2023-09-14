@@ -1,4 +1,9 @@
 #!/bin/bash
+
+
+PLI_VARS_FILE="plinode_$(hostname -f).vars"
+source ~/$PLI_VARS_FILE
+
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 JOB_TITLE="Cryptocompare XDC-USD Pair test job"
@@ -61,7 +66,7 @@ EOF
 #echo
 #cat ~/$JOB_FNAME
 
-plugin admin login -f apicredentials.txt 
+plugin admin login -f $PLI_DEPLOY_PATH/apicredentials.txt 
 plugin jobs create ~/$JOB_FNAME > /tmp/plinode_job_id.raw
 sed 's/ ║ /,/g;s/╬//g;s/═//g;s/║//g;s/╔//g;s/[[:space:]]//g' /tmp/plinode_job_id.raw > /tmp/plinode_job_id.raw1
 jobid=(); jobid=($(cat /tmp/plinode_job_id.raw1))
