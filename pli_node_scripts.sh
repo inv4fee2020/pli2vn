@@ -175,12 +175,12 @@ FUNC_PASSWD_CHECKS(){
 
 FUNC_NODE_DEPLOY(){
     
-    echo -e "${GREEN}#########################################################################"
-    echo -e "${GREEN}#########################################################################"
-    echo -e "${GREEN}"
-    echo -e "${GREEN}             GoPlugin 2.0 Validator Node - Install"
-    echo -e "${GREEN}"
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
+    echo -e "${GREEN}#########################################################################${NC}"
+    echo -e "${GREEN}${NC}"
+    echo -e "${GREEN}             GoPlugin 2.0 Validator Node - Install${NC}"
+    echo -e "${GREEN}${NC}"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     
     # Set working directory to user home folder
@@ -194,7 +194,7 @@ FUNC_NODE_DEPLOY(){
     bash base_sys_setup.sh -D
 
     echo
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## Install: check credentials are updated against default sample values...${NC}"
     FUNC_PASSWD_CHECKS;
 
@@ -202,7 +202,7 @@ FUNC_NODE_DEPLOY(){
     FUNC_PKG_CHECK;
 
     echo
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## Install: GO & NVM Packages...${NC}"
 
 
@@ -210,7 +210,7 @@ FUNC_NODE_DEPLOY(){
     # SQL Install
 
     echo
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## Install: POSTGRES DB ${NC}"
 
     cd ~/
@@ -245,7 +245,7 @@ FUNC_NODE_DEPLOY(){
     # Install GO package
 
     echo
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## Install: GOLANG Package(s) fetch & install... ${NC}"
     sleep 1s
 
@@ -324,7 +324,7 @@ FUNC_NODE_DEPLOY(){
 
 
     echo
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## Install: Clone GoPlugin V2 repo...${NC}"
      
     git clone https://github.com/GoPlugin/pluginV2.git
@@ -340,7 +340,7 @@ FUNC_NODE_DEPLOY(){
 
 
     echo
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## Install: GoPlugin V2 NVM...${NC}"
 
     echo -e "${GREEN}## Source NVM environmentals shell script...${NC}"
@@ -357,7 +357,7 @@ FUNC_NODE_DEPLOY(){
 
 
     echo
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## Install: GoPlugin V2 dependancies...${NC}"
 
     npm install -g pnpm 
@@ -387,7 +387,7 @@ FUNC_NODE_DEPLOY(){
     # Build packages..
 
     echo
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## Install: install build complier files...${NC}"
      
     sudo apt install -y build-essential
@@ -397,7 +397,7 @@ FUNC_NODE_DEPLOY(){
     # Make Install
 
     echo
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## Install: Complie dependancy install files...${NC}"
      
     make install
@@ -418,14 +418,14 @@ FUNC_NODE_DEPLOY(){
     echo $API_PASS >> $FILE_API
  
     echo 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## Install: UPDATE file $BASH_FILE1 with new DB password value...${NC}"
 
     sed -i.bak "/^URL*/c\URL = 'postgresql://postgres:$DB_PWD_NEW@127.0.0.1:5432/$DB_NAME?sslmode=disable'" $BASH_FILE1
     sleep 1s
 
     echo 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## Install: UPDATE file $BASH_FILE1 with new KEYSTORE password value...${NC}"
 
 
@@ -512,7 +512,7 @@ EOF
 
  
     echo 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## Install: RUN Expect script...${NC}"
     echo
     sleep 1s
@@ -534,7 +534,7 @@ EOF
     echo
 
 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## INFO: Install process completed.  exiting...${NC}"
     echo
     echo
@@ -596,7 +596,7 @@ FUNC_LOGROTATE(){
     # add the logrotate conf file
     # check logrotate status = cat /var/lib/logrotate/status
 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## ADDING LOGROTATE CONF FILE...${NC}"
     sleep 2s
 
