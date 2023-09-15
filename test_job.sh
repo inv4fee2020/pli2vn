@@ -6,9 +6,9 @@ source ~/$PLI_VARS_FILE
 
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
-JOB_TITLE="Cryptocompare XDC-USD Pair test job"
-JOB_FNAME="pli2nv_testjob_CC_USD_XDC.toml"
 RAND_NUM=$((1 + $RANDOM % 10000))
+JOB_TITLE="cryptocompare_XDC_USD_test_$RAND_NUM"
+JOB_FNAME="pli2vn_testjob_CC_USD_XDC.toml"
 
 #clear
 echo -e "${GREEN}#"
@@ -34,7 +34,7 @@ sleep 2s
 cat <<EOF > ~/$JOB_FNAME
 type = "directrequest"
 schemaVersion = 1
-name = "Cryptocompare_XDC_USD_test_$RAND_NUM"
+name = "$JOB_TITLE"
 maxTaskDuration = "0s"
 contractAddress = "$ORACLE_ADDR"
 minIncomingConfirmations = 0
@@ -69,15 +69,16 @@ EOF
 plugin admin login -f $PLI_DEPLOY_PATH/apicredentials.txt 
 plugin jobs create ~/$JOB_FNAME > /tmp/plivn_job_id.raw
 plugin jobs list 
+
 #sed 's/ ║ /,/g;s/╬//g;s/═//g;s/║//g;s/╔//g;s/[[:space:]]//g' /tmp/plinode_job_id.raw > /tmp/plinode_job_id.raw1
 #jobid=(); jobid=($(cat /tmp/plinode_job_id.raw1))
-alarmclock_jobid="$(echo ${jobid[2]} | sed 's/,,.*$//')"
+ext_job_id="echo $(sudo -u postgres -i psql -d plugin_mainnet_db -t -c "SELECT external_job_id FROM jobs WHERE name = '$JOB_TITLE';")"
 
 echo -e "${GREEN}#"
 echo -e "Local node $JOB_TITLE job id - Copy to your Solidity script"
 echo -e "================================================================="
 echo -e 
 echo -e "Your Oracle Contract Address is   : $ORACLE_ADDR"
-echo -e "Your $JOB_TITLE Job ID is : $alarmclock_jobid ${NC}"
+echo -e "Your $JOB_TITLE Job ID is : $ext_job_id ${NC}"
 echo 
 echo 
