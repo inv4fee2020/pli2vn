@@ -66,7 +66,7 @@ else
   echo -e "${GREEN}INFO :: Successfully logged in with API credentials${NC}"
   sleep 0.5s
 fi
-
+echo
 plugin jobs create ~/$JOB_FNAME > /tmp/plivn_job_id.raw
 if [ $? != 0 ]; then
   echo
@@ -77,7 +77,7 @@ else
   echo -e "${GREEN}INFO :: Successfully created JOB ID $JOB_TITLE ${NC}"
   sleep 0.5s
 fi
-
+echo
 ext_job_id_raw="$(sudo -u postgres -i psql -d plugin_mainnet_db -t -c "SELECT external_job_id FROM jobs WHERE name = '$JOB_TITLE';")"
 ext_job_id=$(echo $ext_job_id_raw | tr -d \-)
 echo -e "${GREEN}#"
