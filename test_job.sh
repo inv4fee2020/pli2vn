@@ -25,7 +25,7 @@ echo -e "#${NC}"
 sleep 0.5s
 source ~/"plinode_$(hostname -f)".vars
 read -p 'Enter your Oracle Contract Address : ' _INPUT
-ORACLE_ADDR="$(echo $_INPUT | sed '/^$/d;/^\\s*$/d;s/^xdc/0x/g')"
+ORACLE_ADDR="$(echo $_INPUT | sed '/^$/d;/^\\\s*$/d;s/^xdc/0x/g')"
 #echo "$_INPUT"
 echo "$ORACLE_ADDR"
 diff -u <(echo "$_INPUT") <(echo "$ORACLE_ADDR")
@@ -50,10 +50,10 @@ observationSource = """
 
     multiply     [type="multiply" input="\$(parse)" times="\$(decode_cbor.times)"]
 
-    encode_data  [type="ethabiencode" abi="(bytes32 requestId, uint256 value)" data="{ \\"requestId\\": \$(decode_log.requestId), \\"value\\": \$(multiply) }"]
+    encode_data  [type="ethabiencode" abi="(bytes32 requestId, uint256 value)" data="{ \\\"requestId\\\": \$(decode_log.requestId), \\\"value\\\": \$(multiply) }"]
     encode_tx    [type="ethabiencode"
                   abi="fulfillOracleRequest2(bytes32 requestId, uint256 payment, address callbackAddress, bytes4 callbackFunctionId, uint256 expiration, bytes calldata data)"
-                  data="{\\"requestId\\": \$(decode_log.requestId), \\"payment\\":   \$(decode_log.payment), \\"callbackAddress\\": \$(decode_log.callbackAddr), \\"callbackFunctionId\\": \$(decode_log.callbackFunctionId), \\"expiration\\": \$(decode_log.cancelExpiration), \\"data\\": \$(encode_data)}"
+                  data="{\\\"requestId\\\": \$(decode_log.requestId), \\\"payment\\\":   \$(decode_log.payment), \\\"callbackAddress\\\": \$(decode_log.callbackAddr), \\\"callbackFunctionId\\\": \$(decode_log.callbackFunctionId), \\\"expiration\\\": \$(decode_log.cancelExpiration), \\\"data\\\": \$(encode_data)}"
                   ]
     submit_tx    [type="ethtx" to="$ORACLE_ADDR" data="\$(encode_tx)"]
 
@@ -68,6 +68,7 @@ EOF
 
 plugin admin login -f $PLI_DEPLOY_PATH/apicredentials.txt 
 plugin jobs create ~/$JOB_FNAME > /tmp/plivn_job_id.raw
+plugin jobs list 
 #sed 's/ ║ /,/g;s/╬//g;s/═//g;s/║//g;s/╔//g;s/[[:space:]]//g' /tmp/plinode_job_id.raw > /tmp/plinode_job_id.raw1
 #jobid=(); jobid=($(cat /tmp/plinode_job_id.raw1))
 alarmclock_jobid="$(echo ${jobid[2]} | sed 's/,,.*$//')"
