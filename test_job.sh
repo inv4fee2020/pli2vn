@@ -72,7 +72,7 @@ plugin jobs create ~/$JOB_FNAME > /tmp/plivn_job_id.raw
 ext_job_id="echo $(sudo -u postgres -i psql -d plugin_mainnet_db -t -c "SELECT external_job_id FROM jobs WHERE name = '$JOB_TITLE';")"
 
 echo -e "${GREEN}#"
-echo -e "Local node $JOB_TITLE job id - Copy to your Solidity script"
+echo -e "Local node job id - Copy to your Solidity script"
 echo -e "================================================================="
 echo -e 
 echo -e "Your Oracle Contract Address is   : $ORACLE_ADDR"
