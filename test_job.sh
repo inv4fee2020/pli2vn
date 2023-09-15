@@ -77,12 +77,12 @@ else
   echo -e "${GREEN}INFO :: Successfully created JOB ID $JOB_TITLE ${NC}"
   sleep 0.5s
 fi
-echo
+#echo
 ext_job_id_raw="$(sudo -u postgres -i psql -d plugin_mainnet_db -t -c "SELECT external_job_id FROM jobs WHERE name = '$JOB_TITLE';")"
 ext_job_id=$(echo $ext_job_id_raw | tr -d \-)
-echo -e "${GREEN}#"
+#echo -e "${GREEN}#"
 echo
-echo -e "Local node job id - Copy to your Solidity script"
+echo -e "       Local node job id - Copy to your Solidity script"
 echo -e "================================================================="
 echo -e 
 echo -e "Oracle Contract Address is :   $ORACLE_ADDR"
