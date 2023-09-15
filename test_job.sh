@@ -56,8 +56,28 @@ observationSource = """
 """
 EOF
 
-plugin admin login -f $PLI_DEPLOY_PATH/apicredentials.txt 
+plugin admin login -f $PLI_DEPLOY_PATH/apicredentials.txt > /dev/null 2>&1
+if [ $? != 0 ]; then
+  echo
+  echo  -e "${RED}## ERROR :: Plugin admin login encoutered issues${NC}"
+  sleep 2s
+  exit
+else
+  echo -e "${GREEN}INFO :: Successfully logged in with API credentials${NC}"
+  sleep 0.5s
+fi
+
 plugin jobs create ~/$JOB_FNAME > /tmp/plivn_job_id.raw
+if [ $? != 0 ]; then
+  echo
+  echo  -e "${RED}## ERROR :: Plugin JOBS creation encoutered issues${NC}"
+  sleep 2s
+  exit
+else
+  echo -e "${GREEN}INFO :: Successfully created JOB ID $JOB_TITLE ${NC}"
+  sleep 0.5s
+fi
+
 ext_job_id_raw="$(sudo -u postgres -i psql -d plugin_mainnet_db -t -c "SELECT external_job_id FROM jobs WHERE name = '$JOB_TITLE';")"
 ext_job_id=$(echo $ext_job_id_raw | tr -d \-)
 echo -e "${GREEN}#"
