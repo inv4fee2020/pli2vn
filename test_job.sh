@@ -12,7 +12,7 @@ JOB_FNAME="pli2vn_testjob_CC_USD_XDC.toml"
 
 #clear
 echo -e "${GREEN}#"
-echo -e "#   This script generates the necessary json blob for the Job-Setup section in the docs"
+echo -e "#   This script generates the necessary toml blob for the Job-Setup section in the docs"
 echo -e "#   source: https://docs.goplugin.co/oracle/job-setup"
 echo -e "#"
 echo -e "#   The script removes the "-" hyphen from the original returned 'external_job_id' value"
@@ -25,10 +25,6 @@ sleep 0.5s
 source ~/"plinode_$(hostname -f)".vars
 read -p 'Enter your Oracle Contract Address : ' _INPUT
 ORACLE_ADDR="$(echo $_INPUT | sed '/^$/d;/^\\\s*$/d;s/^xdc/0x/g')"
-#echo "$_INPUT"
-#echo "$ORACLE_ADDR"
-#diff -u <(echo "$_INPUT") <(echo "$ORACLE_ADDR") > /dev/null 2>&1
-#sleep 2s
 
 cat <<EOF > ~/$JOB_FNAME
 type = "directrequest"
@@ -59,15 +55,9 @@ observationSource = """
     decode_log -> decode_cbor -> fetch -> parse -> multiply -> encode_data -> encode_tx -> submit_tx
 """
 EOF
-#sleep 1s
-#echo
-#echo " Local node json blob for AlarmClockSample job - Reference only"
-#echo
-#cat ~/$JOB_FNAME
 
 plugin admin login -f $PLI_DEPLOY_PATH/apicredentials.txt 
 plugin jobs create ~/$JOB_FNAME > /tmp/plivn_job_id.raw
-#plugin jobs list 
 ext_job_id_raw="$(sudo -u postgres -i psql -d plugin_mainnet_db -t -c "SELECT external_job_id FROM jobs WHERE name = '$JOB_TITLE';")"
 ext_job_id=$(echo $ext_job_id_raw | tr -d \-)
 echo -e "${GREEN}#"
