@@ -69,7 +69,7 @@ EOF
 plugin admin login -f $PLI_DEPLOY_PATH/apicredentials.txt 
 plugin jobs create ~/$JOB_FNAME > /tmp/plivn_job_id.raw
 #plugin jobs list 
-ext_job_id="echo $(sudo -u postgres -i psql -d plugin_mainnet_db -t -c "SELECT external_job_id FROM jobs WHERE name = '$JOB_TITLE';")"
+ext_job_id="$(sudo -u postgres -i psql -d plugin_mainnet_db -t -c "SELECT external_job_id FROM jobs WHERE name = '$JOB_TITLE';")"
 
 echo -e "${GREEN}#"
 echo -e "Local node job id - Copy to your Solidity script"
