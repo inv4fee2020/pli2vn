@@ -27,8 +27,8 @@ source ~/"plinode_$(hostname -f)".vars
 read -p 'Enter your Oracle Contract Address : ' _INPUT
 ORACLE_ADDR="$(echo $_INPUT | sed '/^$/d;/^\\\s*$/d;s/^xdc/0x/g')"
 #echo "$_INPUT"
-echo "$ORACLE_ADDR"
-diff -u <(echo "$_INPUT") <(echo "$ORACLE_ADDR")
+#echo "$ORACLE_ADDR"
+diff -u <(echo "$_INPUT") <(echo "$ORACLE_ADDR") > /dev/null 2>&1
 sleep 2s
 
 cat <<EOF > ~/$JOB_FNAME
