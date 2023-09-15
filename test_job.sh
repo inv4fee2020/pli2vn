@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+#set -x
 
 PLI_VARS_FILE="plinode_$(hostname -f).vars"
 source ~/$PLI_VARS_FILE
