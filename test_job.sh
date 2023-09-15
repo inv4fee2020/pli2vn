@@ -15,6 +15,8 @@ echo -e "${GREEN}#"
 echo -e "#   This script generates the necessary json blob for the Job-Setup section in the docs"
 echo -e "#   source: https://docs.goplugin.co/oracle/job-setup"
 echo -e "#"
+echo -e "#   The script removes the "-" hyphen from the original returned 'external_job_id' value"
+echo -e "#"
 echo -e "#   The script checks for leading  / trailing white spaces and removes as necessary"
 echo -e "#   & converts the 'xdc' prefix to '0x' as necessary"
 echo -e "#"
@@ -69,6 +71,7 @@ plugin jobs create ~/$JOB_FNAME > /tmp/plivn_job_id.raw
 ext_job_id_raw="$(sudo -u postgres -i psql -d plugin_mainnet_db -t -c "SELECT external_job_id FROM jobs WHERE name = '$JOB_TITLE';")"
 ext_job_id=$(echo $ext_job_id_raw | tr -d \-)
 echo -e "${GREEN}#"
+echo
 echo -e "Local node job id - Copy to your Solidity script"
 echo -e "================================================================="
 echo -e 
