@@ -44,7 +44,7 @@ FUNC_CHECK_DIRS(){
     if [ ! -z "$DB_BACKUP_DIR" ] ; then
         #echo "checking DIR vars - apply default directory value..."
     
-        DB_BACKUP_DIR="plivn_backups"
+        DB_BACKUP_DIR="plinode_backups"
     
         # Checks if directory exists & creates if not + sets perms
         # following logic attempts to resolve the leading Root '/' path issue
@@ -59,7 +59,7 @@ FUNC_CHECK_DIRS(){
     else
         #echo
         #echo "checking vars - Detected NULL - setting 'default'value.."
-        DB_BACKUP_DIR="plivn_backups"
+        DB_BACKUP_DIR="plinode_backups"
         #echo "checking vars - var 'DB_BACKUP_DIR' value is now: $DB_BACKUP_DIR"
     
         # adds the variable value to the VARS file
