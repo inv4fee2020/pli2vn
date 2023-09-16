@@ -131,9 +131,9 @@ FUNC_RESTORE_DB(){
     #sudo chown $USER_ID\:$DB_BACKUP_GUSER $DB_BACKUP_PATH/\*.sql
     shred -uz -n 1 $RESTORE_FILE_SQL > /dev/null 2>&1
 
-    if [[ "$DR_RESTORE" == "true" ]]; then
-        FUNC_REBUILD_EI
-    fi
+    #if [[ "$DR_RESTORE" == "true" ]]; then
+    #    FUNC_REBUILD_EI
+    #fi
     
     echo
     echo
@@ -167,62 +167,62 @@ FUNC_RESTORE_CONF(){
 }
 
 
-FUNC_REBUILD_EI(){
-
-
-    source ~/"plinode_$(hostname -f)".vars
-
-    EI_FILE=$(echo "$BASH_FILE3" | sed -e 's/\.[^.]*$//')                       # cuts the file extension to get the namespace for pm2
-    pm2 stop $EI_FILE && pm2 delete $EI_FILE && pm2 reset all && pm2 save       # deletes existing EI process 
-    sleep 3s
-
-    #echo $PWD
-    echo "   DB RESTORE - REBUILD EI - authenticate to API with credentials file: $FILE_API"
-    plugin admin login -f ~/plugin-deployment/$FILE_API
-
-    echo "   DB RESTORE - REBUILD EI - delete existing EI"
-    plugin initiators destroy $PLI_L_INIT_NAME
-    sleep 2s
-    cd /$PLI_DEPLOY_PATH/$PLI_INITOR_DIR
-
-    echo "   DB RESTORE - REBUILD EI - generating new EI values & extract to file"
-    plugin initiators create $PLI_L_INIT_NAME http://localhost:8080/jobs > $PLI_INIT_RAWFILE
-
-    sed -i 's/ ║ /,/g;s/╬//g;s/═//g;s/║//g' $PLI_INIT_RAWFILE
-    sed -n '/'"$PLI_L_INIT_NAME"'/,//p' $PLI_INIT_RAWFILE > $PLI_INIT_DATFILE
-    sed -i 's/,/\n/g;s/^.'"$PLI_L_INIT_NAME"'//g' $PLI_INIT_DATFILE
-    sed -i 's/^http.*//g' $PLI_INIT_DATFILE
-    sed -i.bak '/^$/d;/^\s*$/d;s/[ \t]\+$//' $PLI_INIT_DATFILE
-    cp $PLI_INIT_DATFILE ~/$PLI_INIT_DATFILE.bak  && chmod 600 ~/$PLI_INIT_DATFILE.bak
-
-    #cat $PLI_INIT_DATFILE
-    sleep 2s
-
-    echo "   DB RESTORE - REBUILD EI - reading new EI values to variables"
-    read -r -d '' EXT_ACCESSKEY EXT_SECRET EXT_OUTGOINGTOKEN EXT_OUTGOINGSECRET <$PLI_INIT_DATFILE
-
-
-    echo "   DB RESTORE - REBUILD EI - creating new EI file"
-    cd /$PLI_DEPLOY_PATH
-    cat <<EOF > $BASH_FILE3
-#!/bin/bash
-export EI_DATABASEURL=postgresql://postgres:${DB_PWD_NEW}@127.0.0.1:5432/plugin_mainnet_db?sslmode=disable
-export EI_CHAINLINKURL=http://localhost:6688
-export EI_IC_ACCESSKEY=${EXT_ACCESSKEY}
-export EI_IC_SECRET=${EXT_SECRET}
-export EI_CI_ACCESSKEY=${EXT_OUTGOINGTOKEN}
-export EI_CI_SECRET=${EXT_OUTGOINGSECRET}
-echo *** Starting EXTERNAL INITIATOR ***
-external-initiator "{\"name\":\"$PLI_E_INIT_NAME\",\"type\":\"xinfin\",\"url\":\"https://plixdcrpc.icotokens.net\"}" --chainlinkurl "http://localhost:6688/"
-EOF
-    #sleep 1s
-    #cat $BASH_FILE3
-    chmod u+x $BASH_FILE3
-
-    pm2 start $BASH_FILE3
-    pm2 save
-
-}
+#FUNC_REBUILD_EI(){
+#
+#
+#    source ~/"plinode_$(hostname -f)".vars
+#
+#    EI_FILE=$(echo "$BASH_FILE3" | sed -e 's/\.[^.]*$//')                       # cuts the file extension to get the namespace for pm2
+#    pm2 stop $EI_FILE && pm2 delete $EI_FILE && pm2 reset all && pm2 save       # deletes existing EI process 
+#    sleep 3s
+#
+#    #echo $PWD
+#    echo "   DB RESTORE - REBUILD EI - authenticate to API with credentials file: $FILE_API"
+#    plugin admin login -f ~/plugin-deployment/$FILE_API
+#
+#    echo "   DB RESTORE - REBUILD EI - delete existing EI"
+#    plugin initiators destroy $PLI_L_INIT_NAME
+#    sleep 2s
+#    cd /$PLI_DEPLOY_PATH/$PLI_INITOR_DIR
+#
+#    echo "   DB RESTORE - REBUILD EI - generating new EI values & extract to file"
+#    plugin initiators create $PLI_L_INIT_NAME http://localhost:8080/jobs > $PLI_INIT_RAWFILE
+#
+#    sed -i 's/ ║ /,/g;s/╬//g;s/═//g;s/║//g' $PLI_INIT_RAWFILE
+#    sed -n '/'"$PLI_L_INIT_NAME"'/,//p' $PLI_INIT_RAWFILE > $PLI_INIT_DATFILE
+#    sed -i 's/,/\n/g;s/^.'"$PLI_L_INIT_NAME"'//g' $PLI_INIT_DATFILE
+#    sed -i 's/^http.*//g' $PLI_INIT_DATFILE
+#    sed -i.bak '/^$/d;/^\s*$/d;s/[ \t]\+$//' $PLI_INIT_DATFILE
+#    cp $PLI_INIT_DATFILE ~/$PLI_INIT_DATFILE.bak  && chmod 600 ~/$PLI_INIT_DATFILE.bak
+#
+#    #cat $PLI_INIT_DATFILE
+#    sleep 2s
+#
+#    echo "   DB RESTORE - REBUILD EI - reading new EI values to variables"
+#    read -r -d '' EXT_ACCESSKEY EXT_SECRET EXT_OUTGOINGTOKEN EXT_OUTGOINGSECRET <$PLI_INIT_DATFILE
+#
+#
+#    echo "   DB RESTORE - REBUILD EI - creating new EI file"
+#    cd /$PLI_DEPLOY_PATH
+#    cat <<EOF > $BASH_FILE3
+##!/bin/bash
+#export EI_DATABASEURL=postgresql://postgres:${DB_PWD_NEW}@127.0.0.1:5432/plugin_mainnet_db?sslmode=disable
+#export EI_CHAINLINKURL=http://localhost:6688
+#export EI_IC_ACCESSKEY=${EXT_ACCESSKEY}
+#export EI_IC_SECRET=${EXT_SECRET}
+#export EI_CI_ACCESSKEY=${EXT_OUTGOINGTOKEN}
+#export EI_CI_SECRET=${EXT_OUTGOINGSECRET}
+#echo *** Starting EXTERNAL INITIATOR ***
+#external-initiator "{\"name\":\"$PLI_E_INIT_NAME\",\"type\":\"xinfin\",\"url\":\"https://plixdcrpc.icotokens.net\"}" --chainlinkurl "http://localhost:6688/"
+#EOF
+#    #sleep 1s
+#    #cat $BASH_FILE3
+#    chmod u+x $BASH_FILE3
+#
+#    pm2 start $BASH_FILE3
+#    pm2 save
+#
+#}
 
 
 FUNC_EXIT(){
@@ -256,7 +256,8 @@ FUNC_RESTORE_MENU(){
     echo "          Select the number for the file you wish to restore "
     echo
 
-    select _file in "${node_backup_arr[@]}" "QUIT" "REBUILD-EI"
+    select _file in "${node_backup_arr[@]}" "QUIT" 
+    #"REBUILD-EI"
     do
         case $_file in
             ${node_backup_arr[0]}) echo "   RESTORE MENU - Restoring file: ${node_backup_arr[0]}" ; BACKUP_FILE="${node_backup_arr[0]}"; FUNC_RESTORE_DECRYPT; break ;;
@@ -268,7 +269,7 @@ FUNC_RESTORE_MENU(){
             ${node_backup_arr[6]}) echo "   RESTORE MENU - Restoring file: ${node_backup_arr[6]}" ; BACKUP_FILE="${node_backup_arr[6]}"; FUNC_RESTORE_DECRYPT; break ;;
             ${node_backup_arr[7]}) echo "   RESTORE MENU - Restoring file: ${node_backup_arr[7]}" ; BACKUP_FILE="${node_backup_arr[7]}"; FUNC_RESTORE_DECRYPT; break ;;
             "QUIT") echo "exiting now..." ; FUNC_EXIT; break ;;
-            "REBUILD-EI") echo "   REBUILD-EI workaround"; FUNC_REBUILD_EI; break;;
+            #"REBUILD-EI") echo "   REBUILD-EI workaround"; FUNC_REBUILD_EI; break;;
             *) echo invalid option;;
         esac
     done
