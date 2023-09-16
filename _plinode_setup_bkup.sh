@@ -62,7 +62,7 @@ FUNC_PKG_CHECK(){
 
 FUNC_CHECK_DIRS(){
 
-    DB_BACKUP_DIR="plivn_backups"
+    DB_BACKUP_DIR="plinode_backups"
 
     if [ ! -d "/$DB_BACKUP_DIR" ]; then
         echo -e "${NC} SETTING FOLDER PERMS  ${NC}"
