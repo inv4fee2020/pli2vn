@@ -21,7 +21,7 @@ __** NOTE: This deployment script is for Apothem testnet only**__
 
 ---
 
-> When connecting to your nodes web GUI you must use *_'https://your_node_ip:6689'_* instead due to the configuration applied by the [main script](#main-script-actions)
+> When connecting to your nodes web GUI you must use *_'https://your_node_ip:6689'_* instead due to the configuration applied by the main script
 
 
 ---
@@ -33,19 +33,6 @@ A sample vars file is included 'sample.vars'. This file will be copied to your u
 The scripts check that the local node variables file exists.
 
 By using a dedicated variables file, any updates to the main script should not involve any changes to the node specific settings.
-
----
-
-The following VARIABLES should be updated at a minimum for your individual implementation;
-
-| VARIABLE |  NOTE |
-|----------|-------|
-|API_EMAIL="user123@gmail.com"||
-|API_PASS='passW0rd123'|Must be 8 - 50 characters & NO special characters. (error creating api initializer)|
-|PASS_KEYSTORE="$oM3$tr*nGp4$$w0Rd$"| Min. 12 characters, 3 lower, 3 upper, 3 numbers, 3 symbols & no more than 3 identical consecutive characters|
-|DB_PWD_NEW="testdbpwd1234"|This is your new secure Postgres DB password & NO special characters|
-
-You can reveiw the 'sample.vars' file for the full list of VARIABLES.
 
 
 
@@ -60,7 +47,6 @@ to successfully deploy the node.
 The scripts has a number of functions, one of which must be passed to run the scripts
 
 >     fullnode
->     initiators
 >     keys
 >     logrotate
 >     address
