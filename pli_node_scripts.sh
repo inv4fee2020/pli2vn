@@ -338,6 +338,13 @@ FUNC_NODE_DEPLOY(){
     sleep 2s
 
 
+###########################  Add Mainnet details  ##########################
+    V2_CONF_FILE="$PLI_DEPLOY_PATH/config.toml"
+
+    sed -i.bak "s/HTTPSPort = 0/HTTPSPort = $PLI_HTTPS_PORT/g" $V2_CONF_FILE
+
+
+###########################################################################
 
     echo
     echo -e "${GREEN}#########################################################################${NC}"
@@ -538,10 +545,34 @@ EOF
     echo -e "${GREEN}## INFO: Install process completed.  exiting...${NC}"
     echo
     echo
-    echo  -e "${GREEN}## ACTION: paste the following to update your session with updated env variables..${NC}"
+    echo
+    echo -e "${GREEN}#########################################################################${NC}"
+    echo -e "${GREEN}#########################################################################${NC}"
+    echo
+    echo -e "${RED}##  IMPORTANT INFORMATION - PLEASE RECORD TO YOUR PASSWORD SAFE${NC}"
+    echo
+    echo -e "${GREEN}#########################################################################${NC}"
+    echo
+    echo
+    echo -e "${RED}##  KEY STORE SECRET:        $PASS_KEYSTORE${NC}"
+    echo
+    echo -e "${RED}##  POSTGRES DB PASSWORD:    $DB_PWD_NEW${NC}"
+    echo
+    echo -e "${RED}##  API USERNAME:    $API_EMAIL${NC}"
+    echo -e "${RED}##  API PASSWORD:    $API_PASS${NC}"
+    echo
+    echo -e "${GREEN}#########################################################################${NC}"
+    echo -e "${GREEN}#########################################################################${NC}"
+    echo
+    echo
+    echo -e "${GREEN}## ACTION: paste the following to update your session with updated env variables..${NC}"
     echo
     echo -e "${GREEN}##          source ~/.profile${NC}"
+    echo
+    echo
 
+    FUNC_NODE_GUI_IPADDR;
+    
     sleep 3s
     #FUNC_EXPORT_NODE_KEYS;
     FUNC_EXIT;
