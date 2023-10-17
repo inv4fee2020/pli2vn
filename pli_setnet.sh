@@ -33,19 +33,19 @@ FUNC_RPC_MENU(){
             fi
             case $_RES_INPUT in
                 1* )
-                    VARVAL_CHAIN_NAME=$(mainnet_name)
-                    VARVAL_CHAIN_ID=$(mainnet_ChainID)
-                    VARVAL_CONTRACT_ADDR=$(mainnet_ContractAddress)
-                    VARVAL_RPC=$(mainnet_httpUrl)
-                    VARVAL_WSS=$(mainnet_wsUrl)
+                    VARVAL_CHAIN_NAME=$mainnet_name
+                    VARVAL_CHAIN_ID=$mainnet_ChainID
+                    VARVAL_CONTRACT_ADDR=$mainnet_ContractAddress
+                    VARVAL_RPC=$mainnet_httpUrl
+                    VARVAL_WSS=$mainnet_wsUrl
                     break
                     ;;
                 2* ) 
-                    VARVAL_CHAIN_NAME=$(testnet_name)
-                    VARVAL_CHAIN_ID=$(testnet_ChainID)
-                    VARVAL_CONTRACT_ADDR=$(testnet_ContractAddress)
-                    VARVAL_RPC=$(testnet_httpUrl)
-                    VARVAL_WSS=$(testnet_wsUrl)
+                    VARVAL_CHAIN_NAME=$testnet_name
+                    VARVAL_CHAIN_ID=$testnet_ChainID
+                    VARVAL_CONTRACT_ADDR=$testnet_ContractAddress
+                    VARVAL_RPC=$testnet_httpUrl
+                    VARVAL_WSS=$testnet_wsUrl
                     break
                     ;;
                 * ) echo -e "${RED}  please select a NUMBER from the list${NC}";;
