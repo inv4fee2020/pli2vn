@@ -83,28 +83,28 @@ FUNC_SED_FILE(){
     #httpUrl
 
     RAND_NUM=$((1 + $RANDOM % 10000))
-    BKUP_FILE="PLI_DEPLOY_PATH/$BASH_FILE3_$RAND_NUM"
-    cp PLI_DEPLOY_PATH/$BASH_FILE3 $BKUP_FILE
+    BKUP_FILE="$PLI_DEPLOY_PATH/$BASH_FILE3_$RAND_NUM"
+    cp $PLI_DEPLOY_PATH/$BASH_FILE3 $BKUP_FILE
 
-    sed  -i 's|^ChainID.*|ChainID = '$VARVAL_CHAIN_ID'|g' PLI_DEPLOY_PATH/$BASH_FILE3
+    sed  -i 's|^ChainID.*|ChainID = '$VARVAL_CHAIN_ID'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
 
-    cat PLI_DEPLOY_PATH/$BASH_FILE3 | grep ChainID
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep ChainID
 
-    sed  -i 's|^LinkContractAddress.*|LinkContractAddress = "'$VARVAL_CONTRACT_ADDR'"|g' PLI_DEPLOY_PATH/$BASH_FILE3
+    sed  -i 's|^LinkContractAddress.*|LinkContractAddress = "'$VARVAL_CONTRACT_ADDR'"|g' $PLI_DEPLOY_PATH/$BASH_FILE3
 
-    cat PLI_DEPLOY_PATH/$BASH_FILE3 | grep LinkContractAddress
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep LinkContractAddress
 
-    sed  -i 's|^name.*|name = "'$VARVAL_CHAIN_NAME'"|g' PLI_DEPLOY_PATH/$BASH_FILE3
+    sed  -i 's|^name.*|name = "'$VARVAL_CHAIN_NAME'"|g' $PLI_DEPLOY_PATH/$BASH_FILE3
 
-    cat PLI_DEPLOY_PATH/$BASH_FILE3 | grep name
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep name
 
-    sed  -i 's|^wsUrl.*|wsUrl = "'$VARVAL_WSS'"|g' PLI_DEPLOY_PATH/$BASH_FILE3
+    sed  -i 's|^wsUrl.*|wsUrl = "'$VARVAL_WSS'"|g' $PLI_DEPLOY_PATH/$BASH_FILE3
 
-    cat PLI_DEPLOY_PATH/$BASH_FILE3 | grep wsUrl
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep wsUrl
 
-    sed  -i 's|^httpUrl.*|httpUrl = '$VARVAL_WSS'|g' PLI_DEPLOY_PATH/$BASH_FILE3
+    sed  -i 's|^httpUrl.*|httpUrl = '$VARVAL_WSS'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
 
-    cat PLI_DEPLOY_PATH/$BASH_FILE3 | grep httpUrl
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep httpUrl
 
     pm2 restart all
     pm2 reset all
