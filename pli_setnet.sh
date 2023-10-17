@@ -86,11 +86,11 @@ FUNC_SED_FILE(){
     BKUP_FILE="$PLI_DEPLOY_PATH/$BASH_FILE3_$RAND_NUM"
     cp $PLI_DEPLOY_PATH/$BASH_FILE3 $BKUP_FILE
 
-    sed  -i 's|^ChainID.*|ChainID = '$VARVAL_CHAIN_ID'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
+    sed  -i 's|^ChainID.*|ChainID = '"$VARVAL_CHAIN_ID"'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
 
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep ChainID
 
-    sed  -i 's|^LinkContractAddress.*|LinkContractAddress = "$VARVAL_CONTRACT_ADDR"|g' $PLI_DEPLOY_PATH/$BASH_FILE3
+    sed  -i 's|^LinkContractAddress.*|LinkContractAddress = '"$VARVAL_CONTRACT_ADDR"'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
 
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep LinkContractAddress
 
