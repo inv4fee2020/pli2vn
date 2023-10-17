@@ -94,15 +94,15 @@ FUNC_SED_FILE(){
 
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep LinkContractAddress
 
-    sed  -i 's|^name.*|name = "$VARVAL_CHAIN_NAME"|g' $PLI_DEPLOY_PATH/$BASH_FILE3
+    sed  -i 's|^name.*|name = '"$VARVAL_CHAIN_NAME"'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
 
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep name
 
-    sed  -i 's|^wsUrl.*|wsUrl = "$VARVAL_WSS"|g' $PLI_DEPLOY_PATH/$BASH_FILE3
+    sed  -i 's|^wsUrl.*|wsUrl = '"$VARVAL_WSS"'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
 
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep wsUrl
 
-    sed  -i 's|^httpUrl.*|httpUrl = '$VARVAL_WSS'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
+    sed  -i 's|^httpUrl.*|httpUrl = "'$VARVAL_WSS'"|g' $PLI_DEPLOY_PATH/$BASH_FILE3
 
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep httpUrl
 
