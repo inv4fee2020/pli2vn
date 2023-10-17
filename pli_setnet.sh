@@ -36,16 +36,16 @@ FUNC_RPC_MENU(){
                     VARVAL_CHAIN_NAME=$mainnet_name
                     VARVAL_CHAIN_ID=$mainnet_ChainID
                     VARVAL_CONTRACT_ADDR=$mainnet_ContractAddress
-                    VARVAL_RPC=$mainnet_httpUrl
                     VARVAL_WSS=$mainnet_wsUrl
+                    VARVAL_RPC=$mainnet_httpUrl
                     break
                     ;;
                 2* ) 
                     VARVAL_CHAIN_NAME=$testnet_name
                     VARVAL_CHAIN_ID=$testnet_ChainID
                     VARVAL_CONTRACT_ADDR=$testnet_ContractAddress
-                    VARVAL_RPC=$testnet_httpUrl
                     VARVAL_WSS=$testnet_wsUrl
+                    VARVAL_RPC=$testnet_httpUrl
                     break
                     ;;
                 * ) echo -e "${RED}  please select a NUMBER from the list${NC}";;
@@ -102,11 +102,11 @@ FUNC_SED_FILE(){
 
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep wsUrl
 
-    sed  -i 's|^httpUrl.*|httpUrl = '\'$VARVAL_WSS\''|g' $PLI_DEPLOY_PATH/$BASH_FILE3
+    sed  -i 's|^httpUrl.*|httpUrl = '\'$VARVAL_RPC\''|g' $PLI_DEPLOY_PATH/$BASH_FILE3
 
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep httpUrl
 
-    pm2 restart all
+    pm2 restart all --update-env
     pm2 reset all
     pm2 list
 
