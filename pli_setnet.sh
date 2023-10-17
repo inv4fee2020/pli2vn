@@ -102,7 +102,7 @@ FUNC_SED_FILE(){
 
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep wsUrl
 
-    sed  -i 's|^httpUrl.*|httpUrl = ''$VARVAL_WSS''|g' $PLI_DEPLOY_PATH/$BASH_FILE3
+    sed  -i 's|^httpUrl.*|httpUrl = '$VARVAL_WSS'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
 
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep httpUrl
 
