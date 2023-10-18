@@ -9,7 +9,7 @@ NC='\033[0m' # No Color
 ## -------------------------------
 
 testnet_ChainID='51'
-testnet_ContractAddress='0x33f4212b027e22af7e6ba21fc572843c0d701cd1'
+testnet_ContractAddress='0x33f4212b027E22aF7e6BA21Fc572843C0D701CD1'
 testnet_name='GoPluginApothem'
 testnet_wsUrl='wss://ws.apothem.network/ws'
 testnet_httpUrl='https://erpc.apothem.network'
