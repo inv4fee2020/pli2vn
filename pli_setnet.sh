@@ -5,6 +5,23 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
+## CONTRACT ADDRESSES
+## -------------------------------
+
+testnet_ChainID='51'
+testnet_ContractAddress='0x33f4212b027e22af7e6ba21fc572843c0d701cd1'
+testnet_name='GoPluginApothem'
+testnet_wsUrl='wss://ws.apothem.network/ws'
+testnet_httpUrl='https://erpc.apothem.network'
+
+
+mainnet_ChainID='50'
+mainnet_ContractAddress='0xFf7412Ea7C8445C46a8254dFB557Ac1E48094391'
+mainnet_name='GoPluginMainnet'
+mainnet_wsUrl='wss://ws.xinfin.network'
+mainnet_httpUrl='https://rpc.xinfin.network'
+
+## -------------------------------
 
 FUNC_RPC_MENU(){
 
