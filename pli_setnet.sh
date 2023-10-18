@@ -132,7 +132,7 @@ FUNC_SED_FILE(){
     pm2 reset all
     pm2 list
 
-    wait 5s
+    sleep 5s
     ./pli_node_scripts.sh keys
 }
 
