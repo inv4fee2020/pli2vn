@@ -128,23 +128,11 @@ FUNC_SED_FILE(){
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep httpUrl
 
 
-    #CHAINS_ID=$(sudo -u postgres -i psql -d plugin_mainnet_db -AXqtc "select * from evm_chains;")
-    #echo $CHAINS_ID
-    #
-    #CHAINS_CNT=$(sudo -u postgres -i psql -d plugin_mainnet_db -AXqtc "select count(id) from evm_chains;")
-    #echo $CHAINS_CNT
-    ### returns 1
-
-
-
-
-
     pm2 restart all --update-env
     pm2 reset all
     pm2 list
 
-    #cat ~/plugin-deployment/$BASH_FILE2 | grep ETH_URL && cat ~/plugin-deployment/$BASH_FILE3 | grep https
-
+    ./pli_node_scripts.sh keys
 }
 
 
