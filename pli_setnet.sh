@@ -99,29 +99,45 @@ FUNC_SED_FILE(){
     #wsUrl
     #httpUrl
 
+
+    # get current Chains
+    EVM_CHAIN_ID=$(sudo -u postgres -i psql -d plugin_mainnet_db -AXqtc "select id from evm_chains;")
+    echo $EVM_CHAIN_ID
+    ## returns 50
+
+    # delete existing evm chain id
+    sudo -u postgres -i psql -d plugin_mainnet_db -c "DELETE from evm_chains WHERE id = '$EVM_CHAIN_ID';"
+
     RAND_NUM=$((1 + $RANDOM % 10000))
     BKUP_FILE="$PLI_DEPLOY_PATH/$BASH_FILE3_$RAND_NUM"
     cp $PLI_DEPLOY_PATH/$BASH_FILE3 $BKUP_FILE
 
     sed  -i 's|^ChainID.*|ChainID = '\'$VARVAL_CHAIN_ID\''|g' $PLI_DEPLOY_PATH/$BASH_FILE3
-
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep ChainID
 
     sed  -i 's|^LinkContractAddress.*|LinkContractAddress = '\"$VARVAL_CONTRACT_ADDR\"'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
-
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep LinkContractAddress
 
     sed  -i 's|^name.*|name = '\"$VARVAL_CHAIN_NAME\"'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
-
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep name
 
     sed  -i 's|^wsUrl.*|wsUrl = '\"$VARVAL_WSS\"'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
-
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep wsUrl
 
     sed  -i 's|^httpUrl.*|httpUrl = '\'$VARVAL_RPC\''|g' $PLI_DEPLOY_PATH/$BASH_FILE3
-
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep httpUrl
+
+
+    #CHAINS_ID=$(sudo -u postgres -i psql -d plugin_mainnet_db -AXqtc "select * from evm_chains;")
+    #echo $CHAINS_ID
+    #
+    #CHAINS_CNT=$(sudo -u postgres -i psql -d plugin_mainnet_db -AXqtc "select count(id) from evm_chains;")
+    #echo $CHAINS_CNT
+    ### returns 1
+
+
+
+
 
     pm2 restart all --update-env
     pm2 reset all
