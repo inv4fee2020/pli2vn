@@ -348,7 +348,7 @@ FUNC_NODE_DEPLOY(){
 
 
     if [ "$_OPTION" == "mainnet" ]; then
-        echo "${GREEN} ### Configuring node for ${BYELLOW}$_OPTION${GREEN}..  ###${NC}"
+        echo -e "${GREEN} ### Configuring node for ${BYELLOW}$_OPTION${GREEN}..  ###${NC}"
 
         VARVAL_CHAIN_NAME=$mainnet_name
         VARVAL_CHAIN_ID=$mainnet_ChainID
@@ -357,7 +357,7 @@ FUNC_NODE_DEPLOY(){
         VARVAL_RPC=$mainnet_httpUrl
 
     elif [ "$_OPTION" == "apothem" ]; then
-        echo "${GREEN} ### Configuring node for ${BYELLOW}$_OPTION${GREEN}..  ###${NC}"
+        echo -e "${GREEN} ### Configuring node for ${BYELLOW}$_OPTION${GREEN}..  ###${NC}"
 
         VARVAL_CHAIN_NAME=$testnet_name
         VARVAL_CHAIN_ID=$testnet_ChainID
