@@ -52,7 +52,7 @@ FUNC_VARS(){
 
 FUNC_PKG_CHECK(){
 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## CHECK NECESSARY PACKAGES HAVE BEEN INSTALLED...${NC}"
 
     for i in "${REQ_PACKAGES[@]}"
@@ -71,7 +71,7 @@ FUNC_PKG_CHECK(){
 
 FUNC_VALUE_CHECK(){
 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## CONFIRM SCRIPTS VARIABLES FILE HAS BEEN UPDATED...${NC}"
 
     # Ask the user acc for login details (comment out to disable)
@@ -157,7 +157,7 @@ FUNC_PASSWD_CHECKS(){
     if ([ -z "$API_PASS" ] || [ "$API_PASS" == "$SAMPLE_API_PASS" ]); then
 
     echo 
-    echo -e "${GREEN}     VARIABLE 'API_PASS' NOT UPDATED MANUALLY - AUTO GENERATING VALUE NOW"
+    echo -e "${GREEN}     VARIABLE 'API_PASS' NOT UPDATED MANUALLY - AUTO GENERATING VALUE NOW${NC}"
     echo
     sleep 2s
 
@@ -635,7 +635,7 @@ FUNC_EXPORT_NODE_KEYS(){
 source ~/"plinode_$(hostname -f)".vars
 echo 
 echo -e "${GREEN}#########################################################################${NC}"
-echo -e "${GREEN}   export node keys {NC}"
+echo -e "${GREEN}   export node keys ${NC}"
 
 #sudo usermod -aG postgres $(getent passwd $EUID | cut -d: -f1)
 
