@@ -664,17 +664,21 @@ echo
 echo
 
 if [ ! -e $PLI_DEPLOY_PATH/pass ]; then
-    echo $PASS_KEYSTORE > $PLI_DEPLOY_PATH/pass
-    chmod 400 $PLI_DEPLOY_PATH/pass
+    #echo $PASS_KEYSTORE > $PLI_DEPLOY_PATH/pass
+    echo $PASS_KEYSTORE > /tmp/pass
+    #chmod 400 $PLI_DEPLOY_PATH/pass
+    chmod 400 /tmp/pass
 fi
 
-plugin keys eth export $node_key_primary --newpassword  $PLI_DEPLOY_PATH/pass --output ~/"plinode_$(hostname -f)_keys_${FDATE}".json > /dev/null 2>&1
+plugin keys eth export $node_key_primary --newpassword  /tmp/pass --output ~/"plinode_$(hostname -f)_keys_${FDATE}".json > /dev/null 2>&1
 
 #echo -e "${GREEN}   export ${BYELLOW}$_OPTION${GREEN} node keys - securing file permissions${NC}"
 chmod 400 ~/"plinode_$(hostname -f)_keys_${FDATE}".json
 
 #chmod 600 $PLI_DEPLOY_PATH/pass
-rm -f $PLI_DEPLOY_PATH/pass
+#rm -f $PLI_DEPLOY_PATH/pass
+chmod 600 /tmp/pass
+rm -f /tmp/pass
 sleep 4s
 }
 
