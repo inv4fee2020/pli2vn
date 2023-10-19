@@ -599,7 +599,7 @@ EOF
     echo
     echo -e "${GREEN}#########################################################################${NC}"
     echo
-    echo -e "${GREEN}#######   Preparing installation final details - please wait..  #########${NC}"
+    echo -e "${GREEN}#######   Preparing final details - please wait..  #########${NC}"
     echo
     echo -e "${GREEN}#########################################################################${NC}"
 
@@ -610,9 +610,9 @@ EOF
     echo
     echo
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## INFO: Install process completed for ${BYELLOW}$_OPTION${GREEN} node.  exiting...${NC}"
+    echo -e "${GREEN}## INFO :: Install process completed for ${BYELLOW}$_OPTION${GREEN} node.  exiting...${NC}"
     echo
-    echo -e "${GREEN}## INFO: ${BYELLOW}$_OPTION${GREEN} Contract Address = ${BYELLOW}$VARVAL_CONTRACT_ADDR ${NC}"
+    echo -e "${GREEN}## INFO :: ${BYELLOW}$_OPTION${GREEN} Contract Address = ${BYELLOW}$VARVAL_CONTRACT_ADDR ${NC}"
     echo
     FUNC_NODE_ADDR;
     echo
