@@ -13,10 +13,10 @@ sudo sh -c 'cat /tmp/plisudotmp > /etc/sudoers.d/plinode_deploy'
 
 # Set Colour Vars
 GREEN='\033[0;32m'
-RED='\033[0;31m'
+#RED='\033[0;31m'
+RED='\033[0;101m'
 YELLOW='\033[0;33m'
 BYELLOW='\033[1;33m'
-BLINK='\033[33;5m'
 NC='\033[0m' # No Color
 
 FDATE=$(date +"%Y_%m_%d_%H_%M")
