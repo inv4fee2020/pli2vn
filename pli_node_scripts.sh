@@ -590,19 +590,32 @@ EOF
     clear
     echo
     echo
+    echo
+    echo
+    echo
+    echo
+    echo
+    echo
+    echo
     echo -e "${GREEN}#########################################################################${NC}"
     echo
-    echo -e "${GREEN}#######   ${BLINK}Preparing installation final details - please wait..${NC}${GREEN}  #########${NC}"
+    echo -e "${GREEN}#######   Preparing installation final details - please wait..  #########${NC}"
     echo
     echo -e "${GREEN}#########################################################################${NC}"
 
     sleep 10s
+    clear
+    echo
+    echo
+    echo
+    echo
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## INFO: Install process completed for ${BYELLOW}$_OPTION${GREEN} node.  exiting...${NC}"
     echo
     echo -e "${GREEN}## INFO: ${BYELLOW}$_OPTION${GREEN} Contract Address = ${BYELLOW}$VARVAL_CONTRACT_ADDR ${NC}"
     echo
     FUNC_NODE_ADDR;
+    echo
     #echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     echo
@@ -651,7 +664,7 @@ if [ ! -e $PLI_DEPLOY_PATH/pass ]; then
     chmod 400 $PLI_DEPLOY_PATH/pass
 fi
 
-plugin keys eth export $node_key_primary --newpassword  $PLI_DEPLOY_PATH/pass --output ~/"plinode_$(hostname -f)_keys_${FDATE}".json
+plugin keys eth export $node_key_primary --newpassword  $PLI_DEPLOY_PATH/pass --output ~/"plinode_$(hostname -f)_keys_${FDATE}".json > /dev/null 2>&1
 
 #echo -e "${GREEN}   export ${BYELLOW}$_OPTION${GREEN} node keys - securing file permissions${NC}"
 chmod 400 ~/"plinode_$(hostname -f)_keys_${FDATE}".json
@@ -728,7 +741,7 @@ EOF
 FUNC_NODE_ADDR(){
     source ~/"plinode_$(hostname -f)".vars
     cd ~/$PLI_DEPLOY_DIR
-    plugin admin login -f $FILE_API
+    plugin admin login -f $FILE_API > /dev/null 2>&1
     node_keys_arr=()
     IFS=$'\n' read -r -d '' -a node_keys_arr < <( plugin keys eth list | grep Address && printf '\0' )
     node_key_primary=$(echo ${node_keys_arr[0]} | sed s/Address:[[:space:]]/''/)
