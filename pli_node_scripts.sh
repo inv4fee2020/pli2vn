@@ -652,11 +652,11 @@ FUNC_EXPORT_NODE_KEYS(){
 source ~/"plinode_$(hostname -f)".vars
 echo 
 echo -e "${GREEN}#########################################################################${NC}"
-echo -e "${GREEN}   export ${BYELLOW}$_OPTION${GREEN} node keys ${NC}"
+echo -e "${GREEN}## INFO :: export ${BYELLOW}$_OPTION${GREEN} node keys ${NC}"
 echo 
 echo -e "${RED}######    IMPORTANT FILE - NODE ADDRESS EXPORT FOR WALLET ACCESS  -   PLEASE SECURE APPROPRIATELY   #####${NC}"
 echo 
-echo -e "${GREEN} exporting keys to file: ~/"plinode_$(hostname -f)_keys_${FDATE}".json${NC}"
+echo -e "${GREEN}## INFO :: exporting keys to file: ~/"plinode_$(hostname -f)_keys_${FDATE}".json${NC}"
 echo
 echo -e "${GREEN}#########################################################################${NC}"
 echo
@@ -750,7 +750,7 @@ FUNC_NODE_ADDR(){
     IFS=$'\n' read -r -d '' -a node_keys_arr < <( plugin keys eth list | grep Address && printf '\0' )
     node_key_primary=$(echo ${node_keys_arr[0]} | sed s/Address:[[:space:]]/''/)
     
-    echo -e "${GREEN}Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
+    echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
     #echo
     #echo -e "${GREEN}#########################################################################${NC}"
 }
@@ -759,7 +759,7 @@ FUNC_NODE_ADDR(){
 FUNC_NODE_GUI_IPADDR(){
     GUI_IP=$(curl -s ipinfo.io/ip)
     echo
-    echo -e "${GREEN}Your Plugin ${BYELLOW}$_OPTION${GREEN} node GUI IP address is as follows:${NC}"
+    echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node GUI IP address is as follows:${NC}"
     echo
     echo -e "            ${RED}https://$GUI_IP:6689${NC}"
     echo
