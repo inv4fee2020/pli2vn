@@ -624,7 +624,7 @@ EOF
     FUNC_NODE_GUI_IPADDR;
     
     sleep 3s
-    #FUNC_EXPORT_NODE_KEYS;
+    FUNC_EXPORT_NODE_KEYS;
     FUNC_EXIT;
     }
 
