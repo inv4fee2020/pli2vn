@@ -340,9 +340,9 @@ FUNC_NODE_DEPLOY(){
 
     ###########################  Add Mainnet details  ##########################
 
-    V2_CONF_FILE="$PLI_DEPLOY_PATH/config.toml"
+    #V2_CONF_FILE="$PLI_DEPLOY_PATH/config.toml"
 
-    sed -i.bak "s/HTTPSPort = 0/HTTPSPort = $PLI_HTTPS_PORT/g" $V2_CONF_FILE
+    sed -i.bak "s/HTTPSPort = 0/HTTPSPort = $PLI_HTTPS_PORT/g" $PLI_DEPLOY_PATH/$BASH_FILE3
 
 
     if [ "$_OPTION" == "mainnet" ]; then
@@ -374,19 +374,19 @@ FUNC_NODE_DEPLOY(){
     ## delete existing evm chain id
     #sudo -u postgres -i psql -d plugin_mainnet_db -c "DELETE from evm_chains WHERE id = '$EVM_CHAIN_ID';"
 
-    sed  -i 's|^ChainID.*|ChainID = '\'$VARVAL_CHAIN_ID\''|g' $PLI_DEPLOY_PATH/$V2_CONF_FILE
+    sed  -i 's|^ChainID.*|ChainID = '\'$VARVAL_CHAIN_ID\''|g' $PLI_DEPLOY_PATH/$BASH_FILE3
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep ChainID
 
-    sed  -i 's|^LinkContractAddress.*|LinkContractAddress = '\"$VARVAL_CONTRACT_ADDR\"'|g' $PLI_DEPLOY_PATH/$V2_CONF_FILE
+    sed  -i 's|^LinkContractAddress.*|LinkContractAddress = '\"$VARVAL_CONTRACT_ADDR\"'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep LinkContractAddress
 
-    sed  -i 's|^name.*|name = '\"$VARVAL_CHAIN_NAME\"'|g' $PLI_DEPLOY_PATH/$V2_CONF_FILE
+    sed  -i 's|^name.*|name = '\"$VARVAL_CHAIN_NAME\"'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep name
 
-    sed  -i 's|^wsUrl.*|wsUrl = '\"$VARVAL_WSS\"'|g' $PLI_DEPLOY_PATH/$V2_CONF_FILE
+    sed  -i 's|^wsUrl.*|wsUrl = '\"$VARVAL_WSS\"'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep wsUrl
 
-    sed  -i 's|^httpUrl.*|httpUrl = '\'$VARVAL_RPC\''|g' $PLI_DEPLOY_PATH/$V2_CONF_FILE
+    sed  -i 's|^httpUrl.*|httpUrl = '\'$VARVAL_RPC\''|g' $PLI_DEPLOY_PATH/$BASH_FILE3
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep httpUrl
 
 
