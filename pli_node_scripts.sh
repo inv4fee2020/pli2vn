@@ -14,7 +14,7 @@ sudo sh -c 'cat /tmp/plisudotmp > /etc/sudoers.d/plinode_deploy'
 # Set Colour Vars
 GREEN='\033[0;32m'
 #RED='\033[0;31m'
-RED='\033[0;101m'
+RED='\033[0;91m'  # Intense Red
 YELLOW='\033[0;33m'
 BYELLOW='\033[1;33m'
 NC='\033[0m' # No Color
