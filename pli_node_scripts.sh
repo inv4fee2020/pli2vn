@@ -180,11 +180,11 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}${NC}"
-    echo -e "${GREEN}             GoPlugin 2.0 Validator Node - Install${NC}"
+    echo -e "${GREEN}             GoPlugin 2.0 ${BYELLOW}$_OPTION${GREEN} Validator Node - Install${NC}"
     echo -e "${GREEN}${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
-    
+    sleep 3s
     # Set working directory to user home folder
     #cd ~/
 
