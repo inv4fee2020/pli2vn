@@ -15,7 +15,8 @@ sudo sh -c 'cat /tmp/plisudotmp > /etc/sudoers.d/plinode_deploy'
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 YELLOW='\033[0;33m'
-BYELLOW='\033[1;33m' 
+BYELLOW='\033[1;33m'
+BLINK='\033[33;5m'
 NC='\033[0m' # No Color
 
 FDATE=$(date +"%Y_%m_%d_%H_%M")
@@ -585,44 +586,45 @@ EOF
     pm2 list 
     sleep 2s
     pm2 list
-    #sleep 5s
-    
+    sleep 5s
+    clear
     echo
     echo
+    echo -e "${GREEN}#########################################################################${NC}"
+    echo
+    echo -e "${GREEN}#######   ${BLINK}Preparing installation final details - please wait..${NC}${GREEN}  #########${NC}"
+    echo
+    echo -e "${GREEN}#########################################################################${NC}"
 
-
+    sleep 10s
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## INFO: Install process completed for ${BYELLOW}$_OPTION${GREEN} node.  exiting...${NC}"
     echo
     echo -e "${GREEN}## INFO: ${BYELLOW}$_OPTION${GREEN} Contract Address = ${BYELLOW}$VARVAL_CONTRACT_ADDR ${NC}"
     echo
-    echo -e "${GREEN}#########################################################################${NC}"
+    FUNC_NODE_ADDR;
+    #echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     echo
     echo -e "${RED}##  IMPORTANT INFORMATION - PLEASE RECORD TO YOUR PASSWORD SAFE${NC}"
     echo
-    echo -e "${GREEN}#########################################################################${NC}"
-    echo
+    echo -e "${GREEN}--------------------------------------------------------------------------${NC}"
     echo
     echo -e "${RED}##  KEY STORE SECRET:        $PASS_KEYSTORE${NC}"
-    echo
     echo -e "${RED}##  POSTGRES DB PASSWORD:    $DB_PWD_NEW${NC}"
     echo
     echo -e "${RED}##  API USERNAME:    $API_EMAIL${NC}"
     echo -e "${RED}##  API PASSWORD:    $API_PASS${NC}"
     echo
+    #echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}#########################################################################${NC}"
-    echo
     echo
     echo -e "${GREEN}## ACTION: paste the following to update your session with updated env variables..${NC}"
     echo
     echo -e "${GREEN}##          source ~/.profile${NC}"
     echo
-    echo
 
     FUNC_NODE_GUI_IPADDR;
-    
     sleep 3s
     FUNC_EXPORT_NODE_KEYS;
     FUNC_EXIT;
@@ -638,17 +640,11 @@ source ~/"plinode_$(hostname -f)".vars
 echo 
 echo -e "${GREEN}#########################################################################${NC}"
 echo -e "${GREEN}   export ${BYELLOW}$_OPTION${GREEN} node keys ${NC}"
-
-#sudo usermod -aG postgres $(getent passwd $EUID | cut -d: -f1)
-
-#echo 
-#echo -e "${GREEN}#########################################################################${NC}"
 echo 
-echo -e   "${RED}######    IMPORTANT FILE - NODE ADDRESS EXPORT FOR WALLET ACCESS    #####${NC}"
-echo -e   "${RED}######    IMPORTANT FILE - PLEASE SECURE APPROPRIATELY               #####${NC}"
+echo -e "${RED}######    IMPORTANT FILE - NODE ADDRESS EXPORT FOR WALLET ACCESS  -   PLEASE SECURE APPROPRIATELY   #####${NC}"
 echo 
-echo -e "${GREEN}   export ${BYELLOW}$_OPTION${GREEN} node keys - exporting keys to file: ~/"plinode_$(hostname -f)_keys_${FDATE}".json${NC}"
-FUNC_NODE_ADDR
+echo -e "${GREEN} exporting keys to file: ~/"plinode_$(hostname -f)_keys_${FDATE}".json${NC}"
+
 
 if [ ! -e $PLI_DEPLOY_PATH/pass ]; then
     echo $PASS_KEYSTORE > $PLI_DEPLOY_PATH/pass
@@ -657,8 +653,7 @@ fi
 
 plugin keys eth export $node_key_primary --newpassword  $PLI_DEPLOY_PATH/pass --output ~/"plinode_$(hostname -f)_keys_${FDATE}".json
 
-echo -e "${GREEN}   export ${BYELLOW}$_OPTION${GREEN} node keys - securing file permissions${NC}"
-
+#echo -e "${GREEN}   export ${BYELLOW}$_OPTION${GREEN} node keys - securing file permissions${NC}"
 chmod 400 ~/"plinode_$(hostname -f)_keys_${FDATE}".json
 
 #chmod 600 $PLI_DEPLOY_PATH/pass
@@ -737,10 +732,10 @@ FUNC_NODE_ADDR(){
     node_keys_arr=()
     IFS=$'\n' read -r -d '' -a node_keys_arr < <( plugin keys eth list | grep Address && printf '\0' )
     node_key_primary=$(echo ${node_keys_arr[0]} | sed s/Address:[[:space:]]/''/)
-    echo
-    echo -e "${GREEN}Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${RED}$node_key_primary ${NC}"
-    echo
-    echo -e "${GREEN}#########################################################################${NC}"
+    
+    echo -e "${GREEN}Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
+    #echo
+    #echo -e "${GREEN}#########################################################################${NC}"
 }
 
 
