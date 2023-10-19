@@ -53,7 +53,7 @@ The scripts has a number of functions, one of which must be passed to run the sc
 ### Usage
 
         Usage: ./pli_node_scripts.sh {function}
-            example:  ./pli_node_scripts.sh fullnode
+            example:  ./pli_node_scripts.sh apothem
 
         where {function} is one of the following;
 
