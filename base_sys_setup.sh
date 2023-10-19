@@ -19,17 +19,17 @@ FUNC_VARS(){
 
 FUNC_VALUE_CHECK(){
     
-    echo -e "${GREEN}#########################################################################"
-    echo -e "${GREEN}#########################################################################"
-    echo -e "${GREEN}"
-    echo -e "${GREEN}      GoPlugin 2.0 Validator Node Deployment Script - Pre Checks"
-    echo -e "${GREEN}"
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
+    echo -e "${GREEN}#########################################################################${NC}"
+    echo 
+    echo -e "${GREEN}      GoPlugin 2.0 Validator Node Deployment Script - Pre Checks${NC}"
+    echo 
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
 
 
 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo
     echo -e "${GREEN}## CONFIRM SCRIPTS VARIABLE DEFINITIONS HAVE BEEN UPDATED...${NC}"
     echo 
@@ -54,7 +54,7 @@ FUNC_VALUE_CHECK(){
 
 FUNC_PKG_CHECK(){
 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo
     echo -e "${GREEN}## CHECK NECESSARY PACKAGES HAVE BEEN INSTALLED...${NC}"
     echo     
@@ -84,7 +84,7 @@ FUNC_SETUP_OS(){
     #echo -e "${GREEN}#########################################################################${NC}"
 
 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo
     echo -e "${GREEN}## Base Setup: System updates...${NC}"
     echo 
@@ -104,7 +104,7 @@ FUNC_SETUP_OS(){
 
 FUNC_SETUP_USER(){
 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo
     echo -e "${GREEN}## Base Setup: Add new local admin account with sudo access...${NC}"
     echo 
@@ -114,7 +114,7 @@ FUNC_SETUP_USER(){
     #   root@plitest:/#
 
     sleep 1s
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo
     echo -e "${GREEN}## Provide user details...${NC}"
     echo 
@@ -125,7 +125,7 @@ FUNC_SETUP_USER(){
     encVAR_PASSWORD=$(mkpasswd -m sha256crypt $VAR_PASSWORD)
 
     sleep 2s
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo
     echo -e "${GREEN}## Base Setup: Creating the new acc user & group & adds to sudoers...${NC}"
     echo 
@@ -146,7 +146,7 @@ FUNC_SETUP_USER(){
 
     echo 
     echo 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo
     echo -e "${GREEN}## Base Setup: Creating SSH keys for new acc user ${NC}"
     echo 
@@ -191,7 +191,7 @@ FUNC_SETUP_USER(){
 FUNC_SETUP_UFW_PORTS(){
     echo 
     echo 
-    echo -e "${GREEN}#########################################################################" 
+    echo -e "${GREEN}#########################################################################${NC}" 
     echo 
     echo -e "${GREEN}## Base Setup: Configure Firewall...${NC}"
     echo 
@@ -216,7 +216,7 @@ FUNC_ENABLE_UFW(){
 
     echo 
     echo 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo 
     echo -e "${GREEN}## Base Setup: Change UFW logging to ufw.log only${NC}"
     echo 
@@ -226,7 +226,7 @@ FUNC_ENABLE_UFW(){
 
     echo 
     echo 
-    echo -e "${GREEN}#########################################################################" 
+    echo -e "${GREEN}#########################################################################${NC}" 
     echo 
     echo -e "${GREEN}## Setup: Enable Firewall...${NC}"
     echo 
@@ -242,7 +242,7 @@ FUNC_ENABLE_UFW(){
 FUNC_SETUP_SECURE_SSH(){
     echo 
     echo 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo
     echo -e "${GREEN}## Base Setup: Change SSH port & Secure Authentication methods...${NC}"
     echo 
@@ -261,14 +261,14 @@ FUNC_SETUP_SECURE_SSH(){
 
     echo 
     echo 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo
     echo -e "${GREEN}## Base Setup: Add new SSH port to firewall...${NC}"
     echo
     sudo ufw allow $PLI_SSH_NEW_PORT/tcp
 
     echo
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo
     echo -e "${GREEN}## Base Setup: Restart SSH service for port change to take effect...${NC}"
     echo 

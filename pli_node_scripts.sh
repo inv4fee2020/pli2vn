@@ -13,7 +13,10 @@ sudo sh -c 'cat /tmp/plisudotmp > /etc/sudoers.d/plinode_deploy'
 
 # Set Colour Vars
 GREEN='\033[0;32m'
-RED='\033[0;31m'
+#RED='\033[0;31m'
+RED='\033[0;91m'  # Intense Red
+YELLOW='\033[0;33m'
+BYELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 FDATE=$(date +"%Y_%m_%d_%H_%M")
@@ -52,7 +55,7 @@ FUNC_VARS(){
 
 FUNC_PKG_CHECK(){
 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## CHECK NECESSARY PACKAGES HAVE BEEN INSTALLED...${NC}"
 
     for i in "${REQ_PACKAGES[@]}"
@@ -71,7 +74,7 @@ FUNC_PKG_CHECK(){
 
 FUNC_VALUE_CHECK(){
 
-    echo -e "${GREEN}#########################################################################"
+    echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## CONFIRM SCRIPTS VARIABLES FILE HAS BEEN UPDATED...${NC}"
 
     # Ask the user acc for login details (comment out to disable)
@@ -157,7 +160,7 @@ FUNC_PASSWD_CHECKS(){
     if ([ -z "$API_PASS" ] || [ "$API_PASS" == "$SAMPLE_API_PASS" ]); then
 
     echo 
-    echo -e "${GREEN}     VARIABLE 'API_PASS' NOT UPDATED MANUALLY - AUTO GENERATING VALUE NOW"
+    echo -e "${GREEN}     VARIABLE 'API_PASS' NOT UPDATED MANUALLY - AUTO GENERATING VALUE NOW${NC}"
     echo
     sleep 2s
 
@@ -178,11 +181,11 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}${NC}"
-    echo -e "${GREEN}             GoPlugin 2.0 Validator Node - Install${NC}"
+    echo -e "${GREEN}             GoPlugin 2.0 ${BYELLOW}$_OPTION${GREEN} Validator Node - Install${NC}"
     echo -e "${GREEN}${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
-    
+    sleep 3s
     # Set working directory to user home folder
     #cd ~/
 
@@ -338,13 +341,61 @@ FUNC_NODE_DEPLOY(){
     sleep 2s
 
 
-###########################  Add Mainnet details  ##########################
-    V2_CONF_FILE="$PLI_DEPLOY_PATH/config.toml"
+    ###########################  Add Mainnet details  ##########################
 
-    sed -i.bak "s/HTTPSPort = 0/HTTPSPort = $PLI_HTTPS_PORT/g" $V2_CONF_FILE
+    #V2_CONF_FILE="$PLI_DEPLOY_PATH/config.toml"
+
+    sed -i.bak "s/HTTPSPort = 0/HTTPSPort = $PLI_HTTPS_PORT/g" $PLI_DEPLOY_PATH/$BASH_FILE3
 
 
-###########################################################################
+    if [ "$_OPTION" == "mainnet" ]; then
+        echo -e "${GREEN} ### Configuring node for ${BYELLOW}$_OPTION${GREEN}..  ###${NC}"
+
+        VARVAL_CHAIN_NAME=$mainnet_name
+        VARVAL_CHAIN_ID=$mainnet_ChainID
+        VARVAL_CONTRACT_ADDR=$mainnet_ContractAddress
+        VARVAL_WSS=$mainnet_wsUrl
+        VARVAL_RPC=$mainnet_httpUrl
+
+    elif [ "$_OPTION" == "apothem" ]; then
+        echo -e "${GREEN} ### Configuring node for ${BYELLOW}$_OPTION${GREEN}..  ###${NC}"
+
+        VARVAL_CHAIN_NAME=$testnet_name
+        VARVAL_CHAIN_ID=$testnet_ChainID
+        VARVAL_CONTRACT_ADDR=$testnet_ContractAddress
+        VARVAL_WSS=$testnet_wsUrl
+        VARVAL_RPC=$testnet_httpUrl
+                    
+    fi
+
+
+    # get current Chains
+    #EVM_CHAIN_ID=$(sudo -u postgres -i psql -d plugin_mainnet_db -AXqtc "select id from evm_chains;")
+    #echo $EVM_CHAIN_ID
+    ### returns 50
+#
+    ## delete existing evm chain id
+    #sudo -u postgres -i psql -d plugin_mainnet_db -c "DELETE from evm_chains WHERE id = '$EVM_CHAIN_ID';"
+
+    sed  -i 's|^ChainID.*|ChainID = '\'$VARVAL_CHAIN_ID\''|g' $PLI_DEPLOY_PATH/$BASH_FILE3
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep ChainID
+
+    sed  -i 's|^LinkContractAddress.*|LinkContractAddress = '\"$VARVAL_CONTRACT_ADDR\"'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep LinkContractAddress
+
+    sed  -i 's|^name.*|name = '\"$VARVAL_CHAIN_NAME\"'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep name
+
+    sed  -i 's|^wsUrl.*|wsUrl = '\"$VARVAL_WSS\"'|g' $PLI_DEPLOY_PATH/$BASH_FILE3
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep wsUrl
+
+    sed  -i 's|^httpUrl.*|httpUrl = '\'$VARVAL_RPC\''|g' $PLI_DEPLOY_PATH/$BASH_FILE3
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep httpUrl
+
+
+    ###########################################################################
+
+
 
     echo
     echo -e "${GREEN}#########################################################################${NC}"
@@ -535,46 +586,60 @@ EOF
     pm2 list 
     sleep 2s
     pm2 list
-    #sleep 5s
-    
+    sleep 5s
+    clear
     echo
     echo
-
-
+    echo
+    echo
+    echo
+    echo
+    echo
+    echo
+    echo
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## INFO: Install process completed.  exiting...${NC}"
+    echo
+    echo -e "${GREEN}#######   Preparing final details - please wait..  #########${NC}"
+    echo
+    echo -e "${GREEN}#########################################################################${NC}"
+
+    sleep 10s
+    clear
+    echo
     echo
     echo
     echo
     echo -e "${GREEN}#########################################################################${NC}"
+    echo -e "${GREEN}## INFO :: Install process completed for ${BYELLOW}$_OPTION${GREEN} node.  exiting...${NC}"
+    echo
+    echo -e "${GREEN}## INFO :: ${BYELLOW}$_OPTION${GREEN} Contract Address = ${BYELLOW}$VARVAL_CONTRACT_ADDR ${NC}"
+    echo
+    FUNC_NODE_ADDR;
+    echo
+    #echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     echo
     echo -e "${RED}##  IMPORTANT INFORMATION - PLEASE RECORD TO YOUR PASSWORD SAFE${NC}"
     echo
-    echo -e "${GREEN}#########################################################################${NC}"
-    echo
+    echo -e "${GREEN}--------------------------------------------------------------------------${NC}"
     echo
     echo -e "${RED}##  KEY STORE SECRET:        $PASS_KEYSTORE${NC}"
-    echo
     echo -e "${RED}##  POSTGRES DB PASSWORD:    $DB_PWD_NEW${NC}"
     echo
     echo -e "${RED}##  API USERNAME:    $API_EMAIL${NC}"
     echo -e "${RED}##  API PASSWORD:    $API_PASS${NC}"
     echo
+    #echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}#########################################################################${NC}"
-    echo
     echo
     echo -e "${GREEN}## ACTION: paste the following to update your session with updated env variables..${NC}"
     echo
     echo -e "${GREEN}##          source ~/.profile${NC}"
     echo
-    echo
 
     FUNC_NODE_GUI_IPADDR;
-    
     sleep 3s
-    #FUNC_EXPORT_NODE_KEYS;
+    FUNC_EXPORT_NODE_KEYS;
     FUNC_EXIT;
     }
 
@@ -587,32 +652,33 @@ FUNC_EXPORT_NODE_KEYS(){
 source ~/"plinode_$(hostname -f)".vars
 echo 
 echo -e "${GREEN}#########################################################################${NC}"
-echo -e "${GREEN}   export node keys {NC}"
-
-#sudo usermod -aG postgres $(getent passwd $EUID | cut -d: -f1)
-
-#echo 
-#echo -e "${GREEN}#########################################################################${NC}"
+echo -e "${GREEN}## INFO :: export ${BYELLOW}$_OPTION${GREEN} node keys ${NC}"
 echo 
-echo -e   "${RED}######    IMPORTANT FILE - NODE ADDRESS EXPORT FOR WALLET ACCESS    #####${NC}"
-echo -e   "${RED}######    IMPORTANT FILE - PLEASE SECURE APPROPRIATELY               #####${NC}"
+echo -e "${RED}######    IMPORTANT FILE - NODE ADDRESS EXPORT FOR WALLET ACCESS  -   PLEASE SECURE APPROPRIATELY   #####${NC}"
 echo 
-echo -e "${GREEN}   export node keys - exporting keys to file: ~/"plinode_$(hostname -f)_keys_${FDATE}".json${NC}"
-FUNC_NODE_ADDR
+echo -e "${GREEN}## INFO :: exporting keys to file: ~/"plinode_$(hostname -f)_keys_${FDATE}".json${NC}"
+echo
+echo -e "${GREEN}#########################################################################${NC}"
+echo
+echo
+echo
 
 if [ ! -e $PLI_DEPLOY_PATH/pass ]; then
-    echo $PASS_KEYSTORE > $PLI_DEPLOY_PATH/pass
-    chmod 400 $PLI_DEPLOY_PATH/pass
+    #echo $PASS_KEYSTORE > $PLI_DEPLOY_PATH/pass
+    echo $PASS_KEYSTORE > /tmp/pass
+    #chmod 400 $PLI_DEPLOY_PATH/pass
+    chmod 400 /tmp/pass
 fi
 
-plugin keys eth export $node_key_primary --newpassword  $PLI_DEPLOY_PATH/pass --output ~/"plinode_$(hostname -f)_keys_${FDATE}".json
+plugin keys eth export $node_key_primary --newpassword  /tmp/pass --output ~/"plinode_$(hostname -f)_keys_${FDATE}".json > /dev/null 2>&1
 
-echo -e "${GREEN}   export node keys - securing file permissions${NC}"
-
+#echo -e "${GREEN}   export ${BYELLOW}$_OPTION${GREEN} node keys - securing file permissions${NC}"
 chmod 400 ~/"plinode_$(hostname -f)_keys_${FDATE}".json
 
 #chmod 600 $PLI_DEPLOY_PATH/pass
-rm -f $PLI_DEPLOY_PATH/pass
+#rm -f $PLI_DEPLOY_PATH/pass
+chmod 600 /tmp/pass
+rm -f /tmp/pass
 sleep 4s
 }
 
@@ -683,21 +749,21 @@ EOF
 FUNC_NODE_ADDR(){
     source ~/"plinode_$(hostname -f)".vars
     cd ~/$PLI_DEPLOY_DIR
-    plugin admin login -f $FILE_API
+    plugin admin login -f $FILE_API > /dev/null 2>&1
     node_keys_arr=()
     IFS=$'\n' read -r -d '' -a node_keys_arr < <( plugin keys eth list | grep Address && printf '\0' )
     node_key_primary=$(echo ${node_keys_arr[0]} | sed s/Address:[[:space:]]/''/)
-    echo
-    echo -e "${GREEN}Your Plugin node regular address is:${NC} ${RED}$node_key_primary ${NC}"
-    echo
-    echo -e "${GREEN}#########################################################################${NC}"
+    
+    echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
+    #echo
+    #echo -e "${GREEN}#########################################################################${NC}"
 }
 
 
 FUNC_NODE_GUI_IPADDR(){
     GUI_IP=$(curl -s ipinfo.io/ip)
     echo
-    echo -e "${GREEN}Your Plugin node GUI IP address is as follows:${NC}"
+    echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node GUI IP address is as follows:${NC}"
     echo
     echo -e "            ${RED}https://$GUI_IP:6689${NC}"
     echo
@@ -721,7 +787,12 @@ FUNC_EXIT_ERROR(){
 
 #clear
 case "$1" in
-        full)
+        mainnet)
+                _OPTION="mainnet"
+                FUNC_NODE_DEPLOY
+                ;;
+        apothem)
+                _OPTION="apothem"
                 FUNC_NODE_DEPLOY
                 ;;
         keys)
@@ -742,12 +813,14 @@ case "$1" in
                 echo 
                 echo "Usage: $0 {function}"
                 echo 
-                echo "    example: " $0 full""
+                echo "    example: " $0 mainnet""
                 echo 
                 echo 
                 echo "where {function} is one of the following;"
                 echo 
-                echo "      full          ==  deploys the full node incl. external initiator & exports the node keys"
+                echo "      mainnet       ==  deploys the full Mainnet node & exports the node keys"
+                echo 
+                echo "      apothem       ==  deploys the full Apothem node & exports the node keys"
                 echo
                 echo "      keys          ==  extracts the node keys from DB and exports to json file for import to MetaMask"
                 echo
