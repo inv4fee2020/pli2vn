@@ -14,7 +14,8 @@ sudo sh -c 'cat /tmp/plisudotmp > /etc/sudoers.d/plinode_deploy'
 # Set Colour Vars
 GREEN='\033[0;32m'
 RED='\033[0;31m'
-YELLOW='\033[1;33m'
+YELLOW='\033[0;33m'
+BYELLOW='\033[1;33m' 
 NC='\033[0m' # No Color
 
 FDATE=$(date +"%Y_%m_%d_%H_%M")
@@ -347,7 +348,7 @@ FUNC_NODE_DEPLOY(){
 
 
     if [ "$_OPTION" == "mainnet" ]; then
-        echo "${GREEN} ### Configuring node for ${NC}${YELLOW}$_OPTION${NC}${GREEN}..  ###${NC}"
+        echo "${GREEN} ### Configuring node for ${BYELLOW}$_OPTION${GREEN}..  ###${NC}"
 
         VARVAL_CHAIN_NAME=$mainnet_name
         VARVAL_CHAIN_ID=$mainnet_ChainID
@@ -356,7 +357,7 @@ FUNC_NODE_DEPLOY(){
         VARVAL_RPC=$mainnet_httpUrl
 
     elif [ "$_OPTION" == "apothem" ]; then
-        echo "${GREEN} ### Configuring node for ${NC}${YELLOW}$_OPTION${NC}${GREEN}..  ###${NC}"
+        echo "${GREEN} ### Configuring node for ${BYELLOW}$_OPTION${GREEN}..  ###${NC}"
 
         VARVAL_CHAIN_NAME=$testnet_name
         VARVAL_CHAIN_ID=$testnet_ChainID
@@ -591,9 +592,9 @@ EOF
 
 
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## INFO: Install process completed for ${NC}${YELLOW}$_OPTION${NC}${GREEN} node.  exiting...${NC}"
+    echo -e "${GREEN}## INFO: Install process completed for ${BYELLOW}$_OPTION${GREEN} node.  exiting...${NC}"
     echo
-    echo -e "${GREEN}## INFO:${NC}${YELLOW}$_OPTION${NC}${GREEN} Contract Address = ${NC}${YELLOW}$VARVAL_CONTRACT_ADDR ${NC}"
+    echo -e "${GREEN}## INFO: ${BYELLOW}$_OPTION${GREEN} Contract Address = ${BYELLOW}$VARVAL_CONTRACT_ADDR ${NC}"
     echo
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
@@ -636,7 +637,7 @@ FUNC_EXPORT_NODE_KEYS(){
 source ~/"plinode_$(hostname -f)".vars
 echo 
 echo -e "${GREEN}#########################################################################${NC}"
-echo -e "${GREEN}   export ${NC}${YELLOW}$_OPTION${NC}${GREEN} node keys ${NC}"
+echo -e "${GREEN}   export ${BYELLOW}$_OPTION${GREEN} node keys ${NC}"
 
 #sudo usermod -aG postgres $(getent passwd $EUID | cut -d: -f1)
 
@@ -646,7 +647,7 @@ echo
 echo -e   "${RED}######    IMPORTANT FILE - NODE ADDRESS EXPORT FOR WALLET ACCESS    #####${NC}"
 echo -e   "${RED}######    IMPORTANT FILE - PLEASE SECURE APPROPRIATELY               #####${NC}"
 echo 
-echo -e "${GREEN}   export ${NC}${YELLOW}$_OPTION${NC}${GREEN} node keys - exporting keys to file: ~/"plinode_$(hostname -f)_keys_${FDATE}".json${NC}"
+echo -e "${GREEN}   export ${BYELLOW}$_OPTION${GREEN} node keys - exporting keys to file: ~/"plinode_$(hostname -f)_keys_${FDATE}".json${NC}"
 FUNC_NODE_ADDR
 
 if [ ! -e $PLI_DEPLOY_PATH/pass ]; then
@@ -656,7 +657,7 @@ fi
 
 plugin keys eth export $node_key_primary --newpassword  $PLI_DEPLOY_PATH/pass --output ~/"plinode_$(hostname -f)_keys_${FDATE}".json
 
-echo -e "${GREEN}   export ${NC}${YELLOW}$_OPTION${NC}${GREEN} node keys - securing file permissions${NC}"
+echo -e "${GREEN}   export ${BYELLOW}$_OPTION${GREEN} node keys - securing file permissions${NC}"
 
 chmod 400 ~/"plinode_$(hostname -f)_keys_${FDATE}".json
 
@@ -737,7 +738,7 @@ FUNC_NODE_ADDR(){
     IFS=$'\n' read -r -d '' -a node_keys_arr < <( plugin keys eth list | grep Address && printf '\0' )
     node_key_primary=$(echo ${node_keys_arr[0]} | sed s/Address:[[:space:]]/''/)
     echo
-    echo -e "${GREEN}Your Plugin ${NC}${YELLOW}$_OPTION${NC}${GREEN} node regular address is:${NC} ${RED}$node_key_primary ${NC}"
+    echo -e "${GREEN}Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${RED}$node_key_primary ${NC}"
     echo
     echo -e "${GREEN}#########################################################################${NC}"
 }
@@ -746,7 +747,7 @@ FUNC_NODE_ADDR(){
 FUNC_NODE_GUI_IPADDR(){
     GUI_IP=$(curl -s ipinfo.io/ip)
     echo
-    echo -e "${GREEN}Your Plugin ${NC}${YELLOW}$_OPTION${NC}${GREEN} node GUI IP address is as follows:${NC}"
+    echo -e "${GREEN}Your Plugin ${BYELLOW}$_OPTION${GREEN} node GUI IP address is as follows:${NC}"
     echo
     echo -e "            ${RED}https://$GUI_IP:6689${NC}"
     echo
