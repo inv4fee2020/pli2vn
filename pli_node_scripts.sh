@@ -657,7 +657,11 @@ echo
 echo -e "${RED}######    IMPORTANT FILE - NODE ADDRESS EXPORT FOR WALLET ACCESS  -   PLEASE SECURE APPROPRIATELY   #####${NC}"
 echo 
 echo -e "${GREEN} exporting keys to file: ~/"plinode_$(hostname -f)_keys_${FDATE}".json${NC}"
-
+echo
+echo -e "${GREEN}#########################################################################${NC}"
+echo
+echo
+echo
 
 if [ ! -e $PLI_DEPLOY_PATH/pass ]; then
     echo $PASS_KEYSTORE > $PLI_DEPLOY_PATH/pass
