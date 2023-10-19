@@ -795,7 +795,7 @@ case "$1" in
                 echo 
                 echo "Usage: $0 {function}"
                 echo 
-                echo "    example: " $0 full""
+                echo "    example: " $0 mainnet""
                 echo 
                 echo 
                 echo "where {function} is one of the following;"
