@@ -367,12 +367,12 @@ FUNC_NODE_DEPLOY(){
 
 
     # get current Chains
-    EVM_CHAIN_ID=$(sudo -u postgres -i psql -d plugin_mainnet_db -AXqtc "select id from evm_chains;")
-    echo $EVM_CHAIN_ID
-    ## returns 50
-
-    # delete existing evm chain id
-    sudo -u postgres -i psql -d plugin_mainnet_db -c "DELETE from evm_chains WHERE id = '$EVM_CHAIN_ID';"
+    #EVM_CHAIN_ID=$(sudo -u postgres -i psql -d plugin_mainnet_db -AXqtc "select id from evm_chains;")
+    #echo $EVM_CHAIN_ID
+    ### returns 50
+#
+    ## delete existing evm chain id
+    #sudo -u postgres -i psql -d plugin_mainnet_db -c "DELETE from evm_chains WHERE id = '$EVM_CHAIN_ID';"
 
     sed  -i 's|^ChainID.*|ChainID = '\'$VARVAL_CHAIN_ID\''|g' $PLI_DEPLOY_PATH/$V2_CONF_FILE
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep ChainID
