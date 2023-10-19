@@ -615,6 +615,8 @@ EOF
     echo -e "${GREEN}## INFO :: ${BYELLOW}$_OPTION${GREEN} Contract Address = ${BYELLOW}$VARVAL_CONTRACT_ADDR ${NC}"
     echo
     FUNC_NODE_ADDR;
+    echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
+    
     echo
     #echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
@@ -669,6 +671,8 @@ if [ ! -e $PLI_DEPLOY_PATH/pass ]; then
     #chmod 400 $PLI_DEPLOY_PATH/pass
     chmod 400 /tmp/pass
 fi
+
+FUNC_NODE_ADDR;
 
 plugin keys eth export $node_key_primary --newpassword  /tmp/pass --output ~/"plinode_$(hostname -f)_keys_${FDATE}".json > /dev/null 2>&1
 
@@ -754,7 +758,7 @@ FUNC_NODE_ADDR(){
     IFS=$'\n' read -r -d '' -a node_keys_arr < <( plugin keys eth list | grep Address && printf '\0' )
     node_key_primary=$(echo ${node_keys_arr[0]} | sed s/Address:[[:space:]]/''/)
     
-    echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
+    #echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
     #echo
     #echo -e "${GREEN}#########################################################################${NC}"
 }
