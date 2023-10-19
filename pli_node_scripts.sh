@@ -587,7 +587,15 @@ EOF
     sleep 2s
     pm2 list
     sleep 5s
-    clear
+    #clear
+    echo
+    echo
+    echo
+    echo
+    echo
+    echo
+    echo
+    echo
     echo
     echo
     echo
@@ -604,7 +612,7 @@ EOF
     echo -e "${GREEN}#########################################################################${NC}"
 
     sleep 10s
-    clear
+    #clear
     echo
     echo
     echo
