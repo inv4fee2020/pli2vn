@@ -338,13 +338,61 @@ FUNC_NODE_DEPLOY(){
     sleep 2s
 
 
-###########################  Add Mainnet details  ##########################
+    ###########################  Add Mainnet details  ##########################
+
     V2_CONF_FILE="$PLI_DEPLOY_PATH/config.toml"
 
     sed -i.bak "s/HTTPSPort = 0/HTTPSPort = $PLI_HTTPS_PORT/g" $V2_CONF_FILE
 
 
-###########################################################################
+    if [ "$_OPTION" == "mainnet" ]; then
+        echo " ### Configuring node for $_OPTION..  ###"
+
+        VARVAL_CHAIN_NAME=$mainnet_name
+        VARVAL_CHAIN_ID=$mainnet_ChainID
+        VARVAL_CONTRACT_ADDR=$mainnet_ContractAddress
+        VARVAL_WSS=$mainnet_wsUrl
+        VARVAL_RPC=$mainnet_httpUrl
+
+    elif [ "$_OPTION" == "apothem" ]; then
+        echo " ### Configuring node for $_OPTION..  ###"
+
+        VARVAL_CHAIN_NAME=$testnet_name
+        VARVAL_CHAIN_ID=$testnet_ChainID
+        VARVAL_CONTRACT_ADDR=$testnet_ContractAddress
+        VARVAL_WSS=$testnet_wsUrl
+        VARVAL_RPC=$testnet_httpUrl
+                    
+    fi
+
+
+    # get current Chains
+    EVM_CHAIN_ID=$(sudo -u postgres -i psql -d plugin_mainnet_db -AXqtc "select id from evm_chains;")
+    echo $EVM_CHAIN_ID
+    ## returns 50
+
+    # delete existing evm chain id
+    sudo -u postgres -i psql -d plugin_mainnet_db -c "DELETE from evm_chains WHERE id = '$EVM_CHAIN_ID';"
+
+    sed  -i 's|^ChainID.*|ChainID = '\'$VARVAL_CHAIN_ID\''|g' $PLI_DEPLOY_PATH/$V2_CONF_FILE
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep ChainID
+
+    sed  -i 's|^LinkContractAddress.*|LinkContractAddress = '\"$VARVAL_CONTRACT_ADDR\"'|g' $PLI_DEPLOY_PATH/$V2_CONF_FILE
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep LinkContractAddress
+
+    sed  -i 's|^name.*|name = '\"$VARVAL_CHAIN_NAME\"'|g' $PLI_DEPLOY_PATH/$V2_CONF_FILE
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep name
+
+    sed  -i 's|^wsUrl.*|wsUrl = '\"$VARVAL_WSS\"'|g' $PLI_DEPLOY_PATH/$V2_CONF_FILE
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep wsUrl
+
+    sed  -i 's|^httpUrl.*|httpUrl = '\'$VARVAL_RPC\''|g' $PLI_DEPLOY_PATH/$V2_CONF_FILE
+    cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep httpUrl
+
+
+    ###########################################################################
+
+
 
     echo
     echo -e "${GREEN}#########################################################################${NC}"
@@ -721,7 +769,12 @@ FUNC_EXIT_ERROR(){
 
 #clear
 case "$1" in
-        full)
+        mainnet)
+                _OPTION="mainnet"
+                FUNC_NODE_DEPLOY
+                ;;
+        apothem)
+                _OPTION="apothem"
                 FUNC_NODE_DEPLOY
                 ;;
         keys)
@@ -747,7 +800,9 @@ case "$1" in
                 echo 
                 echo "where {function} is one of the following;"
                 echo 
-                echo "      full          ==  deploys the full node incl. external initiator & exports the node keys"
+                echo "      mainnet       ==  deploys the full Mainnet node & exports the node keys"
+                echo 
+                echo "      apothem       ==  deploys the full Apothem node & exports the node keys"
                 echo
                 echo "      keys          ==  extracts the node keys from DB and exports to json file for import to MetaMask"
                 echo
