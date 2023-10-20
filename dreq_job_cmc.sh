@@ -91,6 +91,6 @@ echo -e "       Local node job id - Copy to your Solidity script"
 echo -e "================================================================="
 echo -e 
 echo -e "Oracle Contract Address is :   $ORACLE_ADDR"
-echo -e "Job $JOB_TITLE ID is :   $ext_job_id ${NC}"
+echo -e "Job $JOB_TITLE ID is :   $ext_job_id "
 echo 
-echo 
+echo -e "URL for APIConsumer is :   $FETCH_URL${NC}"
