@@ -134,7 +134,8 @@ FUNC_API_MENU(){
     [KuCoin]="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FYSM_INPUT-$_TYSMS_INPUT"
     [BiTrue]="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FYSM_INPUT$_TYSMS_INPUT"
     )
-
+    echo
+    echo
     for i in ${!_apiurl[@]}; do
       echo "API Provider: $i with URL ${_apiurl[$i]}"
       echo "---------------------------------------"
@@ -156,10 +157,10 @@ FUNC_API_MENU(){
     echo "          Select the number for the API Provider you wish to use "
     echo
 
-    select _api in ${!_apiurl[@]} "QUIT" 
+    select _api in "${!_apiurl[@]}" "QUIT" 
     do
         case "$_api" in
-            ${!_apiurl[$_api]}) echo "   API Option: $_api" ; FETCH_URL="${_apiurl[$_api]}"; FUNC_CREATE_JOB; break ;;
+            ${!_apiurl}) echo "   API Option: $_api" ; FETCH_URL="${_apiurl[$_api]}"; FUNC_CREATE_JOB; break ;;
             #${!_apiurl[1]}) echo "   API Option: ${!_apiurl[1]}" ; FETCH_URL="${_apiurl[$_api]}"; FUNC_CREATE_JOB; break ;;
             #${!_apiurl[2]}) echo "   API Option: ${!_apiurl[2]}" ; FETCH_URL="${_apiurl[$_api]}"; FUNC_CREATE_JOB; break ;;
             "QUIT") echo "exiting now..." ; FUNC_EXIT; break ;;
