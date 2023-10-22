@@ -130,9 +130,9 @@ FUNC_API_MENU(){
 
     
     declare -A _apiurl=( 
-    ['Cryptocompare']="https://min-api.cryptocompare.com/data/price?fsym=$_FYSM_INPUT&tsyms=$_TYSMS_INPUT"
-    ['KuCoin']="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FYSM_INPUT-$_TYSMS_INPUT"
-    ['BiTrue']="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FYSM_INPUT$_TYSMS_INPUT"
+    [Cryptocompare]="https://min-api.cryptocompare.com/data/price?fsym=$_FYSM_INPUT&tsyms=$_TYSMS_INPUT",
+    [KuCoin]="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FYSM_INPUT-$_TYSMS_INPUT",
+    [BiTrue]="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FYSM_INPUT$_TYSMS_INPUT"
     )
 
 
