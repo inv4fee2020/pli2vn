@@ -130,8 +130,8 @@ FUNC_API_MENU(){
 
     
     declare -A _apiurl=( 
-    [Cryptocompare]="https://min-api.cryptocompare.com/data/price?fsym=$_FYSM_INPUT&tsyms=$_TYSMS_INPUT",
-    [KuCoin]="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FYSM_INPUT-$_TYSMS_INPUT",
+    [Cryptocompare]="https://min-api.cryptocompare.com/data/price?fsym=$_FYSM_INPUT&tsyms=$_TYSMS_INPUT"
+    [KuCoin]="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FYSM_INPUT-$_TYSMS_INPUT"
     [BiTrue]="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FYSM_INPUT$_TYSMS_INPUT"
     )
 
@@ -141,7 +141,7 @@ FUNC_API_MENU(){
     #node_backup_arr+=(quit)
     #echo ${_apiurl[@]}
     
-    for i in "${!_apiurl[@]}"; do
+    for i in ${!_apiurl[@]}; do
       echo "API Provider: $i with URL ${_apiurl[@]}"
     done
 
@@ -161,7 +161,7 @@ FUNC_API_MENU(){
     echo "          Select the number for the API Provider you wish to use "
     echo
 
-    select _api in "${_apiurl[@]}" "QUIT" 
+    select _api in ${_apiurl[@]} "QUIT" 
     do
         case "$_api" in
             ${!_apiurl[0]}) echo "   API Option: ${!_apiurl[0]}" ; FETCH_URL="${_apiurl[$_api]}"; FUNC_CREATE_JOB; break ;;
