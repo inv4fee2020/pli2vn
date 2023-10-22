@@ -144,13 +144,13 @@ FUNC_API_MENU(){
       echo "API Provider: $i with URL ${_apiurl[@]}"
     done
 
-    declare -a opt_api=()
-    declare -A opt_url=()
-
-    for i in "${!_apiurl[@]}"; do
-      opt_api[$i]="${options[$i]%% *}"
-      opt_url[${opt_api[$i]}]="${_apiurl[$i]#* }"
-    done
+    #declare -a opt_api=()
+    #declare -A opt_url=()
+#
+    #for i in "${!_apiurl[@]}"; do
+    #  opt_api[$i]="${options[$i]%% *}"
+    #  opt_url[${opt_api[$i]}]="${_apiurl[$i]#* }"
+    #done
 
 
     _apiurl_len=${#_apiurl[@]}
@@ -160,12 +160,12 @@ FUNC_API_MENU(){
     echo "          Select the number for the API Provider you wish to use "
     echo
 
-    select _api in "${opt_api[@]}" "QUIT" 
+    select _api in "${_apiurl[@]}" "QUIT" 
     do
         case "$_api" in
-            ${opt_api[0]}) echo "   API Option: ${opt_api[0]}" ; FETCH_URL="${opt_url[$_api]}"; FUNC_CREATE_JOB; break ;;
-            ${opt_api[1]}) echo "   API Option: ${opt_api[1]}" ; FETCH_URL="${opt_url[$_api]}"; FUNC_CREATE_JOB; break ;;
-            ${opt_api[2]}) echo "   API Option: ${opt_api[2]}" ; FETCH_URL="${opt_url[$_api]}"; FUNC_CREATE_JOB; break ;;
+            ${_apiurl[0]}) echo "   API Option: ${_apiurl[0]}" ; FETCH_URL="${_apiurl[$_api]}"; FUNC_CREATE_JOB; break ;;
+            ${_apiurl[1]}) echo "   API Option: ${_apiurl[1]}" ; FETCH_URL="${_apiurl[$_api]}"; FUNC_CREATE_JOB; break ;;
+            ${_apiurl[2]}) echo "   API Option: ${_apiurl[2]}" ; FETCH_URL="${_apiurl[$_api]}"; FUNC_CREATE_JOB; break ;;
             "QUIT") echo "exiting now..." ; FUNC_EXIT; break ;;
             *) echo invalid option;;
         esac
