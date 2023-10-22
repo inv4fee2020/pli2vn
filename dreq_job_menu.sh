@@ -128,8 +128,8 @@ FUNC_API_MENU(){
 
     # FETCH_URL="https://min-api.cryptocompare.com/data/price?fsym=$_FYSM_INPUT&tsyms=$_TYSMS_INPUT"
 
-    _api_provider=()
-
+    
+    declare -A _apiurl
     _apiurl=( [Cryptocompare]="https://min-api.cryptocompare.com/data/price?fsym=$_FYSM_INPUT&tsyms=$_TYSMS_INPUT" \
     [KuCoin]="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FYSM_INPUT-$_TYSMS_INPUT" \
     [BiTrue]="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FYSM_INPUT$_TYSMS_INPUT" )
@@ -138,7 +138,8 @@ FUNC_API_MENU(){
     #node_backup_arr=()
     #BACKUP_FILE=$'\n' read -r -d '' -a node_backup_arr < <( find /plinode_backups/ -type f -name *.gpg | head -n 8 | sort -z )
     #node_backup_arr+=(quit)
-    echo ${_apiurl[@]}
+    #echo ${_apiurl[@]}
+    
     for i in "${!_apiurl[@]}"; do
       echo $i
     done
@@ -161,6 +162,24 @@ FUNC_API_MENU(){
     done
 
 }
+
+#!/usr/bin/env bash
+
+declare -a opt_host=()   # Initialize our arrays, to make sure they're empty.
+declare -A opt_ip=()     # Note that associative arrays require Bash version 4.
+
+for i in "${!options[@]}"; do
+  opt_host[$i]="${options[$i]%% *}"             # create an array of just names
+  opt_ip[${opt_host[$i]}]="${options[$i]#* }"   # map names to IPs
+done
+
+PS3='Please enter your choice (q to quit): '
+select host in "${opt_host[@]}"; do
+  case "$host" in
+    "") break ;;  # This is a fake; any invalid entry makes $host=="", not just "q".
+    *) ssh "${opt_ip[$host]}" ;;
+  esac
+done
 
 
 FUNC_GET_INPUTS;
