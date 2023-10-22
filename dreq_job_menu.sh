@@ -135,14 +135,9 @@ FUNC_API_MENU(){
     [BiTrue]="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FYSM_INPUT$_TYSMS_INPUT"
     )
 
-
-    #node_backup_arr=()
-    #BACKUP_FILE=$'\n' read -r -d '' -a node_backup_arr < <( find /plinode_backups/ -type f -name *.gpg | head -n 8 | sort -z )
-    #node_backup_arr+=(quit)
-    #echo ${_apiurl[@]}
-    
     for i in ${!_apiurl[@]}; do
-      echo "API Provider: $i with URL ${_apiurl[@]}"
+      echo "API Provider: $i with URL ${_apiurl[$i]}"
+      echo "---------------------------------------"
     done
 
     #declare -a opt_api=()
@@ -161,7 +156,7 @@ FUNC_API_MENU(){
     echo "          Select the number for the API Provider you wish to use "
     echo
 
-    select _api in ${_apiurl[@]} "QUIT" 
+    select _api in ${!_apiurl[@]} "QUIT" 
     do
         case "$_api" in
             ${!_apiurl[0]}) echo "   API Option: ${!_apiurl[0]}" ; FETCH_URL="${_apiurl[$_api]}"; FUNC_CREATE_JOB; break ;;
