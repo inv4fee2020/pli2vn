@@ -33,7 +33,7 @@ FUNC_GET_INPUTS(){
     echo "-----------------------------------------------"
     read -p 'Enter your Oracle Contract Address : ' _INPUT
     ORACLE_ADDR="$(echo $_INPUT | sed '/^$/d;/^\\\s*$/d;s/^xdc/0x/g')"
-    FETCH_URL="https://min-api.cryptocompare.com/data/price?fsym=$_FYSM_INPUT&tsyms=$_TYSMS_INPUT"
+    #FETCH_URL="https://min-api.cryptocompare.com/data/price?fsym=$_FYSM_INPUT&tsyms=$_TYSMS_INPUT"
     FUNC_API_MENU;
 }
 
@@ -128,28 +128,28 @@ FUNC_API_MENU(){
 
     # FETCH_URL="https://min-api.cryptocompare.com/data/price?fsym=$_FYSM_INPUT&tsyms=$_TYSMS_INPUT"
 
-_apiurl=([Cryptocompare]="https://min-api.cryptocompare.com/data/price?fsym=$_FYSM_INPUT&tsyms=$_TYSMS_INPUT" \
-        [KuCoin]="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FYSM_INPUT-$_TYSMS_INPUT" \
-        [BiTrue]="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FYSM_INPUT$_TYSMS_INPUT")
+    _apiurl=([Cryptocompare]="https://min-api.cryptocompare.com/data/price?fsym=$_FYSM_INPUT&tsyms=$_TYSMS_INPUT" /
+    [KuCoin]="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FYSM_INPUT-$_TYSMS_INPUT" /
+    [BiTrue]="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FYSM_INPUT$_TYSMS_INPUT")
 
 
-    node_backup_arr=()
+    #node_backup_arr=()
     #BACKUP_FILE=$'\n' read -r -d '' -a node_backup_arr < <( find /plinode_backups/ -type f -name *.gpg | head -n 8 | sort -z )
     #node_backup_arr+=(quit)
     #echo ${node_backup_arr[@]}
-    node_backup_arr_len=${#node_backup_arr[@]}
+    #node_backup_arr_len=${#node_backup_arr[@]}
     #echo $node_backup_arr_len
 
     echo
     echo "          Select the number for the API Provider you wish to use "
     echo
 
-    select _file in "${node_backup_arr[@]}" "QUIT" 
+    select _api in "${_apiurl[@]}" "QUIT" 
     do
-        case $_file in
-            ${node_backup_arr[0]}) echo "   RESTORE MENU - Restoring file: ${node_backup_arr[0]}" ; BACKUP_FILE="${node_backup_arr[0]}"; FUNC_CREATE_JOB; break ;;
-            ${node_backup_arr[1]}) echo "   RESTORE MENU - Restoring file: ${node_backup_arr[1]}" ; BACKUP_FILE="${node_backup_arr[1]}"; FUNC_CREATE_JOB; break ;;
-            ${node_backup_arr[2]}) echo "   RESTORE MENU - Restoring file: ${node_backup_arr[2]}" ; BACKUP_FILE="${node_backup_arr[2]}"; FUNC_CREATE_JOB; break ;;
+        case $_api in
+            ${_apiurl[0]}) echo "   RESTORE MENU - Restoring file: ${_apiurl[0]}" ; FETCH_URL="${node_backup_arr[0]}"; FUNC_CREATE_JOB; break ;;
+            ${_apiurl[1]}) echo "   RESTORE MENU - Restoring file: ${_apiurl[1]}" ; FETCH_URL="${node_backup_arr[1]}"; FUNC_CREATE_JOB; break ;;
+            ${_apiurl[2]}) echo "   RESTORE MENU - Restoring file: ${_apiurl[2]}" ; FETCH_URL="${node_backup_arr[2]}"; FUNC_CREATE_JOB; break ;;
             "QUIT") echo "exiting now..." ; FUNC_EXIT; break ;;
             *) echo invalid option;;
         esac
