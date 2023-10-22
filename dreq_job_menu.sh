@@ -133,9 +133,9 @@ FUNC_API_MENU(){
     #read -p 'Enter FROM Pair (fsym) ticker : ' _FSYM_INPUT && read -p 'Enter TO Pair (tsyms) ticker : ' _TSYMS_INPUT 
     
     declare -A _apiurl=( 
-    [Cryptocompare]="https://min-api.cryptocompare.com/data/price?fsym=$_FSYM_INPUT&tsyms=$_TSYMS_INPUT"
-    [KuCoin]="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FSYM_INPUT-$_TSYMS_INPUT"
-    [BiTrue]="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
+    ["Cryptocompare"]="https://min-api.cryptocompare.com/data/price?fsym=$_FSYM_INPUT&tsyms=$_TSYMS_INPUT"
+    ["KuCoin"]="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FSYM_INPUT-$_TSYMS_INPUT"
+    ["BiTrue"]="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
     )
     echo
     echo
@@ -160,12 +160,12 @@ FUNC_API_MENU(){
     echo "          Select the number for the API Provider you wish to use "
     echo
 
-    select _api in "${!_apiurl[@]}" "QUIT" 
+    select _api in ${!_apiurl[@]} "QUIT" 
     do
         case "$_api" in
-            ${!_apiurl[@]:0}) echo "   API Option: $_api" ; FETCH_URL="${_apiurl[@]:0}"; FUNC_CREATE_JOB; break ;;
-            ${!_apiurl[@]:1}) echo "   API Option: $_api" ; FETCH_URL="${_apiurl[@]:1}"; FUNC_CREATE_JOB; break ;;
-            ${!_apiurl[@]:2}) echo "   API Option: $_api" ; FETCH_URL="${_apiurl[@]:2}"; FUNC_CREATE_JOB; break ;;
+            ${!_apiurl[@]}) echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FUNC_CREATE_JOB; break ;;
+            #${!_apiurl[@]}) echo "   API Option: $_api" ; FETCH_URL="${_apiurl[@]:1}"; FUNC_CREATE_JOB; break ;;
+            #${!_apiurl[@]}) echo "   API Option: $_api" ; FETCH_URL="${_apiurl[@]:2}"; FUNC_CREATE_JOB; break ;;
             "QUIT") echo "exiting now..." ; FUNC_EXIT; break ;;
             *) echo invalid option;;
         esac
