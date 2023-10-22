@@ -141,7 +141,7 @@ FUNC_API_MENU(){
     #echo ${_apiurl[@]}
     
     for i in "${!_apiurl[@]}"; do
-      echo $i
+      echo "API Provider: $i with URL ${_apiurl[@]}"
     done
 
     declare -a opt_api=()
