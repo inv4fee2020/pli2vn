@@ -5,6 +5,10 @@ PLI_VARS_FILE="plinode_$(hostname -f).vars"
 source ~/$PLI_VARS_FILE
 
 GREEN='\033[0;32m'
+#RED='\033[0;31m'
+RED='\033[0;91m'  # Intense Red
+YELLOW='\033[0;33m'
+BYELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 #clear
@@ -124,10 +128,10 @@ EOF
     echo -e "       Local node job id - Copy to your Solidity script"
     echo -e "================================================================="
     echo -e 
-    echo -e "Oracle Contract Address is :   $ORACLE_ADDR"
-    echo -e "Job $JOB_TITLE ID is :   $ext_job_id "
+    echo -e "Oracle Contract Address is :   ${BYELLOW}$ORACLE_ADDR${GREEN}"
+    echo -e "Job $JOB_TITLE ID is :   ${BYELLOW}$ext_job_id${GREEN}"
     echo 
-    echo -e "URL for APIConsumer is :\n   $FETCH_URL${NC}"
+    echo -e "URL for APIConsumer is :\n   ${BYELLOW}$FETCH_URL${NC}"
   }
 
 
