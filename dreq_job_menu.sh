@@ -163,7 +163,7 @@ FUNC_API_MENU(){
     select _api in ${!_apiurl[@]} "QUIT" 
     do
         case "$_api" in
-            ${!_apiurl[@]}) echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FUNC_CREATE_JOB; break ;;
+            "${!_apiurl[@]}") echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FUNC_CREATE_JOB; break ;;
             #${!_apiurl[@]}) echo "   API Option: $_api" ; FETCH_URL="${_apiurl[@]:1}"; FUNC_CREATE_JOB; break ;;
             #${!_apiurl[@]}) echo "   API Option: $_api" ; FETCH_URL="${_apiurl[@]:2}"; FUNC_CREATE_JOB; break ;;
             "QUIT") echo "exiting now..." ; FUNC_EXIT; break ;;
