@@ -612,6 +612,7 @@ EOF
     echo -e "${GREEN}#########################################################################${NC}"
 
     sleep 10s
+    FUNC_LOGROTATE;
     #clear
     echo
     echo
@@ -715,7 +716,6 @@ FUNC_LOGROTATE(){
         cat <<EOF > /tmp/tmpplugin-logs
 /$USER_ID/.pm2/logs/*.log
 /$USER_ID/.plugin/*.log
-/$USER_ID/.cache/*.logf
         {
             su $USER_ID $USER_ID
             rotate 10
@@ -734,8 +734,7 @@ EOF
     else
         cat <<EOF > /tmp/tmpplugin-logs
 /home/$USER_ID/.pm2/logs/*.log
-/home/$USER_ID/.plugin/*.jsonl
-/home/$USER_ID/.cache/*.logf
+/home/$USER_ID/.plugin/*.log
         {
             su $USER_ID $USER_ID
             rotate 10
