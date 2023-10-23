@@ -54,7 +54,8 @@ echo "$_api"
 echo "$_FSYM_INPUT"
 echo "$_TSYMS_INPUT"
 echo "$RAND_NUM"
-JOB_TITLE="${_api}_${_FSYM_INPUT}_${_TSYMS_INPUT}_${RAND_NUM}"
+JOB_TITLE="$_api\\_$_FSYM_INPUT\\_$_TSYMS_INPUT\\_$RAND_NUM"
+#JOB_TITLE="${_api}_${_FSYM_INPUT}_${_TSYMS_INPUT}_${RAND_NUM}"
 JOB_FNAME="$JOB_TITLE.toml"
 
 # Creates the job file and passed variable values 
