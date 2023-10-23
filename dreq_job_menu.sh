@@ -110,9 +110,17 @@ EOF
       sleep 2s
       exit
     else
-      echo -e "${GREEN}INFO :: Successfully created JOB ID $JOB_TITLE ${NC}"
-      #cat /tmp/plivn_job_id.raw 
-      #sleep 2s
+
+      # Get Job ID for newly created job
+      ext_job_id_raw="$(sudo -u postgres -i psql -d plugin_mainnet_db -t -c "SELECT external_job_id FROM jobs WHERE name = '$JOB_TITLE';")"
+      if [[ ! -z "$ext_job_id_raw" ]]; then
+        echo -e "${GREEN}INFO :: Successfully created JOB ID $JOB_TITLE ${NC}"
+      else
+        echo -e "${RED}ERROR :: JOB ID $JOB_TITLE failed to create${NC}"
+        cat /tmp/plivn_job_id.raw
+        FUNC_EXIT_ERROR
+        #sleep 2s
+      fi
     fi
     #echo
 
@@ -142,6 +150,7 @@ FUNC_EXIT(){
 
 
 FUNC_EXIT_ERROR(){
+  echo "An error has occurred.  exiting.."
 	exit 1
 }
   
