@@ -28,11 +28,15 @@ FUNC_GET_INPUTS(){
     sleep 0.5s
     #source ~/"plinode_$(hostname -f)".vars
 
-    read -p 'Enter FROM Pair (fsym) ticker : ' _FYSM_INPUT
-    read -p 'Enter TO Pair (tsyms) ticker : ' _TYSMS_INPUT
+    _FSYM_INPUT=""
+    _TSYMS_INPUT=""
+
+    read -p 'Enter FROM Pair (fsym) ticker : ' _FSYM_INPUT
+    read -p 'Enter TO Pair (tsyms) ticker : ' _TSYMS_INPUT
     echo "-----------------------------------------------"
-    read -p 'Enter your Oracle Contract Address : ' _INPUT
-    ORACLE_ADDR="$(echo $_INPUT | sed '/^$/d;/^\\\s*$/d;s/^xdc/0x/g')"
+    #read -p 'Enter your Oracle Contract Address : ' _INPUT
+    ORACLE_ADDR="xdc268035b8D5d0a583007f6b8443E31C9c650FcbE1"
+    #ORACLE_ADDR="$(echo $_INPUT | sed '/^$/d;/^\\\s*$/d;s/^xdc/0x/g')"
     #FETCH_URL="https://min-api.cryptocompare.com/data/price?fsym=$_FYSM_INPUT&tsyms=$_TYSMS_INPUT"
     FUNC_API_MENU;
 }
@@ -163,7 +167,9 @@ FUNC_API_MENU(){
     select _api in ${!_apiurl[@]} "QUIT" 
     do
         case "$_api" in
-            "KuCoin") echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FUNC_CREATE_JOB; break ;;
+            Cryptocompare) echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FUNC_CREATE_JOB; break ;;
+            KuCoin) echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FUNC_CREATE_JOB; break ;;
+            BiTrue) echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FUNC_CREATE_JOB; break ;;
             #${!_apiurl[@]}) echo "   API Option: $_api" ; FETCH_URL="${_apiurl[@]:1}"; FUNC_CREATE_JOB; break ;;
             #${!_apiurl[@]}) echo "   API Option: $_api" ; FETCH_URL="${_apiurl[@]:2}"; FUNC_CREATE_JOB; break ;;
             "QUIT") echo "exiting now..." ; FUNC_EXIT; break ;;
