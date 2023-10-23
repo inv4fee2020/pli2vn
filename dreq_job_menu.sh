@@ -155,7 +155,7 @@ FUNC_API_MENU(){
     ["Cryptocompare"]="https://min-api.cryptocompare.com/data/price?fsym=$_FSYM_INPUT&tsyms=$_TSYMS_INPUT"
     ["KuCoin"]="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FSYM_INPUT-$_TSYMS_INPUT"
     ["BiTrue"]="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
-    [Binance]="https://api1.binance.com/api/v3/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
+    ["Binance"]="https://api1.binance.com/api/v3/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
     )
     
     #for i in "${!_apiurl[@]}"; do
