@@ -6,9 +6,6 @@ source ~/$PLI_VARS_FILE
 
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
-RAND_NUM=$((1 + $RANDOM % 10000))
-JOB_TITLE="cryptocompare_XDC_USD_test_$RAND_NUM"
-JOB_FNAME="pli2vn_testjob_CC_USD_XDC.toml"
 
 #clear
 
@@ -46,6 +43,11 @@ FUNC_GET_INPUTS(){
 
 
 FUNC_CREATE_JOB(){
+
+
+RAND_NUM=$((1 + $RANDOM % 10000))
+JOB_TITLE="$_api_$_FSYM_INPUT_$_TSYMS_INPUT_$RAND_NUM"
+JOB_FNAME="$JOB_TITLE.toml"
 
 # Creates the job file and passed variable values 
 cat <<EOF > ~/$JOB_FNAME
@@ -101,8 +103,8 @@ EOF
       exit
     else
       echo -e "${GREEN}INFO :: Successfully created JOB ID $JOB_TITLE ${NC}"
-      cat /tmp/plivn_job_id.raw 
-      sleep 2s
+      #cat /tmp/plivn_job_id.raw 
+      #sleep 2s
     fi
     #echo
 
