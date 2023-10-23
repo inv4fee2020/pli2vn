@@ -73,7 +73,7 @@ observationSource = """
 
     decode_cbor  [type="cborparse" data="\$(decode_log.data)"]
     fetch        [type="http" method=GET url="$FETCH_URL" allowUnrestrictedNetworkAccess="true"]
-    parse        [type="jsonparse" path="USD" data="\$(fetch)"]
+    parse        [type="jsonparse" path="$FETCH_PATH" data="\$(fetch)"]
 
     multiply     [type="multiply" input="\$(parse)" times="\$(decode_cbor.times)"]
 
@@ -150,6 +150,7 @@ FUNC_EXIT_ERROR(){
 
 FUNC_API_MENU(){
 
+    FETCH_PATH=""
     # initialise the array with key:value pairs
     declare -A _apiurl=( 
     ["Cryptocompare"]="https://min-api.cryptocompare.com/data/price?fsym=$_FSYM_INPUT&tsyms=$_TSYMS_INPUT"
@@ -174,9 +175,10 @@ FUNC_API_MENU(){
     select _api in ${!_apiurl[@]} "QUIT" 
     do
         case "$_api" in
-            Cryptocompare) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FUNC_CREATE_JOB; break ;;
-            KuCoin) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FUNC_CREATE_JOB; break ;;
-            BiTrue) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FUNC_CREATE_JOB; break ;;
+            Cryptocompare) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="$_TSYMS_INPUT"; FUNC_CREATE_JOB; break ;;
+            KuCoin) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="data,price"; FUNC_CREATE_JOB; break ;;
+            BiTrue) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="price"; FUNC_CREATE_JOB; break ;;
+            Binance) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="price"; FUNC_CREATE_JOB; break ;;
             "QUIT") echo "exiting now..." ; FUNC_EXIT; break ;;
             *) echo invalid option;;
         esac
