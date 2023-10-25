@@ -177,10 +177,10 @@ FUNC_API_MENU(){
     echo "          Select the number for the API Provider you wish to use "
     echo
     echo "------------------------------------------------------------------------------"
-    for i in "${!_apiurl[@]}"; do
-      echo "API Provider: $i"
-    done
-    echo "------------------------------------------------------------------------------"
+    #for i in "${!_apiurl[@]}"; do
+    #  echo "API Provider: $i"
+    #done
+    #echo "------------------------------------------------------------------------------"
 
 
     # Capture user input & call job creation function
