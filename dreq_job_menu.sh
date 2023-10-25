@@ -16,6 +16,9 @@ NC='\033[0m' # No Color
 
 FUNC_GET_INPUTS(){
 
+    # Authenticate sudo perms before script execution to avoid timeouts or errors
+    sudo -l > /dev/null 2>&1
+
     echo -e "${GREEN}#"
     echo -e "#   This script generates the necessary toml blob for a Direct Request Job-Setup section in the docs"
     echo -e "#   source: https://docs.goplugin.co/plugin-2.0/job-setup/steps-to-setup-direct-request-job"
@@ -121,7 +124,7 @@ EOF
     #echo
 
     # Get Job ID for newly created job
-    ext_job_id_raw="$(sudo -u postgres -i psql -d plugin_mainnet_db -t -c "SELECT external_job_id FROM jobs WHERE name = '$JOB_TITLE';")"
+    #ext_job_id_raw="$(sudo -u postgres -i psql -d plugin_mainnet_db -t -c "SELECT external_job_id FROM jobs WHERE name = '$JOB_TITLE';")"
     
     # Remove hyphen separators
     ext_job_id=$(echo $ext_job_id_raw | tr -d \-)
