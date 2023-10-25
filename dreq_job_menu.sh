@@ -161,7 +161,7 @@ FUNC_API_MENU(){
     ["Cryptocompare"]="https://min-api.cryptocompare.com/data/price?fsym=$_FSYM_INPUT&tsyms=$_TSYMS_INPUT"
     ["KuCoin"]="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FSYM_INPUT-$_TSYMS_INPUT"
     ["BiTrue"]="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
-    ["Binance-Non-US"]="https://api1.binance.com/api/v3/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
+    ["Binance(Outside-US)"]="https://api1.binance.com/api/v3/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
     )
     
 
@@ -190,7 +190,7 @@ FUNC_API_MENU(){
             Cryptocompare) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="$_TSYMS_INPUT"; FUNC_CREATE_JOB; break ;;
             KuCoin) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="data,price"; FUNC_CREATE_JOB; break ;;
             BiTrue) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="price"; FUNC_CREATE_JOB; break ;;
-            Binance) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="price"; FUNC_CREATE_JOB; break ;;
+            Binance*) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="price"; FUNC_CREATE_JOB; break ;;
             "QUIT") echo "exiting now..." ; FUNC_EXIT; break ;;
             *) echo invalid option;;
         esac
