@@ -40,7 +40,7 @@ FUNC_GET_INPUTS(){
     echo
     read -p 'Enter your Oracle Contract Address : ' _INPUT
     echo "-----------------------------------------------"
-    #ORACLE_ADDR="xdc268035b8D5d0a583007f6b8443E31C9c650FcbE1"
+    
     ORACLE_ADDR="$(echo $_INPUT | sed '/^$/d;/^\\\s*$/d;s/^xdc/0x/g')"
     FUNC_API_MENU;
 }
