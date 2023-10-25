@@ -164,6 +164,7 @@ FUNC_API_MENU(){
     ["Binance (Excl. US)"]="https://api1.binance.com/api/v3/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
     )
     
+
     #for i in "${!_apiurl[@]}"; do
     #  echo "API Provider: $i with URL ${_apiurl[$i]}"
     #  echo "---------------------------------------"
@@ -175,6 +176,12 @@ FUNC_API_MENU(){
     echo
     echo "          Select the number for the API Provider you wish to use "
     echo
+    echo "------------------------------------------------------------------------------"
+    for i in "${!_apiurl[@]}"; do
+      echo "API Provider: $i"
+    done
+    echo "------------------------------------------------------------------------------"
+
 
     # Capture user input & call job creation function
     select _api in ${!_apiurl[@]} "QUIT" 
@@ -183,7 +190,7 @@ FUNC_API_MENU(){
             Cryptocompare) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="$_TSYMS_INPUT"; FUNC_CREATE_JOB; break ;;
             KuCoin) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="data,price"; FUNC_CREATE_JOB; break ;;
             BiTrue) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="price"; FUNC_CREATE_JOB; break ;;
-            'Binance (Excl. US)') echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="price"; FUNC_CREATE_JOB; break ;;
+            Binance) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="price"; FUNC_CREATE_JOB; break ;;
             "QUIT") echo "exiting now..." ; FUNC_EXIT; break ;;
             *) echo invalid option;;
         esac
