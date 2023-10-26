@@ -59,17 +59,68 @@ medianized_answer [type=median]
 """
 EOF
 
-    echo "Your job filename: $JOB_FNAME has been successfully generated"
-
-    ##!/bin/bash
-    ## set counter 'c' to 1 and condition 
-    ## c is less than or equal to 5
-    #for (( c=1; c<=5; c++ ))
-    #do 
-    #   echo "Welcome $c times"
-    #done
+    #echo "Your job filename: $JOB_FNAME has been successfully generated"
+    FUNC_LOAD_JOB;
+    FUNC_EXIT;
+    
 }
 
+
+FUNC_LOAD_JOB(){
+
+    # Checks that the node API is ready and accepting credentials
+    plugin admin login -f $PLI_DEPLOY_PATH/apicredentials.txt > /dev/null 2>&1
+    if [ $? != 0 ]; then
+      echo
+      echo  -e "${RED}## ERROR :: Plugin admin login encoutered issues${NC}"
+      #sleep 2s
+      exit
+    else
+      echo -e "${GREEN}INFO :: Successfully logged in with API credentials${NC}"
+      #sleep 0.5s
+    fi
+    echo
+
+    # Outputs return response from node API to raw tmp file based on toml blob
+    plugin jobs create ~/$JOB_FNAME > /tmp/plivn_job_id.raw
+    if [ $? != 0 ]; then
+      echo
+      echo  -e "${RED}## ERROR :: Plugin JOBS creation encoutered issues${NC}"
+      cat /tmp/plivn_job_id.raw 
+      sleep 2s
+      exit
+    else
+
+      # Get Job ID for newly created job
+      ext_job_id_raw="$(sudo -u postgres -i psql -d plugin_mainnet_db -t -c "SELECT external_job_id FROM jobs WHERE name = '$JOB_TITLE';")"
+      if [[ ! -z "$ext_job_id_raw" ]]; then
+        echo -e "${GREEN}INFO :: Successfully created JOB ID $JOB_TITLE ${NC}"
+      else
+        echo -e "${RED}ERROR :: JOB ID $JOB_TITLE failed to create${NC}"
+        cat /tmp/plivn_job_id.raw
+        FUNC_EXIT_ERROR
+        #sleep 2s
+      fi
+    fi
+    #echo
+
+    # Get Job ID for newly created job
+    #ext_job_id_raw="$(sudo -u postgres -i psql -d plugin_mainnet_db -t -c "SELECT external_job_id FROM jobs WHERE name = '$JOB_TITLE';")"
+    
+    # Remove hyphen separators
+    ext_job_id=$(echo $ext_job_id_raw | tr -d \-)
+
+
+    echo -e "${GREEN}---------------------------------------------------------------"
+    echo
+    echo -e "       Local node job id - Copy to your Solidity script"
+    echo -e "================================================================="
+    echo -e 
+    echo -e "Oracle Contract Address is :   ${BYELLOW}$ORACLE_ADDR${GREEN}"
+    echo -e "Job $JOB_TITLE ID is :   ${BYELLOW}$ext_job_id${GREEN}"
+    echo 
+    echo -e "URL for APIConsumer is :\n   ${BYELLOW}$FETCH_URL${NC}"
+}
 
 
 
