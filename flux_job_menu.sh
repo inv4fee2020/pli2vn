@@ -146,8 +146,8 @@ FUNC_LOAD_JOB(){
 FUNC_GET_INPUTS(){
 
     # initialise variables with no values
-    JOB_TITLE=""
-    JOB_FNAME=""
+    #JOB_TITLE=""
+    #JOB_FNAME=""
     _FSYM_INPUT=""
     _TSYMS_INPUT=""
     FETCH_PATH=""
@@ -168,12 +168,12 @@ FUNC_GET_INPUTS(){
         JOB_FNAME="$JOB_TITLE.toml"
         echo "GET_INPUTS :: Your job filename is $JOB_FNAME "
         FUNC_FILE_CREATE;
-    else
+    #else
     #elif [ $JOB_TITLE = "" ]; then
     #    JOB_TITLE="FLUX_MONITOR_POLL_IDLE_TIMER_${RAND_NUM}"
     #    JOB_FNAME="$JOB_TITLE.toml"
     #    echo "FILE_CREATE :: Your job filename is $JOB_FNAME "
-        FUNC_FILE_CREATE;
+    #    FUNC_FILE_CREATE;
     fi
 
     
