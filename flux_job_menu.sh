@@ -19,6 +19,8 @@ sudo -l > /dev/null 2>&1
 FUNC_START(){
 
 
+    RAND_NUM=$((1 + $RANDOM % 10000))
+
     _OCA_INPUT=""
     read -p 'Enter your Flux Monitor Contract Address : ' _OCA_INPUT
     echo "-----------------------------------------------"
@@ -160,10 +162,15 @@ FUNC_GET_INPUTS(){
     echo "Data Source $DSINDEX TO Pair (tsyms) ticker is  : $_TSYMS_INPUT"
 
     if [ $CALL_CREATE_FUNC == "true" ]; then
-        RAND_NUM=$((1 + $RANDOM % 10000))
+        #RAND_NUM=$((1 + $RANDOM % 10000))
         JOB_TITLE="FLUX_POLL_IDLE_TIMER_${_FSYM_INPUT}_${_TSYMS_INPUT}_${RAND_NUM}"
         JOB_FNAME="$JOB_TITLE.toml"
         echo "GET_INPUTS :: Your job filename is $JOB_FNAME "
+        FUNC_FILE_CREATE;
+    elif [ $JOB_TITLE = "" ]; then
+        JOB_TITLE="FLUX_MONITOR_POLL_IDLE_TIMER_${RAND_NUM}"
+        JOB_FNAME="$JOB_TITLE.toml"
+        echo "FILE_CREATE :: Your job filename is $JOB_FNAME "
         FUNC_FILE_CREATE;
     fi
 
@@ -215,12 +222,13 @@ EOF
 
 
 FUNC_FILE_CREATE(){
-    RAND_NUM=$((1 + $RANDOM % 10000))
-    if [ $JOB_TITLE = "" ]; then
-        JOB_TITLE="FLUX_MONITOR_POLL_IDLE_TIMER_${RAND_NUM}"
-        JOB_FNAME="$JOB_TITLE.toml"
-        echo "FILE_CREATE :: Your job filename is $JOB_FNAME "
-    fi
+
+    #RAND_NUM=$((1 + $RANDOM % 10000))
+    #if [ $JOB_TITLE = "" ]; then
+    #    JOB_TITLE="FLUX_MONITOR_POLL_IDLE_TIMER_${RAND_NUM}"
+    #    JOB_FNAME="$JOB_TITLE.toml"
+    #    echo "FILE_CREATE :: Your job filename is $JOB_FNAME "
+    #fi
 
 # Creates the job file and passed variable values 
 cat <<EOF > ~/$JOB_FNAME
