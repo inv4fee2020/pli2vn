@@ -52,9 +52,11 @@ FUNC_START(){
 
 
     if [ $DSNUM != "1" ]; then
+        echo " checking var DSNUM... value of $DSNUM provided"
         #RAND_NUM=$((1 + $RANDOM % 10000))
         #JOB_TITLE="FLUX_POLL_IDLE_TIMER_${_FSYM_INPUT}_${_TSYMS_INPUT}_${RAND_NUM}"
         JOB_TITLE=""
+        JOB_FNAME=""
         FUNC_FILE_CREATE;
     else
         CALL_CREATE_FUNC="true"
@@ -224,7 +226,7 @@ FUNC_FILE_CREATE(){
 cat <<EOF > ~/$JOB_FNAME
 type = "fluxmonitor"
 schemaVersion = 1
-name = "Flux Poll Timer + Idle Timer"
+name = "Flux Poll Timer + Idle Timer $RAND_NUM"
 forwardingAllowed = false
 maxTaskDuration = "30s"
 absoluteThreshold = 0
