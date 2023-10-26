@@ -106,7 +106,7 @@ cat <<EOF >> ~/$JOB_FNAME
     // data source "$DSINDEX"
     ds${DSINDEX} [type="http" method=GET url="https://min-api.cryptocompare.com/data/price?fsym=PLI&tsyms=USDT"]
     ds${DSINDEX}_parse" [type="jsonparse" path="USDT"]
-    ds${DSINDEX}_multiply"     [type="multiply" input="$(ds${DSINDEX}_parse)" times=10000]
+    ds${DSINDEX}_multiply"     [type="multiply" input="$('ds'${DSINDEX}'_parse')" times=10000]
     ds${DSINDEX} -> ds${DSINDEX}_parse" -> ds${DSINDEX}_multiply" -> medianized_answer
 EOF
 
