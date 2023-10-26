@@ -230,7 +230,7 @@ FUNC_API_KEY(){
     read -p 'Enter your CMC/CoinMarketCap API KEY : ' _APIKEY_INPUT
     echo "------------------------------------------------------------------------------"
     echo
-    FETCH_URL="${FETCH_URL_A} \"${_APIKEY_INPUT}\"]\"]"
+    FETCH_URL="${FETCH_URL_A} \\"${_APIKEY_INPUT}\\"]\"]"
     #fetch [type=http method=GET url="https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=PLI&convert=USDT" allowUnrestrictedNetworkAccess="true" 
     #headers="[\\"X-CMC_PRO_API_KEY\\", \\"YOUR_API_KEY\\"]"]
 
