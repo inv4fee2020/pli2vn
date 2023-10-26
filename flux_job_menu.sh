@@ -59,7 +59,7 @@ medianized_answer [type=median]
 """
 EOF
 
-    #echo "Your job filename: $JOB_FNAME has been successfully generated"
+    echo "Your job filename: $JOB_FNAME has been successfully generated"
     FUNC_LOAD_JOB;
     FUNC_EXIT;
     
