@@ -27,7 +27,8 @@ FUNC_START(){
     echo "Flux Monitor Oracle Contract Address is : $ORACLE_ADDR"
     echo
     echo
-    FUNC_FILE_CREATE;
+
+    #FUNC_FILE_CREATE;
 
     # Get user input
     read -r -p "Enter the number of Data Sources to use: " DSNUM
@@ -42,11 +43,24 @@ FUNC_START(){
     # The regular expression matches digits only 
     if [[ "$DSNUM" =~ ^[0-9]+$ || "$DSNUM" =~ ^[-][0-9]+$  ]]
     then
-        echo "$0 - $DSNUM is an integer.. progressing"
+        echo " $DSNUM is an integer.. progressing"
     else
-        echo "$0 - $DSNUM is NOT an integer. Please enter integers only."
+        echo " $DSNUM is NOT an integer. Please enter integers only."
         FUNC_EXIT_ERROR;        
     fi
+
+
+
+    if [ $DSNUM != "1" ]; then
+        #RAND_NUM=$((1 + $RANDOM % 10000))
+        #JOB_TITLE="FLUX_POLL_IDLE_TIMER_${_FSYM_INPUT}_${_TSYMS_INPUT}_${RAND_NUM}"
+        JOB_TITLE=""
+        FUNC_FILE_CREATE;
+    else
+        CALL_CREATE_FUNC="true"
+    fi
+
+
 
     echo "------------------------------------------------------------------------------"
     for (( DSINDEX=1; DSINDEX<=$DSNUM; DSINDEX++ )) do
@@ -127,6 +141,7 @@ FUNC_LOAD_JOB(){
 FUNC_GET_INPUTS(){
 
     # initialise variables with no values
+    JOB_TITLE=""
     _FSYM_INPUT=""
     _TSYMS_INPUT=""
     FETCH_PATH=""
@@ -140,6 +155,14 @@ FUNC_GET_INPUTS(){
 
     echo "Data Source $DSINDEX FROM Pair (fsym) ticker is : $_FSYM_INPUT"
     echo "Data Source $DSINDEX TO Pair (tsyms) ticker is  : $_TSYMS_INPUT"
+
+    if [ $CALL_CREATE_FUNC == "true" ]; then
+        RAND_NUM=$((1 + $RANDOM % 10000))
+        JOB_TITLE="FLUX_POLL_IDLE_TIMER_${_FSYM_INPUT}_${_TSYMS_INPUT}_${RAND_NUM}"
+        FUNC_FILE_CREATE;
+    fi
+
+
 
 
     # initialise the array with key:value pairs
@@ -176,9 +199,9 @@ FUNC_GET_INPUTS(){
 cat <<EOF >> ~/$JOB_FNAME
     // data source $DSINDEX
     ds${DSINDEX} [type="http" method=GET url="$FETCH_URL"]
-    ds${DSINDEX}_parse" [type="jsonparse" path="$FETCH_PATH"]
-    ds${DSINDEX}_multiply"     [type="multiply" input="\$(ds${DSINDEX}_parse)" times=10000]
-    ds${DSINDEX} -> ds${DSINDEX}_parse" -> ds${DSINDEX}_multiply" -> medianized_answer
+    ds${DSINDEX}_parse [type="jsonparse" path="$FETCH_PATH"]
+    ds${DSINDEX}_multiply     [type="multiply" input="\$(ds${DSINDEX}_parse)" times=10000]
+    ds${DSINDEX} -> ds${DSINDEX}_parse -> ds${DSINDEX}_multiply -> medianized_answer
 EOF
 
 
@@ -187,7 +210,9 @@ EOF
 
 FUNC_FILE_CREATE(){
     RAND_NUM=$((1 + $RANDOM % 10000))
-    JOB_TITLE="FLUX_MONITOR_POLL_IDLE_TIMER_${RAND_NUM}"
+    if [ $JOB_TITLE = "" ]; then
+        JOB_TITLE="FLUX_MONITOR_POLL_IDLE_TIMER_${RAND_NUM}"
+    fi
     JOB_FNAME="$JOB_TITLE.toml"
 
 # Creates the job file and passed variable values 
