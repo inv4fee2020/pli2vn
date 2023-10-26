@@ -174,7 +174,7 @@ FUNC_GET_INPUTS(){
     done
 
 cat <<EOF >> ~/$JOB_FNAME
-    // data source "$DSINDEX"
+    // data source $DSINDEX
     ds${DSINDEX} [type="http" method=GET url="$FETCH_URL"]
     ds${DSINDEX}_parse" [type="jsonparse" path="$FETCH_PATH"]
     ds${DSINDEX}_multiply"     [type="multiply" input="\$(ds${DSINDEX}_parse)" times=10000]
