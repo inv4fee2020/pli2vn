@@ -229,7 +229,7 @@ FUNC_API_KEY(){
     read -p 'Enter your CMC/CoinMarketCap API KEY : ' _APIKEY_INPUT
     echo "------------------------------------------------------------------------------"
     echo
-    FETCH_URL="${FETCH_URL_A} \\"${_APIKEY_INPUT}\\"]"
+    FETCH_URL="${FETCH_URL_A} \\"${_APIKEY_INPUT}\\"]\\"]"
     echo "Your CMC API URL is : $FETCH_URL"
     sleep 5s
 }
