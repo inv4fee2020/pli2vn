@@ -186,7 +186,7 @@ FUNC_GET_INPUTS(){
     ["KuCoin"]="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FSYM_INPUT-$_TSYMS_INPUT"
     ["BiTrue"]="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
     ["Binance"]="https://api1.binance.com/api/v3/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
-    ["CMC"]="https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=$_FSYM_INPUT&convert=$_TSYMS_INPUT\" allowUnrestrictedNetworkAccess=\"true\" headers=\"[\\\"X-CMC_PRO_API_KEY\\\","
+    ["CMC"]="https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=$_FSYM_INPUT&convert=$_TSYMS_INPUT\" allowUnrestrictedNetworkAccess=\"true\" headers=\"[\\\\"X-CMC_PRO_API_KEY\\\\","
 
     )
 
@@ -230,7 +230,7 @@ FUNC_API_KEY(){
     read -p 'Enter your CMC/CoinMarketCap API KEY : ' _APIKEY_INPUT
     echo "------------------------------------------------------------------------------"
     echo
-    FETCH_URL="${FETCH_URL_A} \\\"${_APIKEY_INPUT}\\\"]\"]"
+    FETCH_URL="${FETCH_URL_A} \\\\"${_APIKEY_INPUT}\\\\"]\"]"
     #fetch [type=http method=GET url="https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=PLI&convert=USDT" allowUnrestrictedNetworkAccess="true" 
     #headers="[\\"X-CMC_PRO_API_KEY\\", \\"YOUR_API_KEY\\"]"]
 
