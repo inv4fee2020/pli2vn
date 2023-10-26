@@ -227,7 +227,7 @@ FUNC_FILE_CREATE(){
 
     #RAND_NUM=$((1 + $RANDOM % 10000))
     if [ $SINGLE_DS == "false" ]; then
-        JOB_TITLE="FLUX_MONITOR_POLL_IDLE_TIMER_${RAND_NUM}"
+        JOB_TITLE="FLUX_POLL_IDLE_TIMER_${RAND_NUM}"
         JOB_FNAME="$JOB_TITLE.toml"
         echo "FILE_CREATE :: Your job filename is $JOB_FNAME "
     fi
