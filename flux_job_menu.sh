@@ -138,7 +138,7 @@ FUNC_LOAD_JOB(){
     echo -e "Oracle Contract Address is :   ${BYELLOW}$ORACLE_ADDR${GREEN}"
     echo -e "Job $JOB_TITLE ID is :   ${BYELLOW}$ext_job_id${GREEN}"
     echo 
-    echo -e "URL for APIConsumer is :\n   ${BYELLOW}$FETCH_URL${NC}"
+    #echo -e "URL for Flux Remix is :\n   ${BYELLOW}$FETCH_URL${NC}"
 }
 
 
@@ -231,8 +231,6 @@ FUNC_API_KEY(){
     echo "------------------------------------------------------------------------------"
     echo
     FETCH_URL="${FETCH_URL_A} \\\\"${_APIKEY_INPUT}\\\\"]"
-    #fetch [type=http method=GET url="https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=PLI&convert=USDT" allowUnrestrictedNetworkAccess="true" 
-    #headers="[\\"X-CMC_PRO_API_KEY\\", \\"YOUR_API_KEY\\"]"]
 
     echo "Your CMC API URL is : $FETCH_URL"
     sleep 5s
