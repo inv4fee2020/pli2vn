@@ -27,7 +27,7 @@ FUNC_START(){
     echo "Flux Monitor Oracle Contract Address is : $ORACLE_ADDR"
     echo
     echo
-
+    FUNC_FILE_CREATE;
 
     # Get user input
     read -r -p "Enter the number of Data Sources to use: " DSNUM
@@ -45,6 +45,7 @@ FUNC_START(){
         echo "$0 - $DSNUM is an integer.. progressing"
     else
         echo "$0 - $DSNUM is NOT an integer. Please enter integers only."
+        FUNC_EXIT_ERROR;        
     fi
 
     echo "------------------------------------------------------------------------------"
@@ -123,11 +124,11 @@ FUNC_FILE_CREATE(){
 cat <<EOF > ~/$JOB_FNAME
 type = "fluxmonitor"
 schemaVersion = 1
-name = "PLI/USDT Flux Manual"
+name = "Flux Poll Timer + Idle Timer"
 forwardingAllowed = false
 maxTaskDuration = "30s"
 absoluteThreshold = 0
-contractAddress = "0x3Da750B3c315744821ade4729a160C32ED334082"
+contractAddress = "$ORACLE_ADDR"
 drumbeatEnabled = false
 drumbeatSchedule = "CRON_TZ=UTC * */20 * * * *"
 idleTimerPeriod = "30s"
