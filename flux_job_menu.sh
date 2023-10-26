@@ -51,7 +51,6 @@ FUNC_START(){
     echo "------------------------------------------------------------------------------"
     for (( DSINDEX=1; DSINDEX<=$DSNUM; DSINDEX++ )) do
       echo "Data Source : $DSINDEX"
-      FUNC_GET_API;
       FUNC_GET_INPUTS;
     done
     echo "------------------------------------------------------------------------------"
@@ -72,21 +71,6 @@ EOF
 }
 
 
-
-FUNC_GET_API(){
-    
-
-    #for i in "${!_apiurl[@]}"; do
-    #  echo "API Provider: $i with URL ${_apiurl[$i]}"
-    #  echo "---------------------------------------"
-    #done
-
-    #_apiurl_len=${#_apiurl[@]}
-    #echo $_apiurl_len
-
-
-
-}
 
 
 FUNC_GET_INPUTS(){
