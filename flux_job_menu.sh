@@ -59,7 +59,7 @@ medianized_answer [type=median]
 """
 EOF
 
-
+    echo "Your job filename: $JOB_FNAME has been successfully generated"
 
     ##!/bin/bash
     ## set counter 'c' to 1 and condition 
