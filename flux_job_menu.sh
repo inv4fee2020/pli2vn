@@ -142,6 +142,7 @@ FUNC_GET_INPUTS(){
 
     # initialise variables with no values
     JOB_TITLE=""
+    JOB_FNAME=""
     _FSYM_INPUT=""
     _TSYMS_INPUT=""
     FETCH_PATH=""
@@ -159,9 +160,12 @@ FUNC_GET_INPUTS(){
     if [ $CALL_CREATE_FUNC == "true" ]; then
         RAND_NUM=$((1 + $RANDOM % 10000))
         JOB_TITLE="FLUX_POLL_IDLE_TIMER_${_FSYM_INPUT}_${_TSYMS_INPUT}_${RAND_NUM}"
+        JOB_FNAME="$JOB_TITLE.toml"
+        echo "GET_INPUTS :: Your job filename is $JOB_FNAME "
         FUNC_FILE_CREATE;
     fi
 
+    
 
 
 
@@ -212,8 +216,9 @@ FUNC_FILE_CREATE(){
     RAND_NUM=$((1 + $RANDOM % 10000))
     if [ $JOB_TITLE = "" ]; then
         JOB_TITLE="FLUX_MONITOR_POLL_IDLE_TIMER_${RAND_NUM}"
+        JOB_FNAME="$JOB_TITLE.toml"
+        echo "FILE_CREATE :: Your job filename is $JOB_FNAME "
     fi
-    JOB_FNAME="$JOB_TITLE.toml"
 
 # Creates the job file and passed variable values 
 cat <<EOF > ~/$JOB_FNAME
