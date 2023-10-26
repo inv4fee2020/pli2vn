@@ -104,11 +104,10 @@ FUNC_GET_INPUTS(){
 
 cat <<EOF >> ~/$JOB_FNAME
     // data source "$DSINDEX"
-    "ds$DSINDEX" [type="http" method=GET
-url="https://min-api.cryptocompare.com/data/price?fsym=PLI&tsyms=USDT"]
-    "ds$DSINDEX_parse" [type="jsonparse" path="USDT"]
-    "ds$DSINDEX_multiply"     [type="multiply" input="$('ds$DSINDEX_parse')" times=10000]
-    "ds$DSINDEX" -> "ds$DSINDEX_parse" -> "ds$DSINDEX_multiply" -> medianized_answer
+    "ds$DSINDEX" [type="http" method=GET url="https://min-api.cryptocompare.com/data/price?fsym=PLI&tsyms=USDT"]
+    "ds$DSINDEX\_parse" [type="jsonparse" path="USDT"]
+    "ds$DSINDEX\_multiply"     [type="multiply" input="$('ds$DSINDEX_parse')" times=10000]
+    "ds$DSINDEX" -> "ds$DSINDEX\_parse" -> "ds$DSINDEX\_multiply" -> medianized_answer
 EOF
 
 
