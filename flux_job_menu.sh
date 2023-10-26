@@ -51,6 +51,7 @@ FUNC_START(){
     echo "------------------------------------------------------------------------------"
     for (( DSINDEX=1; DSINDEX<=$DSNUM; DSINDEX++ )) do
       echo "Data Source : $DSINDEX"
+      FUNC_GET_API;
       FUNC_GET_INPUTS;
     done
     echo "------------------------------------------------------------------------------"
@@ -72,40 +73,73 @@ EOF
 
 
 
+FUNC_GET_API(){
+    
+
+    #for i in "${!_apiurl[@]}"; do
+    #  echo "API Provider: $i with URL ${_apiurl[$i]}"
+    #  echo "---------------------------------------"
+    #done
+
+    #_apiurl_len=${#_apiurl[@]}
+    #echo $_apiurl_len
+
+
+
+}
+
+
 FUNC_GET_INPUTS(){
-
-
-    #echo -e "${GREEN}#"
-    #echo -e "#   This script generates the necessary toml blob for a Flux Monitor Job-Setup section in the docs"
-    #echo -e "#   source: https://docs.goplugin.co/plugin-2.0/job-setup/flux-monitor-job/poll-timer-+-idle-timer-recommended"
-    #echo -e "#"
-    #echo -e "#   The script removes the "-" hyphen from the original returned 'external_job_id' value"
-    #echo -e "#"
-    #echo -e "#   The script checks for leading  / trailing white spaces and removes as necessary"
-    #echo -e "#   & converts the 'xdc' prefix to '0x' as necessary"
-    #echo -e "#"
-    #echo -e "#${NC}"
-    #sleep 0.5s
-    ##source ~/"plinode_$(hostname -f)".vars
-
 
     # initialise variables with no values
     _FSYM_INPUT=""
     _TSYMS_INPUT=""
+    FETCH_PATH=""
+
+    # initialise the array with key:value pairs
+    declare -A _apiurl=( 
+    ["Cryptocompare"]="https://min-api.cryptocompare.com/data/price?fsym=$_FSYM_INPUT&tsyms=$_TSYMS_INPUT"
+    ["KuCoin"]="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FSYM_INPUT-$_TSYMS_INPUT"
+    ["BiTrue"]="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
+    ["Binance"]="https://api1.binance.com/api/v3/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
+    )
+
 
     read -p 'Enter FROM Pair (fsym) ticker : ' _FSYM_INPUT
     read -p 'Enter TO Pair (tsyms) ticker : ' _TSYMS_INPUT
     #echo "-----------------------------------------------"
     #echo
-    #FUNC_API_MENU;
+    #FUNC_API_MENU;    
+    echo
+    echo "          Select the number for the API Provider you wish to use "
+    echo
+    echo "------------------------------------------------------------------------------"
+    #for i in "${!_apiurl[@]}"; do
+    #  echo "API Provider: $i"
+    #done
+    #echo "------------------------------------------------------------------------------"
+
+
+    # Capture user input & call job creation function
+    select _api in ${!_apiurl[@]} "QUIT" 
+    do
+        case "$_api" in
+            Cryptocompare) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="$_TSYMS_INPUT"; break ;;
+            KuCoin) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="data,price"; break ;;
+            BiTrue) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="price"; break ;;
+            Binance*) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="price"; break ;;
+            "QUIT") echo "exiting now..." ; FUNC_EXIT; break ;;
+            *) echo invalid option;;
+        esac
+    done
 
     echo "Data Source $DSINDEX FROM Pair (fsym) ticker is : $_FSYM_INPUT"
     echo "Data Source $DSINDEX TO Pair (tsyms) ticker is  : $_TSYMS_INPUT"
 
 cat <<EOF >> ~/$JOB_FNAME
     // data source "$DSINDEX"
-    ds${DSINDEX} [type="http" method=GET url="https://min-api.cryptocompare.com/data/price?fsym=PLI&tsyms=USDT"]
-    ds${DSINDEX}_parse" [type="jsonparse" path="USDT"]
+    ds${DSINDEX} [type="http" method=GET url="$FETCH_URL"]
+    ds${DSINDEX}_parse" [type="jsonparse" path="$FETCH_PATH"]
     ds${DSINDEX}_multiply"     [type="multiply" input="\$(ds${DSINDEX}_parse)" times=10000]
     ds${DSINDEX} -> ds${DSINDEX}_parse" -> ds${DSINDEX}_multiply" -> medianized_answer
 EOF
