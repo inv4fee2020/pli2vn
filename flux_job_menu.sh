@@ -226,7 +226,7 @@ FUNC_FILE_CREATE(){
 cat <<EOF > ~/$JOB_FNAME
 type = "fluxmonitor"
 schemaVersion = 1
-name = "Flux Poll Timer + Idle Timer $RAND_NUM"
+name = "$JOB_TITLE"
 forwardingAllowed = false
 maxTaskDuration = "30s"
 absoluteThreshold = 0
