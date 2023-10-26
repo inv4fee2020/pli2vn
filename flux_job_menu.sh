@@ -12,7 +12,23 @@ BYELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 
+# Authenticate sudo perms before script execution to avoid timeouts or errors
+sudo -l > /dev/null 2>&1
+
+
 FUNC_START(){
+
+
+    _OCA_INPUT=""
+    read -p 'Enter your Flux Monitor Contract Address : ' _OCA_INPUT
+    echo "-----------------------------------------------"
+    
+    ORACLE_ADDR="$(echo $_OCA_INPUT | sed '/^$/d;/^\\\s*$/d;s/^xdc/0x/g')"
+    echo "Flux Monitor Oracle Contract Address is : $ORACLE_ADDR"
+    echo
+    echo
+
+
     # Get user input
     read -r -p "Enter the number of Data Sources to use: " DSNUM
     
@@ -37,6 +53,12 @@ FUNC_START(){
       FUNC_GET_INPUTS;
     done
     echo "------------------------------------------------------------------------------"
+cat <<EOF >> ~/$JOB_FNAME
+    medianized_answer [type=median]
+"""
+EOF
+
+
 
     ##!/bin/bash
     ## set counter 'c' to 1 and condition 
@@ -51,8 +73,6 @@ FUNC_START(){
 
 FUNC_GET_INPUTS(){
 
-    # Authenticate sudo perms before script execution to avoid timeouts or errors
-    sudo -l > /dev/null 2>&1
 
     #echo -e "${GREEN}#"
     #echo -e "#   This script generates the necessary toml blob for a Flux Monitor Job-Setup section in the docs"
@@ -71,24 +91,54 @@ FUNC_GET_INPUTS(){
     # initialise variables with no values
     _FSYM_INPUT=""
     _TSYMS_INPUT=""
-    _OCA_INPUT=""
 
     read -p 'Enter FROM Pair (fsym) ticker : ' _FSYM_INPUT
     read -p 'Enter TO Pair (tsyms) ticker : ' _TSYMS_INPUT
     #echo "-----------------------------------------------"
     #echo
-    read -p 'Enter your Oracle Contract Address : ' _OCA_INPUT
-    echo "-----------------------------------------------"
-    
-    ORACLE_ADDR="$(echo $_OCA_INPUT | sed '/^$/d;/^\\\s*$/d;s/^xdc/0x/g')"
     #FUNC_API_MENU;
 
     echo "Data Source $DSINDEX FROM Pair (fsym) ticker is : $_FSYM_INPUT"
     echo "Data Source $DSINDEX TO Pair (tsyms) ticker is  : $_TSYMS_INPUT"
-    echo "Data Source $DSINDEX Oracle Contract Address is : $ORACLE_ADDR"
+
+cat <<EOF >> ~/$JOB_FNAME
+    // data source "$DSINDEX"
+    "ds$DSINDEX" [type="http" method=GET
+url="https://min-api.cryptocompare.com/data/price?fsym=PLI&tsyms=USDT"]
+    "ds$DSINDEX_parse" [type="jsonparse" path="USDT"]
+    "ds$DSINDEX_multiply"     [type="multiply" input="$('ds$DSINDEX_parse')" times=10000]
+    "ds$DSINDEX" -> "ds$DSINDEX_parse" -> "ds$DSINDEX_multiply" -> medianized_answer
+EOF
 
 
 }
+
+
+FUNC_FILE_CREATE(){
+    RAND_NUM=$((1 + $RANDOM % 10000))
+    JOB_TITLE="FLUX_MONITOR_POLL_IDLE_TIMER_${RAND_NUM}"
+    JOB_FNAME="$JOB_TITLE.toml"
+
+# Creates the job file and passed variable values 
+cat <<EOF > ~/$JOB_FNAME
+type = "fluxmonitor"
+schemaVersion = 1
+name = "PLI/USDT Flux Manual"
+forwardingAllowed = false
+maxTaskDuration = "30s"
+absoluteThreshold = 0
+contractAddress = "0x3Da750B3c315744821ade4729a160C32ED334082"
+drumbeatEnabled = false
+drumbeatSchedule = "CRON_TZ=UTC * */20 * * * *"
+idleTimerPeriod = "30s"
+idleTimerDisabled = true
+pollTimerPeriod = "1m0s"
+pollTimerDisabled = true
+threshold = 0.5
+observationSource = """
+EOF
+}
+
 
 
 FUNC_EXIT(){
@@ -104,3 +154,49 @@ FUNC_EXIT_ERROR(){
 
 
 FUNC_START
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+type = "fluxmonitor"
+schemaVersion = 1
+name = "XDC/USDT Flux Poll Timer + Idle Timer"
+forwardingAllowed = false
+maxTaskDuration = "30s"
+absoluteThreshold = 0
+contractAddress = "FM Contract address"
+drumbeatEnabled = false
+drumbeatSchedule = "CRON_TZ=UTC */10 * * * * *"
+idleTimerPeriod = "30s"
+idleTimerDisabled = false
+pollTimerPeriod = "1m0s"
+pollTimerDisabled = false
+threshold = 0.1
+observationSource = """
+
+// data source 1
+ds1 [type="http" method=GET url="<sample_api_link>/data/price?fsym=XDC&tsyms=USDT"]
+ds1_parse [type="jsonparse" path="USDT"]
+ds1_multiply [type="multiply" input="$(ds1_parse)" times=10000]
+ds1 -> ds1_parse -> ds1_multiply -> medianized_answer
+
+// data source 2
+ds2 [type="http" method=GET url="<sample_api_link>/data/price?fsym=XDC&tsyms=USDT"]
+ds2_parse [type="jsonparse" path="USDT"]
+ds2_multiply [type="multiply" input="$(ds2_parse)" times=10000]
+ds2 -> ds2_parse -> ds2_multiply -> medianized_answer
+
+medianized_answer [type=median]
+"""
