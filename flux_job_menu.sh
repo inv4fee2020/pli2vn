@@ -55,7 +55,7 @@ FUNC_START(){
     done
     echo "------------------------------------------------------------------------------"
 cat <<EOF >> ~/$JOB_FNAME
-    medianized_answer [type=median]
+medianized_answer [type=median]
 """
 EOF
 
@@ -154,49 +154,3 @@ FUNC_EXIT_ERROR(){
 
 
 FUNC_START
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-type = "fluxmonitor"
-schemaVersion = 1
-name = "XDC/USDT Flux Poll Timer + Idle Timer"
-forwardingAllowed = false
-maxTaskDuration = "30s"
-absoluteThreshold = 0
-contractAddress = "FM Contract address"
-drumbeatEnabled = false
-drumbeatSchedule = "CRON_TZ=UTC */10 * * * * *"
-idleTimerPeriod = "30s"
-idleTimerDisabled = false
-pollTimerPeriod = "1m0s"
-pollTimerDisabled = false
-threshold = 0.1
-observationSource = """
-
-// data source 1
-ds1 [type="http" method=GET url="<sample_api_link>/data/price?fsym=XDC&tsyms=USDT"]
-ds1_parse [type="jsonparse" path="USDT"]
-ds1_multiply [type="multiply" input="$(ds1_parse)" times=10000]
-ds1 -> ds1_parse -> ds1_multiply -> medianized_answer
-
-// data source 2
-ds2 [type="http" method=GET url="<sample_api_link>/data/price?fsym=XDC&tsyms=USDT"]
-ds2_parse [type="jsonparse" path="USDT"]
-ds2_multiply [type="multiply" input="$(ds2_parse)" times=10000]
-ds2 -> ds2_parse -> ds2_multiply -> medianized_answer
-
-medianized_answer [type=median]
-"""
