@@ -186,6 +186,8 @@ FUNC_GET_INPUTS(){
     ["KuCoin"]="https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=$_FSYM_INPUT-$_TSYMS_INPUT"
     ["BiTrue"]="https://openapi.bitrue.com/api/v1/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
     ["Binance"]="https://api1.binance.com/api/v3/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
+    ["CMC"]="https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=$_FSYM_INPUT&convert=$_TSYMS_INPUT\" allowUnrestrictedNetworkAccess=\"true\" headers=\"[\\"X-CMC_PRO_API_KEY\\","]
+
     )
 
     echo
@@ -206,6 +208,7 @@ FUNC_GET_INPUTS(){
             KuCoin) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="data,price"; break ;;
             BiTrue) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="price"; break ;;
             Binance*) echo; echo "   API Option: $_api" ; FETCH_URL=${_apiurl[$_api]}; FETCH_PATH="price"; break ;;
+            CMC) echo; echo "   API Option: $_api" ; FETCH_URL_A=${_apiurl[$_api]}; FETCH_PATH="data,$_FSYM_INPUT,quote,$_TSYMS_INPUT,price"; FUNC_API_KEY; break ;;
             "QUIT") echo "exiting now..." ; FUNC_EXIT; break ;;
             *) echo invalid option;;
         esac
@@ -218,8 +221,17 @@ cat <<EOF >> ~/$JOB_FNAME
     ds${DSINDEX}_multiply     [type="multiply" input="\$(ds${DSINDEX}_parse)" times=10000]
     ds${DSINDEX} -> ds${DSINDEX}_parse -> ds${DSINDEX}_multiply -> medianized_answer
 EOF
+}
 
 
+FUNC_API_KEY(){
+
+    read -p 'Enter your CMC/CoinMarketCap API KEY : ' _APIKEY_INPUT
+    echo "------------------------------------------------------------------------------"
+    echo
+    FETCH_URL="${FETCH_URL_A} \\"${_APIKEY_INPUT}\\"]"
+    echo "Your CMC API URL is : $FETCH_URL"
+    sleep 5s
 }
 
 
