@@ -80,6 +80,17 @@ FUNC_GET_INPUTS(){
     _TSYMS_INPUT=""
     FETCH_PATH=""
 
+
+    read -p 'Enter FROM Pair (fsym) ticker : ' _FSYM_INPUT
+    read -p 'Enter TO Pair (tsyms) ticker : ' _TSYMS_INPUT
+    echo "------------------------------------------------------------------------------"
+    echo
+
+
+    echo "Data Source $DSINDEX FROM Pair (fsym) ticker is : $_FSYM_INPUT"
+    echo "Data Source $DSINDEX TO Pair (tsyms) ticker is  : $_TSYMS_INPUT"
+
+
     # initialise the array with key:value pairs
     declare -A _apiurl=( 
     ["Cryptocompare"]="https://min-api.cryptocompare.com/data/price?fsym=$_FSYM_INPUT&tsyms=$_TSYMS_INPUT"
@@ -88,12 +99,6 @@ FUNC_GET_INPUTS(){
     ["Binance"]="https://api1.binance.com/api/v3/ticker/price?symbol=$_FSYM_INPUT$_TSYMS_INPUT"
     )
 
-
-    read -p 'Enter FROM Pair (fsym) ticker : ' _FSYM_INPUT
-    read -p 'Enter TO Pair (tsyms) ticker : ' _TSYMS_INPUT
-    #echo "-----------------------------------------------"
-    #echo
-    #FUNC_API_MENU;    
     echo
     echo "          Select the number for the API Provider you wish to use "
     echo
@@ -116,9 +121,6 @@ FUNC_GET_INPUTS(){
             *) echo invalid option;;
         esac
     done
-
-    echo "Data Source $DSINDEX FROM Pair (fsym) ticker is : $_FSYM_INPUT"
-    echo "Data Source $DSINDEX TO Pair (tsyms) ticker is  : $_TSYMS_INPUT"
 
 cat <<EOF >> ~/$JOB_FNAME
     // data source "$DSINDEX"
