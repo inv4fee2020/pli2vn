@@ -504,27 +504,6 @@ FUNC_NODE_DEPLOY(){
 <(echo "[dn]"; echo CN=localhost; echo "[req]"; echo distinguished_name=dn; echo "[EXT]"; echo subjectAltName=DNS:localhost; echo keyUsage=digitalSignature; echo \
 extendedKeyUsage=serverAuth) -subj "/CN=localhost"
     sleep 1s
-    
-    read -p 'Node to be run on Mainnet: (type 'Y/y' for mainnet)' VAR_MODE
-    if [[ $VAR_MODE == 'Y' || $VAR_MODE == 'y' ]];then
-    echo 
-    echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## Install: UPDATE file $BASH_FILE3 with new mainnet value...${NC}"
-    echo
-
-        sed -i -e "s/ChainID = '51'/ChainID = '50'/g" $PLI_DEPLOY_PATH/$BASH_FILE3
-        sed -i -e "s/LinkContractAddress = \"0x33f4212b027E22aF7e6BA21Fc572843C0D701CD1\"/LinkContractAddress = \"0xFf7412Ea7C8445C46a8254dFB557Ac1E48094391\"/g" $PLI_DEPLOY_PATH/$BASH_FILE3
-        sed -i -e "s/name = \"XdcApothem\"/name = \"XdcMainnet\"/g" $PLI_DEPLOY_PATH/$BASH_FILE3
-        # Ask the user for websocket & httpsurl
-        read -p 'Enter RPC https link: ' VAR_HTTPS
-        read -p 'Enter RPC wss link: ' VAR_WSS
-        SUB_VAR_HTTPS=${VAR_HTTPS//./\\.}
-        SUB_VAR_HTTPS=${SUB_VAR_HTTPS//\//\\/}
-        SUB_VAR_WSS=${VAR_WSS//./\\.}
-        SUB_VAR_WSS=${SUB_VAR_WSS//\//\\/}
-        sed -i -e "s~^wsUrl = \"wss://ws\.apothem\.network\/ws\"~wsUrl = \"$SUB_VAR_WSS\"~g" $PLI_DEPLOY_PATH/$BASH_FILE3
-        sed -i -e "s~^httpUrl = 'https://erpc.apothem.network'~httpUrl = '$SUB_VAR_HTTPS'~g" $PLI_DEPLOY_PATH/$BASH_FILE3
-    fi
 
 
 
