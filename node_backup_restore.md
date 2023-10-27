@@ -347,7 +347,7 @@ All of these scenarios involved the installation of the node deployment files
 
   Now we can perform a fresh node installation which will re-use those existing credentials & settings
 
-            ./pli_node_scripts.sh fullnode
+            ./pli_node_scripts.sh full
 
 
   2. When the installation completes you will see the credentials & node address details output to the terminal screen. You should note that the node address is different from your original working node. This is where our db restore comes into play.

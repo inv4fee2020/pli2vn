@@ -1,9 +1,6 @@
 # pli2vn
 Modular scripts for @GoPlugin 2.0 Validator Node setup & maintenance.
 
-__** NOTE: This deployment script is for Apothem testnet only**__
-
-
 > **NOTE: All values used in this code are for test purposes only & deployed to a test environment that is regularly deleted.**
 > **NOTE: Please ensure that you update with your own values as necessary.**
 
@@ -46,7 +43,8 @@ to successfully deploy the node.
 
 The scripts has a number of functions, one of which must be passed to run the scripts
 
->     fullnode
+>     mainnet
+>     apothem
 >     keys
 >     logrotate
 >     address
@@ -55,19 +53,26 @@ The scripts has a number of functions, one of which must be passed to run the sc
 ### Usage
 
         Usage: ./pli_node_scripts.sh {function}
-            example:  ./pli_node_scripts.sh fullnode
+            example:  ./pli_node_scripts.sh apothem
 
         where {function} is one of the following;
 
-              fullnode      ==  deploys the full node incl. external initiator & exports the node keys
+              mainnet       ==  deploys the full Mainnet node & exports the node keys
+              apothem       ==  deploys the full Apothem node & exports the node keys
               keys          ==  extracts the node keys from DB and exports to json file
               logrotate     ==  implements the logrotate conf file
               address       ==  displays the local nodes address (after fullnode deploy) - required for the 'Fulfillment Request' remix step
               node-gui      ==  displays the local nodes full GUI URL to copy and paste to browser
 
-### Function: fullnode
+### Function: mainnet
 
-As the name suggest, this executes all code to provision a full working node ready for the contract & jobs creation on remix.
+As the name suggest, this executes all code to provision a full working node, on the _*Mainnet*_ chain, ready for the contract & jobs creation on remix.
+This function calls all other function as part of deploying the full node.
+
+
+### Function: apothem
+
+As the name suggest, this executes all code to provision a full working node, on the _*Apothem*_ chain, ready for the contract & jobs creation on remix.
 This function calls all other function as part of deploying the full node.
 
 
@@ -144,7 +149,7 @@ This script resets your VPS to a pre-deployment state, allowing you to re-instal
 ---
 
 
-## base_sys_setup.sh (_Optional - Recommended_)
+## base_sys_setup.sh
 
 Updated to use modular functions allowing for individial functions to be run or 
 You can reveiw the 'sample.vars' file for the full list of VARIABLES.
