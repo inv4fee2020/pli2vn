@@ -765,9 +765,11 @@ FUNC_NODE_ADDR(){
     IFS=$'\n' read -r -d '' -a node_keys_arr < <( plugin keys eth list | grep Address && printf '\0' )
     node_key_primary=$(echo ${node_keys_arr[0]} | sed s/Address:[[:space:]]/''/)
     
-    #echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
-    #echo
-    #echo -e "${GREEN}#########################################################################${NC}"
+    if [ $MENU_CALL == "true" ]; then
+        echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
+        echo
+        echo -e "${GREEN}#########################################################################${NC}"
+    fi
 }
 
 
@@ -813,6 +815,7 @@ case "$1" in
                 FUNC_LOGROTATE
                 ;;
         address)
+                MENU_CALL="true"
                 FUNC_NODE_ADDR
                 ;;
         node-gui)
