@@ -227,7 +227,7 @@ EOF
 FUNC_API_KEY(){
 
     echo "$FETCH_URL_A"
-    read -p 'Enter your CMC/CoinMarketCap API KEY : ' _APIKEY_INPUT
+    read -p 'Enter your API KEY : ' _APIKEY_INPUT
     echo "------------------------------------------------------------------------------"
     echo
     FETCH_URL="${FETCH_URL_A} \\\\"${_APIKEY_INPUT}\\\\"]"
@@ -246,22 +246,90 @@ FUNC_FILE_CREATE(){
         echo "FILE_CREATE :: Your job filename is $JOB_FNAME "
     fi
 
+    # Add user input to customise job threshold & timers
+
+    I_FORWARDING=""
+    I_MAX_DURATION=""
+    I_ABS_THRESHOLD=""
+
+    
+    while true; do
+        read -p 'Set 'forwardingAllowed' e.g. (default false) : ' I_FORWARDING
+
+        # If the input is null (user pressed Enter), use the default value
+        if [ -z "$I_FORWARDING" ]; then
+            I_FORWARDING="false"
+        fi
+
+        # Convert user input to lowercase to make it case-insensitive
+        I_FORWARDING=${I_FORWARDING,,}
+
+        # Check if the input is 'true' or 'false'
+        if [[ $I_FORWARDING == "true" || $I_FORWARDING == "false" ]]; then
+            #echo "You entered a valid boolean: $I_FORWARDING"
+            break  # Exit the loop if the input is a valid boolean
+        else
+            echo "Invalid input. Please enter 'true' or 'false'."
+        fi
+    done
+    
+    while true; do
+        read -p 'Set maxTaskDuration value e.g. 30s : ' I_MAX_DURATION
+
+        # If the input is null (user pressed Enter), use the default value
+        if [ -z "$I_MAX_DURATION" ]; then
+            I_MAX_DURATION="30s"
+        fi
+
+        # Check if the input is an integer using a regular expression
+        if [[ $I_MAX_DURATION =~ ^[0-9]+$ ]]; then
+            #echo "You entered a valid integer: $user_input"
+            break  # Exit the loop if the input is an integer
+        else
+            echo "Invalid input. Please enter a valid integer."
+        fi
+    done
+    
+    while true; do
+        read -p 'Set absoluteThreshold value e.g. 30s : ' I_MAX_DURATION
+
+        # Check if the input is an integer using a regular expression
+        if [[ $I_MAX_DURATION =~ ^[0-9]+$ ]]; then
+            #echo "You entered a valid integer: $user_input"
+            break  # Exit the loop if the input is an integer
+        else
+            echo "Invalid input. Please enter a valid integer."
+        fi
+    done
+    
+    echo "------------------------------------------------------------------------------"
+    echo
+
+
+    echo "Data Source $DSINDEX FROM Pair (fsym) ticker is : $_FSYM_INPUT"
+    echo "Data Source $DSINDEX TO Pair (tsyms) ticker is  : $_TSYMS_INPUT"
+
+    FLX_IDL_TIMER_PERIOD="${I_FORWARDING:=false}"
+    FLX_IDL_TIMER_DISABLE="${I_MAX_DURATION:=30s}"
+    FLX_POL_TIMER_PERIOD="${I_DRUMBEAT:=0}"
+    FLX_POL_TIMER_DISABLE="${I_MAX_DURATION:=30s}"
+
 # Creates the job file and passed variable values 
 cat <<EOF > ~/$JOB_FNAME
 type = "fluxmonitor"
 schemaVersion = 1
 name = "$JOB_TITLE"
-forwardingAllowed = false
+forwardingAllowed = "false"
 maxTaskDuration = "30s"
 absoluteThreshold = 0
 contractAddress = "$ORACLE_ADDR"
 drumbeatEnabled = false
-drumbeatSchedule = "CRON_TZ=UTC * */20 * * * *"
+drumbeatSchedule = "CRON_TZ=UTC * */10 * * * *"
 idleTimerPeriod = "30s"
-idleTimerDisabled = true
+idleTimerDisabled = false
 pollTimerPeriod = "1m0s"
-pollTimerDisabled = true
-threshold = 0.5
+pollTimerDisabled = false
+threshold = 0.1
 observationSource = """
 EOF
 }

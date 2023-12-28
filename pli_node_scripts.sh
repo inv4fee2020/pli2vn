@@ -341,9 +341,8 @@ FUNC_NODE_DEPLOY(){
     sleep 2s
 
 
-    ###########################  Add Mainnet details  ##########################
+    ###########################  Add Mainnet/Apothem details  ##########################
 
-    #V2_CONF_FILE="$PLI_DEPLOY_PATH/config.toml"
 
     sed -i.bak "s/HTTPSPort = 0/HTTPSPort = $PLI_HTTPS_PORT/g" $PLI_DEPLOY_PATH/$BASH_FILE3
 
@@ -368,14 +367,6 @@ FUNC_NODE_DEPLOY(){
                     
     fi
 
-
-    # get current Chains
-    #EVM_CHAIN_ID=$(sudo -u postgres -i psql -d plugin_mainnet_db -AXqtc "select id from evm_chains;")
-    #echo $EVM_CHAIN_ID
-    ### returns 50
-#
-    ## delete existing evm chain id
-    #sudo -u postgres -i psql -d plugin_mainnet_db -c "DELETE from evm_chains WHERE id = '$EVM_CHAIN_ID';"
 
     sed  -i 's|^ChainID.*|ChainID = '\'$VARVAL_CHAIN_ID\''|g' $PLI_DEPLOY_PATH/$BASH_FILE3
     cat $PLI_DEPLOY_PATH/$BASH_FILE3 | grep ChainID
@@ -685,11 +676,7 @@ FUNC_NODE_ADDR;
 
 plugin keys eth export $node_key_primary --newpassword  /tmp/pass --output ~/"plinode_$(hostname -f)_keys_${FDATE}".json > /dev/null 2>&1
 
-#echo -e "${GREEN}   export ${BYELLOW}$_OPTION${GREEN} node keys - securing file permissions${NC}"
 chmod 400 ~/"plinode_$(hostname -f)_keys_${FDATE}".json
-
-#chmod 600 $PLI_DEPLOY_PATH/pass
-#rm -f $PLI_DEPLOY_PATH/pass
 chmod 600 /tmp/pass
 rm -f /tmp/pass
 sleep 4s
@@ -757,6 +744,7 @@ EOF
 }
 
 
+
 FUNC_NODE_ADDR(){
     source ~/"plinode_$(hostname -f)".vars
     cd ~/$PLI_DEPLOY_DIR
@@ -764,11 +752,8 @@ FUNC_NODE_ADDR(){
     node_keys_arr=()
     IFS=$'\n' read -r -d '' -a node_keys_arr < <( plugin keys eth list | grep Address && printf '\0' )
     node_key_primary=$(echo ${node_keys_arr[0]} | sed s/Address:[[:space:]]/''/)
-    
-    #echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
-    #echo
-    #echo -e "${GREEN}#########################################################################${NC}"
 }
+
 
 
 FUNC_NODE_GUI_IPADDR(){
@@ -796,7 +781,6 @@ FUNC_EXIT_ERROR(){
 	}
   
 
-#clear
 case "$1" in
         mainnet)
                 _OPTION="mainnet"
