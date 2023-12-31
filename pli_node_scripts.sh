@@ -767,8 +767,8 @@ FUNC_NODE_ADDR(){
     
     #if [ $MENU_CALL == "true" ]; then
         echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
-        echo
-        echo -e "${GREEN}#########################################################################${NC}"
+        #echo
+        #echo -e "${GREEN}#########################################################################${NC}"
     #fi
 }
 
