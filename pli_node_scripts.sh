@@ -408,8 +408,8 @@ FUNC_NODE_DEPLOY(){
     # Install Node Manager Package version & enable
 
     echo -e "${GREEN}## NVM install & use...${NC}"
-    nvm install 20.18.1
-    nvm use 20.18.1
+    nvm install $VER_NVM
+    nvm use $VER_NVM
     node --version
     
 
@@ -418,7 +418,7 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## Install: GoPlugin V2.4 dependancies...${NC}"
 
-    npm install -g  pnpm@9
+    npm install -g $VER_PNPM
     if [ $? != 0 ]; then
       echo
       echo  -e "${RED}## ERROR :: PNPM dependancies install encoutered issues${NC}"
@@ -588,7 +588,7 @@ EOF
     npm install pm2 -g
 
     pm2 startup systemd
-    sudo env PATH=$PATH:/home/$USER_ID/.nvm/versions/node/v16.14.0/bin /home/$USER_ID/.nvm/versions/node/v16.14.0/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER_ID --hp /home/$USER_ID
+    sudo env PATH=$PATH:/home/$USER_ID/.nvm/versions/node/v$VER_NVM/bin /home/$USER_ID/.nvm/versions/node/v$VER_NVM/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER_ID --hp /home/$USER_ID
     pm2 save
 
 

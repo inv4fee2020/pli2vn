@@ -197,7 +197,10 @@ FUNC_SETUP_UFW_PORTS(){
     echo 
 
     # Get current SSH port number 
-    CPORT=$(sudo ss -tlpn | grep sshd | awk '{print$4}' | cut -d ':' -f 2 -s)
+    CPORT=$(sudo ss -tlpn | grep sshd | awk '{print$4}' | cut -d ':' -f 2 -s) || CPORT=22
+    if [ -z "$CPORT" ]; then
+        CPORT=22;
+    fi
     #echo $CPORT
     sudo ufw allow $CPORT/tcp
     
