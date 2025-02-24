@@ -252,33 +252,32 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}## Install: GOLANG Package(s) fetch & install... ${NC}"
     sleep 1s
 
-    GO_TAR="go1.21.7.linux-amd64.tar.gz"
-    if [ ! -e $GO_TAR ]; then
-        echo -e "${GREEN}INFO :: Downloading GO tar file...${NC}"
-        wget https://dl.google.com/go/go1.21.7.linux-amd64.tar.gz
-    fi
-    
-    echo -e "${GREEN}INFO :: GO tar file already exists...${NC}"
-    sleep 2s
 
-    if [ $? != 0 ]; then
-      echo
-      echo  -e "${RED}## ERROR :: Go package download encoutered issues${NC}"
-      echo  -e "${RED}## ERROR :: re-trying download once more...${NC}"
-      wget https://dl.google.com/go/go1.21.7.linux-amd64.tar.gz
-      sleep 1s
-      if [ $? != 0 ]; then
-        echo -e "${RED}## WGET of Go package failed... exiting${NC}"
-        FUNC_EXIT_ERROR
-      fi
+
+    # Set GO_TAR to latest version if VER_GO_PKG is empty, otherwise use specified version
+    GO_TAR=$([ -z "$VER_GO_PKG" ] && curl -s https://go.dev/VERSION?m=text | head -n 1 || echo "$VER_GO_PKG").linux-amd64.tar.gz
+
+    # Download if file doesn't exist, with one retry
+    if [ ! -e "$GO_TAR" ]; then
+        echo -e "${GREEN}INFO :: Downloading GO tar file...${NC}"
+        wget "https://dl.google.com/go/$GO_TAR" || {
+            echo -e "${RED}## ERROR :: Download failed, retrying...${NC}"
+            sleep 1s
+            wget "https://dl.google.com/go/$GO_TAR" || {
+                echo -e "${RED}## WGET failed... exiting${NC}"
+                FUNC_EXIT_ERROR
+            }
+        }
+        echo -e "${GREEN}INFO :: Successfully downloaded${NC}"
     else
-      echo -e "${GREEN}INFO :: Successfully downloaded${NC}"
+        echo -e "${GREEN}INFO :: GO tar file already exists...${NC}"
+        sleep 2s
     fi
 
 
 
     # Extract GO install binaries 
-    sudo tar -xvf go1.21.7.linux-amd64.tar.gz
+    sudo tar -xvf $GO_TAR
 
 
 
@@ -311,17 +310,36 @@ FUNC_NODE_DEPLOY(){
 
 
 
+    ## Get Node Version Manager (NVM) Package & execute 
+    #cd ~/
+    #curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+    #if [ $? != 0 ]; then
+    #  echo
+    #  echo  -e "${RED}## ERROR :: NVM package download / install encoutered issues${NC}"
+    #  sleep 2s
+    #  FUNC_EXIT_ERROR
+    #else
+    #  echo -e "${GREEN}INFO :: Successfully downloaded & executed NVM install script${NC}"
+    #  sleep 2s
+    #        fi
+
+
     # Get Node Version Manager (NVM) Package & execute 
     cd ~/
-    curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+    # Redirect stderr to a variable while still showing output
+    curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh 2> >(error_output=$(cat); echo "$error_output") | bash 2>&1
     if [ $? != 0 ]; then
-      echo
-      echo  -e "${RED}## ERROR :: NVM package download / install encoutered issues${NC}"
-      sleep 2s
-      FUNC_EXIT_ERROR
+        echo
+        echo -e "${RED}## ERROR :: NVM package download / install encountered issues${NC}"
+        # Display captured error messages if they exist
+        if [ ! -z "$error_output" ]; then
+            echo -e "${RED}Error Details: $error_output${NC}"
+        fi
+        sleep 2s
+        FUNC_EXIT_ERROR
     else
-      echo -e "${GREEN}INFO :: Successfully downloaded & executed NVM install script${NC}"
-      sleep 2s
+        echo -e "${GREEN}INFO :: Successfully downloaded & executed NVM install script${NC}"
+        sleep 2s
     fi
 
 
