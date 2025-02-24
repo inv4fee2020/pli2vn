@@ -181,7 +181,7 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}${NC}"
-    echo -e "${GREEN}             GoPlugin 2.0 ${BYELLOW}$_OPTION${GREEN} Validator Node - Install${NC}"
+    echo -e "${GREEN}             GoPlugin 2.4 ${BYELLOW}$_OPTION${GREEN} Validator Node - Install${NC}"
     echo -e "${GREEN}${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
