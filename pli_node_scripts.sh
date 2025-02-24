@@ -310,38 +310,18 @@ FUNC_NODE_DEPLOY(){
 
 
 
-    ## Get Node Version Manager (NVM) Package & execute 
-    #cd ~/
-    #curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-    #if [ $? != 0 ]; then
-    #  echo
-    #  echo  -e "${RED}## ERROR :: NVM package download / install encoutered issues${NC}"
-    #  sleep 2s
-    #  FUNC_EXIT_ERROR
-    #else
-    #  echo -e "${GREEN}INFO :: Successfully downloaded & executed NVM install script${NC}"
-    #  sleep 2s
-    #        fi
-
-
     # Get Node Version Manager (NVM) Package & execute 
     cd ~/
-    # Redirect stderr to a variable while still showing output
-    curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh 2> >(error_output=$(cat); echo "$error_output") | bash 2>&1
+    curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
     if [ $? != 0 ]; then
-        echo
-        echo -e "${RED}## ERROR :: NVM package download / install encountered issues${NC}"
-        # Display captured error messages if they exist
-        if [ ! -z "$error_output" ]; then
-            echo -e "${RED}Error Details: $error_output${NC}"
-        fi
-        sleep 2s
-        FUNC_EXIT_ERROR
+      echo
+      echo  -e "${RED}## ERROR :: NVM package download / install encoutered issues${NC}"
+      sleep 2s
+      FUNC_EXIT_ERROR
     else
-        echo -e "${GREEN}INFO :: Successfully downloaded & executed NVM install script${NC}"
-        sleep 2s
+      echo -e "${GREEN}INFO :: Successfully downloaded & executed NVM install script${NC}"
+      sleep 2s
     fi
-
 
 
     echo
