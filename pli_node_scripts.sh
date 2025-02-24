@@ -252,10 +252,10 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}## Install: GOLANG Package(s) fetch & install... ${NC}"
     sleep 1s
 
-    GO_TAR="go1.20.6.linux-amd64.tar.gz"
+    GO_TAR="go1.21.7.linux-amd64.tar.gz"
     if [ ! -e $GO_TAR ]; then
         echo -e "${GREEN}INFO :: Downloading GO tar file...${NC}"
-        wget https://dl.google.com/go/go1.20.6.linux-amd64.tar.gz
+        wget https://dl.google.com/go/go1.21.7.linux-amd64.tar.gz
     fi
     
     echo -e "${GREEN}INFO :: GO tar file already exists...${NC}"
@@ -265,7 +265,7 @@ FUNC_NODE_DEPLOY(){
       echo
       echo  -e "${RED}## ERROR :: Go package download encoutered issues${NC}"
       echo  -e "${RED}## ERROR :: re-trying download once more...${NC}"
-      wget https://dl.google.com/go/go1.20.6.linux-amd64.tar.gz
+      wget https://dl.google.com/go/go1.21.7.linux-amd64.tar.gz
       sleep 1s
       if [ $? != 0 ]; then
         echo -e "${RED}## WGET of Go package failed... exiting${NC}"
@@ -278,7 +278,7 @@ FUNC_NODE_DEPLOY(){
 
 
     # Extract GO install binaries 
-    sudo tar -xvf go1.20.6.linux-amd64.tar.gz
+    sudo tar -xvf go1.21.7.linux-amd64.tar.gz
 
 
 
@@ -328,11 +328,11 @@ FUNC_NODE_DEPLOY(){
 
     echo
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## Install: Clone GoPlugin V2 repo...${NC}"
+    echo -e "${GREEN}## Install: Clone GoPlugin V2.4 repo...${NC}"
      
-    git clone https://github.com/GoPlugin/pluginV2.git
+    git clone https://github.com/GoPlugin/pluginv3.0.git
 
-    echo -e "${GREEN}## Install: switch to GoPlugin V2 folder...${NC}"
+    echo -e "${GREEN}## Install: switch to GoPlugin V2.4 folder...${NC}"
     cd $PLI_DEPLOY_PATH
 
 
@@ -399,7 +399,7 @@ FUNC_NODE_DEPLOY(){
 
     echo
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## Install: GoPlugin V2 NVM...${NC}"
+    echo -e "${GREEN}## Install: GoPlugin V2.4 NVM...${NC}"
 
     echo -e "${GREEN}## Source NVM environmentals shell script...${NC}"
     source ~/.nvm/nvm.sh
@@ -408,17 +408,17 @@ FUNC_NODE_DEPLOY(){
     # Install Node Manager Package version & enable
 
     echo -e "${GREEN}## NVM install & use...${NC}"
-    nvm install 16.14.0
-    nvm use 16.14.0
+    nvm install 20.18.1
+    nvm use 20.18.1
     node --version
     
 
 
     echo
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## Install: GoPlugin V2 dependancies...${NC}"
+    echo -e "${GREEN}## Install: GoPlugin V2.4 dependancies...${NC}"
 
-    npm install -g pnpm 
+    npm install -g  pnpm@9
     if [ $? != 0 ]; then
       echo
       echo  -e "${RED}## ERROR :: PNPM dependancies install encoutered issues${NC}"
@@ -452,22 +452,88 @@ FUNC_NODE_DEPLOY(){
 
 
 
-    # Make Install
+    ## Make Install
+    #
+    #echo
+    #echo -e "${GREEN}#########################################################################${NC}"
+    #echo -e "${GREEN}## Install: Complie dependancy install files...${NC}"
+    # 
+    #make install
+    #if [ $? != 0 ]; then
+    #  echo
+    #  echo  -e "${RED}## ERROR :: MAKE install encoutered issues${NC}"
+    #  sleep 2s
+    #  FUNC_EXIT_ERROR
+    #else
+    #  echo -e "${GREEN}INFO :: Successfully complied dependancy install files${NC}"
+    #  sleep 2s
+    #fi
+
+
 
     echo
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## Install: Complie dependancy install files...${NC}"
-     
-    make install
-    if [ $? != 0 ]; then
-      echo
-      echo  -e "${RED}## ERROR :: MAKE install encoutered issues${NC}"
-      sleep 2s
-      FUNC_EXIT_ERROR
+    echo -e "${GREEN}## Install: Run install.bash file to setup...${NC}"
+
+
+
+    # Update user profile with GO path values
+    
+    isInFile=$(cat ~/.profile | grep -c "GOROOT*")
+    if [ $isInFile -eq 0 ]; then
+        echo "export GOROOT=/usr/local/go" >> ~/.profile
+        echo "export GOPATH=$HOME/go" >> ~/.profile
+        echo "PATH=$GOPATH/bin:$GOROOT/bin:$PATH" >> ~/.profile
+        echo "SECURE_COOKIES=false" >> ~/.profile
+
+        echo -e "${GREEN}## Success: '.profile' updated with GO PATH values...${NC}"
     else
-      echo -e "${GREEN}INFO :: Successfully complied dependancy install files${NC}"
-      sleep 2s
+        echo -e "${GREEN}## Skipping: '.profile' contains GO PATH values...${NC}"
     fi
+
+    sleep 2s
+    source ~/.profile
+
+    GOP=$(grep 'GOPATH=' ~/.profile | cut -d '=' -f 2)
+    if  [[ -z "$GOP" ]]; then
+        echo "Error: GOPATH is not set in ~/.profile. Exiting..."
+        FUNC_EXIT_ERROR
+    else
+        mkdir -p "$GOP/bin"
+        sleep 2s
+    fi
+
+
+    ## Error catch loop for delays when running the main GoPluginV3 'install.bash'
+    
+    MAX_RETRIES=3  # Maximum number of retries
+    RETRY_DELAY=5  # Delay in seconds between retries
+    RETRY_COUNT=0
+    SUCCESS=false
+
+    while [[ $RETRY_COUNT -lt $MAX_RETRIES ]]; do
+        ./install.bash  # Invoke the second script
+
+        if [[ $? -eq 0 ]]; then
+            SUCCESS=true
+            break  # Exit the retry loop
+        else
+            ((RETRY_COUNT++))
+            echo  -e "${RED}## ERROR :: 'install.bash' install encountered issues, trying again...${NC}"
+            sleep $RETRY_DELAY
+        fi
+    done
+
+    if [[ "$SUCCESS" == true ]]; then
+        echo -e "${GREEN}INFO :: Successfully completed install.bash${NC}"
+        sleep 2s
+    else
+        echo  -e "${RED}## ERROR :: 'install.bash' failed after $MAX_RETRIES attempts, exiting...${NC}"
+        FUNC_EXIT_ERROR
+    fi
+
+
+    ##
     
     touch {$FILE_KEYSTORE,$FILE_API}
     chmod 666 {$FILE_KEYSTORE,$FILE_API}
@@ -505,23 +571,6 @@ FUNC_NODE_DEPLOY(){
 extendedKeyUsage=serverAuth) -subj "/CN=localhost"
     sleep 1s
 
-
-
-    # Update user profile with GO path values
-    
-    isInFile=$(cat ~/.profile | grep -c "GOROOT*")
-    if [ $isInFile -eq 0 ]; then
-        echo "export GOROOT=/usr/local/go" >> ~/.profile
-        echo "export GOPATH=$HOME/go" >> ~/.profile
-        echo "PATH=$GOPATH/bin:$GOROOT/bin:$PATH" >> ~/.profile
-        echo "SECURE_COOKIES=false" >> ~/.profile
-
-        echo -e "${GREEN}## Success: '.profile' updated with GO PATH values...${NC}"
-    else
-        echo -e "${GREEN}## Skipping: '.profile' contains GO PATH values...${NC}"
-    fi
-
-    source ~/.profile
 
 
 
