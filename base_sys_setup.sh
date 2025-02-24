@@ -22,7 +22,7 @@ FUNC_VALUE_CHECK(){
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     echo 
-    echo -e "${GREEN}      GoPlugin 2.0 Validator Node Deployment Script - Pre Checks${NC}"
+    echo -e "${GREEN}      GoPlugin 2.4 Validator Node Deployment Script - Pre Checks${NC}"
     echo 
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
