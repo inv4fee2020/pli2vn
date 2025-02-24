@@ -1,5 +1,5 @@
 # pli2vn
-Modular scripts for @GoPlugin 2.0 Validator Node setup & maintenance.
+Modular scripts for @GoPlugin 2.4 Validator Node setup & maintenance.
 
 > **NOTE: All values used in this code are for test purposes only & deployed to a test environment that is regularly deleted.**
 > **NOTE: Please ensure that you update with your own values as necessary.**
