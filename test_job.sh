@@ -1,6 +1,9 @@
 #!/bin/bash
 #set -x
+
+# Authenticate sudo perms before script execution to avoid timeouts or errors
 sudo -l > /dev/null 2>&1
+
 PLI_VARS_FILE="plinode_$(hostname -f).vars"
 source ~/$PLI_VARS_FILE
 
@@ -10,7 +13,7 @@ RAND_NUM=$((1 + $RANDOM % 10000))
 JOB_TITLE="cryptocompare_XDC_USD_test_$RAND_NUM"
 JOB_FNAME="pli2vn_testjob_CC_USD_XDC.toml"
 
-#clear
+
 echo -e "${GREEN}#"
 echo -e "#   This script generates the necessary toml blob for the Job-Setup section in the docs"
 echo -e "#   source: https://docs.goplugin.co/oracle/job-setup"
