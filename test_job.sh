@@ -1,6 +1,9 @@
 #!/bin/bash
 #set -x
 
+# Authenticate sudo perms before script execution to avoid timeouts or errors
+sudo -l > /dev/null 2>&1
+
 PLI_VARS_FILE="plinode_$(hostname -f).vars"
 source ~/$PLI_VARS_FILE
 
@@ -10,7 +13,7 @@ RAND_NUM=$((1 + $RANDOM % 10000))
 JOB_TITLE="cryptocompare_XDC_USD_test_$RAND_NUM"
 JOB_FNAME="pli2vn_testjob_CC_USD_XDC.toml"
 
-#clear
+
 echo -e "${GREEN}#"
 echo -e "#   This script generates the necessary toml blob for the Job-Setup section in the docs"
 echo -e "#   source: https://docs.goplugin.co/oracle/job-setup"
@@ -26,9 +29,26 @@ source ~/"plinode_$(hostname -f)".vars
 read -p 'Enter your Oracle Contract Address : ' _INPUT
 ORACLE_ADDR="$(echo $_INPUT | sed '/^$/d;/^\\\s*$/d;s/^xdc/0x/g')"
 
+
+plugin admin login -f $PLI_DEPLOY_PATH/apicredentials.txt > /dev/null 2>&1
+if [ $? != 0 ]; then
+  echo
+  echo  -e "${RED}## ERROR :: Plugin admin login encoutered issues${NC}"
+  sleep 2s
+  exit
+else
+  echo -e "${GREEN}INFO :: Successfully logged in with API credentials${NC}"
+  sleep 0.5s
+fi
+echo
+
+CHAIN_ID="$(plugin chains evm list | grep "ID:" | head -n 1 | awk '{print $2}')"
+
+
 cat <<EOF > ~/$JOB_FNAME
 type = "directrequest"
 schemaVersion = 1
+evmChainID = "$CHAIN_ID"
 name = "$JOB_TITLE"
 maxTaskDuration = "0s"
 contractAddress = "$ORACLE_ADDR"
@@ -56,17 +76,7 @@ observationSource = """
 """
 EOF
 
-plugin admin login -f $PLI_DEPLOY_PATH/apicredentials.txt > /dev/null 2>&1
-if [ $? != 0 ]; then
-  echo
-  echo  -e "${RED}## ERROR :: Plugin admin login encoutered issues${NC}"
-  sleep 2s
-  exit
-else
-  echo -e "${GREEN}INFO :: Successfully logged in with API credentials${NC}"
-  sleep 0.5s
-fi
-echo
+
 plugin jobs create ~/$JOB_FNAME > /tmp/plivn_job_id.raw
 if [ $? != 0 ]; then
   echo

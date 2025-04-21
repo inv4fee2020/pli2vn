@@ -30,7 +30,6 @@ FUNC_VARS(){
 
     PLI_VARS_FILE="plinode_$(hostname -f)".vars
     if [ ! -e ~/$PLI_VARS_FILE ]; then
-        #clear
         echo
         echo -e "${RED} #### NOTICE: No VARIABLES file found. ####${NC}"
         echo -e "${RED} ..creating local vars file '$HOME/$PLI_VARS_FILE' ${NC}"
@@ -40,7 +39,6 @@ FUNC_VARS(){
 
         echo
         echo -e "${GREEN}nano '~/$PLI_VARS_FILE' ${NC}"
-        #sleep 2s
     fi
 
     source ~/$PLI_VARS_FILE
@@ -181,14 +179,11 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}${NC}"
-    echo -e "${GREEN}             GoPlugin 2.0 ${BYELLOW}$_OPTION${GREEN} Validator Node - Install${NC}"
+    echo -e "${GREEN}             GoPlugin 2.4 ${BYELLOW}$_OPTION${GREEN} Validator Node - Install${NC}"
     echo -e "${GREEN}${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     sleep 3s
-    # Set working directory to user home folder
-    #cd ~/
-
 
     # loads variables 
     FUNC_VARS;
@@ -252,33 +247,32 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}## Install: GOLANG Package(s) fetch & install... ${NC}"
     sleep 1s
 
-    GO_TAR="go1.20.6.linux-amd64.tar.gz"
-    if [ ! -e $GO_TAR ]; then
-        echo -e "${GREEN}INFO :: Downloading GO tar file...${NC}"
-        wget https://dl.google.com/go/go1.20.6.linux-amd64.tar.gz
-    fi
-    
-    echo -e "${GREEN}INFO :: GO tar file already exists...${NC}"
-    sleep 2s
 
-    if [ $? != 0 ]; then
-      echo
-      echo  -e "${RED}## ERROR :: Go package download encoutered issues${NC}"
-      echo  -e "${RED}## ERROR :: re-trying download once more...${NC}"
-      wget https://dl.google.com/go/go1.20.6.linux-amd64.tar.gz
-      sleep 1s
-      if [ $? != 0 ]; then
-        echo -e "${RED}## WGET of Go package failed... exiting${NC}"
-        FUNC_EXIT_ERROR
-      fi
+
+    # Set GO_TAR to latest version if VER_GO_PKG is empty, otherwise use specified version
+    GO_TAR=$([ -z "$VER_GO_PKG" ] && curl -s https://go.dev/VERSION?m=text | head -n 1 || echo "$VER_GO_PKG").linux-amd64.tar.gz
+
+    # Download if file doesn't exist, with one retry
+    if [ ! -e "$GO_TAR" ]; then
+        echo -e "${GREEN}INFO :: Downloading GO tar file...${NC}"
+        wget "https://dl.google.com/go/$GO_TAR" || {
+            echo -e "${RED}## ERROR :: Download failed, retrying...${NC}"
+            sleep 1s
+            wget "https://dl.google.com/go/$GO_TAR" || {
+                echo -e "${RED}## WGET failed... exiting${NC}"
+                FUNC_EXIT_ERROR
+            }
+        }
+        echo -e "${GREEN}INFO :: Successfully downloaded${NC}"
     else
-      echo -e "${GREEN}INFO :: Successfully downloaded${NC}"
+        echo -e "${GREEN}INFO :: GO tar file already exists...${NC}"
+        sleep 2s
     fi
 
 
 
     # Extract GO install binaries 
-    sudo tar -xvf go1.20.6.linux-amd64.tar.gz
+    sudo tar -xvf $GO_TAR
 
 
 
@@ -325,14 +319,13 @@ FUNC_NODE_DEPLOY(){
     fi
 
 
-
     echo
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## Install: Clone GoPlugin V2 repo...${NC}"
+    echo -e "${GREEN}## Install: Clone GoPlugin V2.4 repo...${NC}"
      
-    git clone https://github.com/GoPlugin/pluginV2.git
+    git clone https://github.com/GoPlugin/pluginv3.0.git
 
-    echo -e "${GREEN}## Install: switch to GoPlugin V2 folder...${NC}"
+    echo -e "${GREEN}## Install: switch to GoPlugin V2.4 folder...${NC}"
     cd $PLI_DEPLOY_PATH
 
 
@@ -342,8 +335,6 @@ FUNC_NODE_DEPLOY(){
 
 
     ###########################  Add Mainnet details  ##########################
-
-    #V2_CONF_FILE="$PLI_DEPLOY_PATH/config.toml"
 
     sed -i.bak "s/HTTPSPort = 0/HTTPSPort = $PLI_HTTPS_PORT/g" $PLI_DEPLOY_PATH/$BASH_FILE3
 
@@ -373,7 +364,7 @@ FUNC_NODE_DEPLOY(){
     #EVM_CHAIN_ID=$(sudo -u postgres -i psql -d plugin_mainnet_db -AXqtc "select id from evm_chains;")
     #echo $EVM_CHAIN_ID
     ### returns 50
-#
+
     ## delete existing evm chain id
     #sudo -u postgres -i psql -d plugin_mainnet_db -c "DELETE from evm_chains WHERE id = '$EVM_CHAIN_ID';"
 
@@ -399,7 +390,7 @@ FUNC_NODE_DEPLOY(){
 
     echo
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## Install: GoPlugin V2 NVM...${NC}"
+    echo -e "${GREEN}## Install: GoPlugin V2.4 NVM...${NC}"
 
     echo -e "${GREEN}## Source NVM environmentals shell script...${NC}"
     source ~/.nvm/nvm.sh
@@ -408,17 +399,17 @@ FUNC_NODE_DEPLOY(){
     # Install Node Manager Package version & enable
 
     echo -e "${GREEN}## NVM install & use...${NC}"
-    nvm install 16.14.0
-    nvm use 16.14.0
+    nvm install $VER_NVM
+    nvm use $VER_NVM
     node --version
     
 
 
     echo
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## Install: GoPlugin V2 dependancies...${NC}"
+    echo -e "${GREEN}## Install: GoPlugin V2.4 dependancies...${NC}"
 
-    npm install -g pnpm 
+    npm install -g $VER_PNPM
     if [ $? != 0 ]; then
       echo
       echo  -e "${RED}## ERROR :: PNPM dependancies install encoutered issues${NC}"
@@ -450,24 +441,69 @@ FUNC_NODE_DEPLOY(){
      
     sudo apt install -y build-essential
 
-
-
-    # Make Install
-
     echo
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## Install: Complie dependancy install files...${NC}"
-     
-    make install
-    if [ $? != 0 ]; then
-      echo
-      echo  -e "${RED}## ERROR :: MAKE install encoutered issues${NC}"
-      sleep 2s
-      FUNC_EXIT_ERROR
+    echo -e "${GREEN}## Install: Run install.bash file to setup...${NC}"
+
+
+
+    # Update user profile with GO path values
+    
+    isInFile=$(cat ~/.profile | grep -c "GOROOT*")
+    if [ $isInFile -eq 0 ]; then
+        echo "export GOROOT=/usr/local/go" >> ~/.profile
+        echo "export GOPATH=$HOME/go" >> ~/.profile
+        echo "PATH=$GOPATH/bin:$GOROOT/bin:$PATH" >> ~/.profile
+        echo "SECURE_COOKIES=false" >> ~/.profile
+
+        echo -e "${GREEN}## Success: '.profile' updated with GO PATH values...${NC}"
     else
-      echo -e "${GREEN}INFO :: Successfully complied dependancy install files${NC}"
-      sleep 2s
+        echo -e "${GREEN}## Skipping: '.profile' contains GO PATH values...${NC}"
     fi
+
+    sleep 2s
+    source ~/.profile
+
+    GOP=$(grep 'GOPATH=' ~/.profile | cut -d '=' -f 2)
+    if  [[ -z "$GOP" ]]; then
+        echo "Error: GOPATH is not set in ~/.profile. Exiting..."
+        FUNC_EXIT_ERROR
+    else
+        mkdir -p "$GOP/bin"
+        sleep 2s
+    fi
+
+
+    ## Error catch loop for delays when running the main GoPluginV3 'install.bash'
+    
+    MAX_RETRIES=3  # Maximum number of retries
+    RETRY_DELAY=5  # Delay in seconds between retries
+    RETRY_COUNT=0
+    SUCCESS=false
+
+    while [[ $RETRY_COUNT -lt $MAX_RETRIES ]]; do
+        ./install.bash  # Invoke the second script
+
+        if [[ $? -eq 0 ]]; then
+            SUCCESS=true
+            break  # Exit the retry loop
+        else
+            ((RETRY_COUNT++))
+            echo  -e "${RED}## ERROR :: 'install.bash' install encountered issues, trying again...${NC}"
+            sleep $RETRY_DELAY
+        fi
+    done
+
+    if [[ "$SUCCESS" == true ]]; then
+        echo -e "${GREEN}INFO :: Successfully completed install.bash${NC}"
+        sleep 2s
+    else
+        echo  -e "${RED}## ERROR :: 'install.bash' failed after $MAX_RETRIES attempts, exiting...${NC}"
+        FUNC_EXIT_ERROR
+    fi
+
+
+    ##
     
     touch {$FILE_KEYSTORE,$FILE_API}
     chmod 666 {$FILE_KEYSTORE,$FILE_API}
@@ -507,39 +543,22 @@ extendedKeyUsage=serverAuth) -subj "/CN=localhost"
 
 
 
-    # Update user profile with GO path values
-    
-    isInFile=$(cat ~/.profile | grep -c "GOROOT*")
-    if [ $isInFile -eq 0 ]; then
-        echo "export GOROOT=/usr/local/go" >> ~/.profile
-        echo "export GOPATH=$HOME/go" >> ~/.profile
-        echo "PATH=$GOPATH/bin:$GOROOT/bin:$PATH" >> ~/.profile
-        echo "SECURE_COOKIES=false" >> ~/.profile
-
-        echo -e "${GREEN}## Success: '.profile' updated with GO PATH values...${NC}"
-    else
-        echo -e "${GREEN}## Skipping: '.profile' contains GO PATH values...${NC}"
-    fi
-
-    source ~/.profile
-
-
 
     echo -e "${GREEN}## Install: Create PM2 file $BASH_FILE2 & set auto start on reboot...${NC}"
 
     cd /$PLI_DEPLOY_PATH
     cat <<EOF > $BASH_FILE2
 #!/bin/bash
-echo "<<<<<<<<<--------------------------------STARTING PLUGIN 2.0 VALIDATOR NODE----------------------------------->>>>>>>>>"
+echo "<<<<<<<<<--------------------------------STARTING PLUGIN 2.4 VALIDATOR NODE----------------------------------->>>>>>>>>"
 plugin --admin-credentials-file apicredentials.txt -c config.toml -s secrets.toml node start
-echo "<<<<<<<<<------------------PLUGIN 2.0 VALIDATOR NODE is running .. use "pm2 status" to check details--------------------->>>>>>>>>"
+echo "<<<<<<<<<------------------PLUGIN 2.4 VALIDATOR NODE is running .. use "pm2 status" to check details--------------------->>>>>>>>>"
 EOF
     chmod +x $BASH_FILE2
 
     npm install pm2 -g
 
     pm2 startup systemd
-    sudo env PATH=$PATH:/home/$USER_ID/.nvm/versions/node/v16.14.0/bin /home/$USER_ID/.nvm/versions/node/v16.14.0/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER_ID --hp /home/$USER_ID
+    sudo env PATH=$PATH:/home/$USER_ID/.nvm/versions/node/v$VER_NVM/bin /home/$USER_ID/.nvm/versions/node/v$VER_NVM/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER_ID --hp /home/$USER_ID
     pm2 save
 
 
@@ -658,8 +677,6 @@ EOF
 
 
 FUNC_EXPORT_NODE_KEYS(){
-
-
 source ~/"plinode_$(hostname -f)".vars
 echo 
 echo -e "${GREEN}#########################################################################${NC}"
@@ -675,41 +692,26 @@ echo
 echo
 
 if [ ! -e $PLI_DEPLOY_PATH/pass ]; then
-    #echo $PASS_KEYSTORE > $PLI_DEPLOY_PATH/pass
     echo $PASS_KEYSTORE > /tmp/pass
-    #chmod 400 $PLI_DEPLOY_PATH/pass
     chmod 400 /tmp/pass
 fi
 
 FUNC_NODE_ADDR;
 
 plugin keys eth export $node_key_primary --newpassword  /tmp/pass --output ~/"plinode_$(hostname -f)_keys_${FDATE}".json > /dev/null 2>&1
-
-#echo -e "${GREEN}   export ${BYELLOW}$_OPTION${GREEN} node keys - securing file permissions${NC}"
 chmod 400 ~/"plinode_$(hostname -f)_keys_${FDATE}".json
-
-#chmod 600 $PLI_DEPLOY_PATH/pass
-#rm -f $PLI_DEPLOY_PATH/pass
 chmod 600 /tmp/pass
 rm -f /tmp/pass
 sleep 4s
 }
 
 
-
-
-
-
-
-
 FUNC_LOGROTATE(){
     # add the logrotate conf file
     # check logrotate status = cat /var/lib/logrotate/status
-
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## ADDING LOGROTATE CONF FILE...${NC}"
     sleep 2s
-
     USER_ID=$(getent passwd $EUID | cut -d: -f1)
 
     if [ "$USER_ID" == "root" ]; then
@@ -751,9 +753,7 @@ EOF
         }    
 EOF
     fi
-
     sudo sh -c 'cat /tmp/tmpplugin-logs > /etc/logrotate.d/plugin-logs'
-
 }
 
 
@@ -764,12 +764,7 @@ FUNC_NODE_ADDR(){
     node_keys_arr=()
     IFS=$'\n' read -r -d '' -a node_keys_arr < <( plugin keys eth list | grep Address && printf '\0' )
     node_key_primary=$(echo ${node_keys_arr[0]} | sed s/Address:[[:space:]]/''/)
-    
-    #if [ $MENU_CALL == "true" ]; then
-        echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
-        #echo
-        #echo -e "${GREEN}#########################################################################${NC}"
-    #fi
+    echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
 }
 
 
@@ -798,7 +793,6 @@ FUNC_EXIT_ERROR(){
 	}
   
 
-#clear
 case "$1" in
         mainnet)
                 _OPTION="mainnet"

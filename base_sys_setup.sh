@@ -22,7 +22,7 @@ FUNC_VALUE_CHECK(){
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     echo 
-    echo -e "${GREEN}      GoPlugin 2.0 Validator Node Deployment Script - Pre Checks${NC}"
+    echo -e "${GREEN}      GoPlugin 2.4 Validator Node Deployment Script - Pre Checks${NC}"
     echo 
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
@@ -39,7 +39,6 @@ FUNC_VALUE_CHECK(){
             read -r -p "please confirm that you have updated this script with your values ? (y/n) " _input
             case $_input in
                 [Yy][Ee][Ss]|[Yy]* ) 
-                    #FUNC_BASE_SETUP
                     break
                     ;;
                 [Nn][Oo]|[Nn]* ) 
@@ -73,30 +72,12 @@ FUNC_PKG_CHECK(){
 
 
 FUNC_SETUP_OS(){
-    #FUNC_VARS;
-    
-    #echo -e "${GREEN}#########################################################################"
-    #echo -e "${GREEN}#########################################################################"
-    #echo -e "${GREEN}"
-    #echo -e "${GREEN}     Script Deployment menthod"
-    #echo -e "${GREEN}"
-    #echo -e "${GREEN}#########################################################################"
-    #echo -e "${GREEN}#########################################################################${NC}"
-
 
     echo -e "${GREEN}#########################################################################${NC}"
     echo
     echo -e "${GREEN}## Base Setup: System updates...${NC}"
     echo 
     sudo apt update -y && sudo apt upgrade -y
-
-    #echo -e "${GREEN}#########################################################################"
-    #echo
-    #echo -e "${GREEN}## Setup: Install necessary apps...${NC}"
-    #echo 
-    #sudo apt install net-tools git curl locate ufw whois -y 
-    #FUNC_PKG_CHECK;
-    #sudo updatedb
     sleep 1s
 }
 
@@ -197,7 +178,10 @@ FUNC_SETUP_UFW_PORTS(){
     echo 
 
     # Get current SSH port number 
-    CPORT=$(sudo ss -tlpn | grep sshd | awk '{print$4}' | cut -d ':' -f 2 -s)
+    CPORT=$(sudo ss -tlpn | grep sshd | awk '{print$4}' | cut -d ':' -f 2 -s) || CPORT=22
+    if [ -z "$CPORT" ]; then
+        CPORT=22;
+    fi
     #echo $CPORT
     sudo ufw allow $CPORT/tcp
     
@@ -233,7 +217,6 @@ FUNC_ENABLE_UFW(){
     sudo systemctl start ufw && sudo systemctl status ufw
     sleep 2s
     echo "y" | sudo ufw enable
-    #sudo ufw enable
     sudo ufw status verbose
 }
 
@@ -251,7 +234,6 @@ FUNC_SETUP_SECURE_SSH(){
     echo -e "${RED}# !! or ROOT account - PASSWORD AUTH will be disabled from this point. ${NC}"
     
     sleep 3
-    #read -p 'Enter New SSH Port to use: ' vNEW_SSH_PORT
     sudo sed -i.bak 's/#Port '"$PLI_SSH_DEF_PORT"'/Port '"$PLI_SSH_NEW_PORT"'/g' $SSH_CONFIG_PATH
     sudo sed -i.bak -e 's/\#PasswordAuthentication yes/PasswordAuthentication no/g' $SSH_CONFIG_PATH
     sudo sed -i.bak -e 's/PasswordAuthentication yes/PasswordAuthentication no/g' $SSH_CONFIG_PATH
@@ -288,7 +270,6 @@ FUNC_EXIT(){
 
 
 FUNC_BASE_SETUP(){
-    #FUNC_VALUE_CHECK;
     FUNC_SETUP_OS;
     FUNC_PKG_CHECK;
     FUNC_SETUP_UFW_PORTS;

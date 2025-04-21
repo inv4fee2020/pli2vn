@@ -1,5 +1,5 @@
 # pli2vn
-Modular scripts for @GoPlugin 2.0 Validator Node setup & maintenance.
+Modular scripts for @GoPlugin 2.4 Validator Node setup & maintenance.
 
 > **NOTE: All values used in this code are for test purposes only & deployed to a test environment that is regularly deleted.**
 > **NOTE: Please ensure that you update with your own values as necessary.**
@@ -107,7 +107,7 @@ This function obtains the local nodes primary address. This is necessary for rem
 
 ### Function: node-gui
 
-This function is called at the end of the `fullnode` deployment process and displays the full URL for the local node so that it is available for the operator to copy and paste.  This aids in reducing any confusion on how the GUI should be accessed
+This function is called at the end of the node deployment process and displays the full URL for the local node so that it is available for the operator to copy and paste.  This aids in reducing any confusion on how the GUI should be accessed
 .
 
         bhcadmin@plinode-test1:~/pli2vn$ ./pli_node_scripts.sh node-gui
