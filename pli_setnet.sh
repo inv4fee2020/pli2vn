@@ -38,14 +38,10 @@ FUNC_RPC_MENU(){
             echo
             read -t30 -r -p "       Enter the option NUMBER from the list above : " _RES_INPUT
             if [ $? -gt 128 ]; then
-                #clear
                 echo
                 echo
                 echo "      ....timed out waiting for user response - please select a NUMBER from the list... exiting"
-                #echo "....timed out waiting for user response - proceeding as standard in-place restore to existing system..."
                 echo
-                #DR_RESTORE=false
-                #FUNC_RPC_MENU;
                 FUNC_EXIT_ERROR
             fi
             case $_RES_INPUT in
@@ -79,7 +75,6 @@ FUNC_SET_FILE(){
 
     PLI_VARS_FILE="plinode_$(hostname -f)".vars
     if [ ! -e ~/$PLI_VARS_FILE ]; then
-        #clear
         echo
         echo -e "${RED} #### ERROR : No VARIABLES file found. ####${NC}"
         echo 
@@ -92,14 +87,6 @@ FUNC_SET_FILE(){
 
 
 FUNC_SED_FILE(){
-
-    #ChainID
-    #LinkContractAddress
-    #name
-    #wsUrl
-    #httpUrl
-
-
     # get current Chains
     EVM_CHAIN_ID=$(sudo -u postgres -i psql -d plugin_mainnet_db -AXqtc "select id from evm_chains;")
     echo $EVM_CHAIN_ID

@@ -42,37 +42,25 @@ FUNC_CHECK_DIRS(){
 
     # Checks if NOT NULL for the 'DB_BACKUP_DIR'variable
     if [ ! -z "$DB_BACKUP_DIR" ] ; then
-        #echo "checking DIR vars - apply default directory value..."
-    
         DB_BACKUP_DIR="plinode_backups"
     
         # Checks if directory exists & creates if not + sets perms
         # following logic attempts to resolve the leading Root '/' path issue
     
         if [ ! -d "/$DB_BACKUP_DIR" ]; then
-            #echo -e "${GREEN} SETTING FOLDER PERMS  ${NC}"
-            #echo "checking DIR vars - check directory exists & setting perms..."
             sudo mkdir "/$DB_BACKUP_DIR"
             sudo chown $USER_ID\:$DB_BACKUP_GUSER -R "/$DB_BACKUP_DIR"
             sudo chmod g+rw "/$DB_BACKUP_DIR";
         fi
     else
-        #echo
-        #echo "checking vars - Detected NULL - setting 'default'value.."
         DB_BACKUP_DIR="plinode_backups"
-        #echo "checking vars - var 'DB_BACKUP_DIR' value is now: $DB_BACKUP_DIR"
-    
         # adds the variable value to the VARS file
-        #echo
-        #echo "checking vars - updating file "$PLI_DB_VARS_FILE" variable 'DB_BACKUP_DIR' to: "$DB_BACKUP_DIR""
         sed -i.bak 's/DB_BACKUP_DIR=\"\"/DB_BACKUP_DIR=\"'$DB_BACKUP_DIR'\"/g' ~/$PLI_DB_VARS_FILE
     fi
 
     # Checks if directory exists & creates if not + sets perms
     
     if [ ! -d "/$DB_BACKUP_DIR" ]; then
-        #echo -e "${GREEN} SETTING FOLDER PERMS  ${NC}"
-        #echo "checking DIR vars - check directory exists & setting perms..."
         sudo mkdir "/$DB_BACKUP_DIR"
         sudo chown $USER_ID\:$DB_BACKUP_GUSER -R "/$DB_BACKUP_DIR"
         sudo chmod g+rw "/$DB_BACKUP_DIR";
@@ -90,12 +78,6 @@ FUNC_CHECK_DIRS(){
 
     DB_BACKUP_OBJ="$DB_BACKUP_PATH/$DB_BACKUP_FNAME"
     CONF_BACKUP_OBJ="$DB_BACKUP_PATH/$NODE_BACKUP_FNAME"
-    
-    #echo
-    #echo "checking vars - exiting directory check & continuing..."
-    #sleep 2s
-
-    #echo
     echo "checking vars - your configured node backup PATH is: $DB_BACKUP_PATH"
     sleep 2s
 
@@ -110,57 +92,23 @@ FUNC_DB_PRE_CHECKS(){
     #check DB_BACKUP_FUSER values
     if [ -z "$DB_BACKUP_FUSER" ]; then
         export DB_BACKUP_FUSER="$USER_ID"
-        #echo
-        #echo "pre-check vars - Detected NULL for 'DB_BACKUP_FUSER' - we set the variable to: "$USER_ID""
-    
         # adds the variable value to the VARS file
-        #echo
-        #echo ".pre-check vars - updating file "$PLI_DB_VARS_FILE" variable 'DB_BACKUP_FUSER' to: $USER_ID"
         sed -i.bak 's/DB_BACKUP_FUSER=\"\"/DB_BACKUP_FUSER=\"'$USER_ID'\"/g' ~/$PLI_DB_VARS_FILE
     fi
     
     # check shared group '$DB_BACKUP_GUSER' exists & set permissions
-    #if [ -z "$DB_BACKUP_GUSER" ] && [ ! $(getent group nodebackup) ]; then
-        #echo
-        #echo "pre-check vars - variable 'DB_BACKUP_GUSER is: NULL && 'default' does not exist"
-        #echo "pre-check vars - creating group 'nodebackup'"
         sudo groupadd nodebackup > /dev/null 2>&1
     
         # adds the variable value to the VARS file
-        #echo
-        #echo "pre-check vars - updating file "$PLI_DB_VARS_FILE" variable DB_BACKUP_GUSER to: nodebackup"
         sed -i.bak 's/DB_BACKUP_GUSER=\"\"/DB_BACKUP_GUSER=\"nodebackup\"/g' ~/$PLI_DB_VARS_FILE
-        #export DB_BACKUP_GUSER="nodebackup"
         DB_BACKUP_GUSER="nodebackup"
     
-    #elif [ ! -z "$DB_BACKUP_GUSER" ] && [ ! $(getent group $DB_BACKUP_GUSER) ]; then
-    #    echo
-    #    echo "pre-check vars - variable 'DB_BACKUP_GUSER is: NOT NULL && does not exist"
-    #    echo
-    #    echo "pre-check vars - creating group "$DB_BACKUP_GUSER""
-    #    sudo groupadd $DB_BACKUP_GUSER
-    #    echo "pre-check vars - updating file "$PLI_DB_VARS_FILE" variable DB_BACKUP_GUSER to: nodebackup"
-    #    sed -i.bak 's/DB_BACKUP_GUSER=\"\"/DB_BACKUP_GUSER=\"$DB_BACKUP_GUSER\"/g' ~/$PLI_DB_VARS_FILE
-    #fi
-    
-    
-    
     # add users to the group
-    
-    #echo
-    #echo "pre-check vars - checking if gdrive user exits"
     if [ ! -z "$GD_FUSER" ]; then
-        #echo
-        #echo "pre-check vars - setting group members for backups - with gdrive"
         DB_GUSER_MEMBER=(postgres $USER_ID $GD_FUSER)
-        #echo "${DB_GUSER_MEMBER[@]}"
-    #elif [ -z "$GD_FUSER" ] && [ ! $(getent passwd gdbackup) ]; then
     else
         GD_ENABLED=false
-        #echo
-        #echo "pre-check vars - setting group members for backups - without gdrive"
         DB_GUSER_MEMBER=(postgres $USER_ID)
-        #echo "${DB_GUSER_MEMBER[@]}"
     fi
     
     
@@ -169,7 +117,6 @@ FUNC_DB_PRE_CHECKS(){
     for _user in "${DB_GUSER_MEMBER[@]}"
     do
         hash $_user &> /dev/null
-        #echo "...adding user "$_user" to group "$DB_BACKUP_GUSER""
         sudo usermod -aG "$DB_BACKUP_GUSER" "$_user" > /dev/null 2>&1
     done 
     
@@ -191,12 +138,8 @@ FUNC_CONF_BACKUP_LOCAL(){
     FUNC_DB_VARS
     FUNC_DB_PRE_CHECKS  # order is specific as pre checks for user/groups which are assigned to dirs 
     FUNC_CHECK_DIRS
-
-    #echo
-    #echo "local backup - running tar backup process for configuration files"
     tar -cvpzf $CONF_BACKUP_OBJ ~/plinode* > /dev/null 2>&1
 
-    #sleep 2s
     FUNC_CONF_BACKUP_ENC
 
     if [ "$_OPTION" == "-full" ]; then
@@ -208,11 +151,7 @@ FUNC_CONF_BACKUP_LOCAL(){
 }
 
 
-
-
 FUNC_DB_BACKUP_LOCAL(){
-
-
     if [ "$_OPTION" == "-db" ]; then
 
         ### Call the setup script to set permissions & check installed pkgs
@@ -226,14 +165,12 @@ FUNC_DB_BACKUP_LOCAL(){
     # checks if the '.pgpass' credentials file exists - if not creates in home folder & copies to dest folder
     # & sets perms
 
-    #echo "local backup - checking pgpass file exists - create if necessary"
     if [ ! -e ~/.pgpass ]; then
 cat <<EOF > ~/.pgpass
 Localhost:5432:$DB_NAME:postgres:$DB_PWD_NEW
 EOF
     fi
 
-    #echo "local backup - setting pgpass file perms"
         cp -p ~/.pgpass $DB_BACKUP_PATH/.pgpass
         sudo chown postgres:postgres $DB_BACKUP_PATH/.pgpass
         sudo chmod 600 $DB_BACKUP_PATH/.pgpass
@@ -245,7 +182,6 @@ EOF
     # switch to 'postgres' user and run command to create inital sql dump file
     sudo su postgres -c "export PGPASSFILE="$DB_BACKUP_PATH/.pgpass"; pg_dump -c -w -U postgres $DB_NAME | gzip > $DB_BACKUP_OBJ"  > /dev/null 2>&1
     
-    #echo
     echo "local backup - successfully created unencrypted compressed gz DB file:  "$DB_BACKUP_OBJ""
     sudo chown $DB_BACKUP_FUSER:$DB_BACKUP_GUSER $DB_BACKUP_OBJ
     
@@ -255,18 +191,14 @@ EOF
     
     # check menu selection & that remote backup software configured
     # GD_ENABLED set in FUNC_DB_PRE_CHECKS
-    #echo "$GD_ENABLED"
     if [ "$_OPTION" == "-full" ] && [ "$GD_ENABLED" == "true" ]; then
         FUNC_DB_BACKUP_REMOTE
     fi
 
-    #echo "removing pgpass from backup directory"
     sudo rm -f $DB_BACKUP_PATH/.pgpass
     sleep 2s
     FUNC_EXIT;
 }
-
-
 
 
 FUNC_DB_BACKUP_ENC(){
@@ -277,10 +209,8 @@ FUNC_DB_BACKUP_ENC(){
     if [ -e $DB_BACKUP_OBJ ]; then
         sudo gpg --yes --batch --passphrase=$PASS_KEYSTORE -o $ENC_PATH/$ENC_FNAME -c $DB_BACKUP_OBJ
         error_exit;
-        #echo
         echo "local backup - successfully created encrypted gpg DB file:  "$ENC_FNAME""
         sudo chown $DB_BACKUP_FUSER:$DB_BACKUP_GUSER $ENC_PATH/$ENC_FNAME
-        #echo
         echo "local backup - securely erased unencrypted compressed gz DB file:  "$DB_BACKUP_OBJ""
         shred -uz -n 1 $DB_BACKUP_OBJ
     fi
@@ -294,10 +224,8 @@ FUNC_CONF_BACKUP_ENC(){
     if [ -e $CONF_BACKUP_OBJ ]; then
         sudo gpg --yes --batch --passphrase=$PASS_KEYSTORE -o $ENC_PATH/$ENC_CONFNAME -c $CONF_BACKUP_OBJ
         error_exit;
-        #echo
         echo "local backup - successfully created encrypted gpg conf file:  "$ENC_CONFNAME""
         sudo chown $DB_BACKUP_FUSER:$DB_BACKUP_GUSER $ENC_PATH/$ENC_CONFNAME
-        #echo
         echo "local backup - securely erase unencrypted conf file:  "$CONF_BACKUP_OBJ""
         shred -uz -n 1 $CONF_BACKUP_OBJ 
     fi
@@ -407,7 +335,6 @@ case "$1" in
                 echo -e "${GREEN}      -db        ==  performs a local backup of DB files only${NC}"
                 echo 
                 echo -e "${GREEN}      -scp       ==  displays the secure copy (scp) cmds to download backup files${NC}"
-                #echo
                 echo 
                 echo 
 esac

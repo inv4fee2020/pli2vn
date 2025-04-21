@@ -30,7 +30,6 @@ FUNC_VARS(){
 
     PLI_VARS_FILE="plinode_$(hostname -f)".vars
     if [ ! -e ~/$PLI_VARS_FILE ]; then
-        #clear
         echo
         echo -e "${RED} #### NOTICE: No VARIABLES file found. ####${NC}"
         echo -e "${RED} ..creating local vars file '$HOME/$PLI_VARS_FILE' ${NC}"
@@ -40,7 +39,6 @@ FUNC_VARS(){
 
         echo
         echo -e "${GREEN}nano '~/$PLI_VARS_FILE' ${NC}"
-        #sleep 2s
     fi
 
     source ~/$PLI_VARS_FILE
@@ -186,9 +184,6 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     sleep 3s
-    # Set working directory to user home folder
-    #cd ~/
-
 
     # loads variables 
     FUNC_VARS;
@@ -341,8 +336,6 @@ FUNC_NODE_DEPLOY(){
 
     ###########################  Add Mainnet details  ##########################
 
-    #V2_CONF_FILE="$PLI_DEPLOY_PATH/config.toml"
-
     sed -i.bak "s/HTTPSPort = 0/HTTPSPort = $PLI_HTTPS_PORT/g" $PLI_DEPLOY_PATH/$BASH_FILE3
 
 
@@ -371,7 +364,7 @@ FUNC_NODE_DEPLOY(){
     #EVM_CHAIN_ID=$(sudo -u postgres -i psql -d plugin_mainnet_db -AXqtc "select id from evm_chains;")
     #echo $EVM_CHAIN_ID
     ### returns 50
-#
+
     ## delete existing evm chain id
     #sudo -u postgres -i psql -d plugin_mainnet_db -c "DELETE from evm_chains WHERE id = '$EVM_CHAIN_ID';"
 
@@ -447,27 +440,6 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}## Install: install build complier files...${NC}"
      
     sudo apt install -y build-essential
-
-
-
-    ## Make Install
-    #
-    #echo
-    #echo -e "${GREEN}#########################################################################${NC}"
-    #echo -e "${GREEN}## Install: Complie dependancy install files...${NC}"
-    # 
-    #make install
-    #if [ $? != 0 ]; then
-    #  echo
-    #  echo  -e "${RED}## ERROR :: MAKE install encoutered issues${NC}"
-    #  sleep 2s
-    #  FUNC_EXIT_ERROR
-    #else
-    #  echo -e "${GREEN}INFO :: Successfully complied dependancy install files${NC}"
-    #  sleep 2s
-    #fi
-
-
 
     echo
     echo -e "${GREEN}#########################################################################${NC}"
@@ -577,9 +549,9 @@ extendedKeyUsage=serverAuth) -subj "/CN=localhost"
     cd /$PLI_DEPLOY_PATH
     cat <<EOF > $BASH_FILE2
 #!/bin/bash
-echo "<<<<<<<<<--------------------------------STARTING PLUGIN 2.0 VALIDATOR NODE----------------------------------->>>>>>>>>"
+echo "<<<<<<<<<--------------------------------STARTING PLUGIN 2.4 VALIDATOR NODE----------------------------------->>>>>>>>>"
 plugin --admin-credentials-file apicredentials.txt -c config.toml -s secrets.toml node start
-echo "<<<<<<<<<------------------PLUGIN 2.0 VALIDATOR NODE is running .. use "pm2 status" to check details--------------------->>>>>>>>>"
+echo "<<<<<<<<<------------------PLUGIN 2.4 VALIDATOR NODE is running .. use "pm2 status" to check details--------------------->>>>>>>>>"
 EOF
     chmod +x $BASH_FILE2
 
@@ -705,8 +677,6 @@ EOF
 
 
 FUNC_EXPORT_NODE_KEYS(){
-
-
 source ~/"plinode_$(hostname -f)".vars
 echo 
 echo -e "${GREEN}#########################################################################${NC}"
@@ -722,41 +692,26 @@ echo
 echo
 
 if [ ! -e $PLI_DEPLOY_PATH/pass ]; then
-    #echo $PASS_KEYSTORE > $PLI_DEPLOY_PATH/pass
     echo $PASS_KEYSTORE > /tmp/pass
-    #chmod 400 $PLI_DEPLOY_PATH/pass
     chmod 400 /tmp/pass
 fi
 
 FUNC_NODE_ADDR;
 
 plugin keys eth export $node_key_primary --newpassword  /tmp/pass --output ~/"plinode_$(hostname -f)_keys_${FDATE}".json > /dev/null 2>&1
-
-#echo -e "${GREEN}   export ${BYELLOW}$_OPTION${GREEN} node keys - securing file permissions${NC}"
 chmod 400 ~/"plinode_$(hostname -f)_keys_${FDATE}".json
-
-#chmod 600 $PLI_DEPLOY_PATH/pass
-#rm -f $PLI_DEPLOY_PATH/pass
 chmod 600 /tmp/pass
 rm -f /tmp/pass
 sleep 4s
 }
 
 
-
-
-
-
-
-
 FUNC_LOGROTATE(){
     # add the logrotate conf file
     # check logrotate status = cat /var/lib/logrotate/status
-
     echo -e "${GREEN}#########################################################################${NC}"
     echo -e "${GREEN}## ADDING LOGROTATE CONF FILE...${NC}"
     sleep 2s
-
     USER_ID=$(getent passwd $EUID | cut -d: -f1)
 
     if [ "$USER_ID" == "root" ]; then
@@ -798,9 +753,7 @@ EOF
         }    
 EOF
     fi
-
     sudo sh -c 'cat /tmp/tmpplugin-logs > /etc/logrotate.d/plugin-logs'
-
 }
 
 
@@ -811,12 +764,7 @@ FUNC_NODE_ADDR(){
     node_keys_arr=()
     IFS=$'\n' read -r -d '' -a node_keys_arr < <( plugin keys eth list | grep Address && printf '\0' )
     node_key_primary=$(echo ${node_keys_arr[0]} | sed s/Address:[[:space:]]/''/)
-    
-    #if [ $MENU_CALL == "true" ]; then
-        echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
-        #echo
-        #echo -e "${GREEN}#########################################################################${NC}"
-    #fi
+    echo -e "${GREEN}## INFO :: Your Plugin ${BYELLOW}$_OPTION${GREEN} node regular address is:${NC} ${BYELLOW}$node_key_primary ${NC}"
 }
 
 
@@ -845,7 +793,6 @@ FUNC_EXIT_ERROR(){
 	}
   
 
-#clear
 case "$1" in
         mainnet)
                 _OPTION="mainnet"
